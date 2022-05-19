@@ -1,17 +1,12 @@
 <script>
 export default {
-  data() {
-    return {
-      title: "Titolo Bottone",
-
-    }
-  },
-  props: ["title"]
-}
+  props: ["title"],
+  emit: ["buttonClicked"],
+};
 </script>
 
 <template>
-  <button type="button" class="primary-button">{{ title }}</button>
+  <button type="button" class="primary-button" @click="$emit('buttonClicked', $event)">{{ title }}</button>
 </template>
 
 <style scoped>

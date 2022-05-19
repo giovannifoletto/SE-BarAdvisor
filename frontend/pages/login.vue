@@ -1,26 +1,54 @@
+<script>
+export default {
+  name: "LoginPage",
+  data() {
+    return {
+      user: {
+        email: null,
+        password: null,
+      },
+    };
+  },
+  methods: {
+    async handleLogin(event) {
+      try {
+        const user = await this.$axios({
+          method: "post",
+          url: "auth/login",
+          data: this.user,
+        });
+        console.log(user);
+      } catch (err) {
+        console.log(err);
+      }
+      // console.log("Custom events: ", event)
+    },
+  },
+};
+</script>
+
 <template>
   <main>
     <form>
       <div class="form-group">
-        <label for="exampleInputEmail1">Indirizzo Email</label>
+        <label for="emailInput">Indirizzo Email</label>
         <input
-          bind:value="{mail}"
+          v-model="user.email"
           type="email"
           class="form-control"
-          id="exampleInputEmail"
-          aria-describedby="emailHelp"
-          placeholder="Enter email"
+          placeholder="Inserisci email"
+          required
         />
       </div>
       <br />
       <div class="form-group">
-        <label for="exampleInputPassword1">Password</label>
+        <label for="inputPassword">Password</label>
         <input
-          bind:value="{password}"
+          v-model="user.password"
           type="password"
           class="form-control"
-          id="exampleInputPassword"
-          placeholder="Password"
+          placeholder="Inserisci Password"
+          required
         />
       </div>
       <div class="myflex">
@@ -31,13 +59,13 @@
         -->
 
         <NuxtLink to="/passwordrecovery">
-          <ButtonsSecondary title='Dimenticato la password' />
+          <ButtonsSecondary title="Dimenticato la password" />
         </NuxtLink>
         <NuxtLink to="/signup">
-          <ButtonsSecondary title='Crea Nuovo Account' />
+          <ButtonsSecondary title="Crea Nuovo Account" />
         </NuxtLink>
         <div>
-          <ButtonsPrimary title='Login'/>
+          <ButtonsPrimary title="Login" @buttonClicked="handleLogin($event)" />
         </div>
       </div>
     </form>

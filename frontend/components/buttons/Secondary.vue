@@ -1,11 +1,12 @@
 <script>
 export default{
-  props: ['title'] 
+  props: ['title'],
+  emits: ["buttonClicked"]
 }
 </script>
 
 <template>
-  <button class="secondary-button" type="button">{{ title }}</button>
+  <button class="secondary-button" type="button" @click="$emit('buttonClicked', $event)">{{ title }}</button>
 </template>
 
 
