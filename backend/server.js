@@ -1,6 +1,7 @@
 
 const express = require('express')
 const config = require('./config')
+const cors = require('cors')
 
 const app = express()
 
@@ -8,10 +9,14 @@ const app = express()
 const db_connection = require('./controllers/db_connection')
 db_connection.connect()
 
+const authRouter = require('./routes/autenticazione')
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
+// middleware utili
+app.use(express.json())
+app.use(cors())
+
+// gestione delle routes
+app.use('/auth', authRouter)
 
 app.listen(config.PORT, () => {
   console.log(`BarAdvisor-API listening on ${config.PORT}`)
