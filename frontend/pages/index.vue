@@ -12,18 +12,18 @@ export default {
       ],
     };
   },
-  /*mounted() {
+  mounted() {
     try {
       const baEvents = this.$axios({
         method: "get",
         url: "/eventi",
       });
 
-      if (baEvents.success) this.baEvents = [...baEvents];
+      if (baEvents.success) this.baEvents = [...baEvents.data];
     } catch (err) {
       console.log(err);
     }
-  },*/
+  },
 };
 </script>
 
