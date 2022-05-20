@@ -1,21 +1,48 @@
+<script>
+export default {
+  data() {
+    return {
+      baEvents: [
+        {
+          _id: 1,
+          dataInizio: "ieri",
+          descrizioneEvento: "Questo è un ottimo evento",
+          nome: "Nome di questo locale",
+        },
+      ],
+    };
+  },
+  /*mounted() {
+    try {
+      const baEvents = this.$axios({
+        method: "get",
+        url: "/eventi",
+      });
+
+      if (baEvents.success) this.baEvents = [...baEvents];
+    } catch (err) {
+      console.log(err);
+    }
+  },*/
+};
+</script>
+
 <template>
   <main>
     <h1>Home Page</h1>
-
-    <EventPost
-      dataInizio="Data di inizio"
-      descrizione="Descrizione dell'evento"
-      nome="Nome dell'evento"
-      
-    />
+    <div v-for="{ e } in baEvents" :key=e._id>
+      <EventPost
+        :dataInizio="e.dataInizio"
+        :descrizione="e.descrizioneEvento"
+        :nome="e.nomeLocale"
+      />
+    </div>
   </main>
 </template>
 
 <script>
-import EventPost from "../components/EventPost.vue";
 export default {
   name: "IndexPage",
-  components: { EventPost },
 };
 </script>
 
