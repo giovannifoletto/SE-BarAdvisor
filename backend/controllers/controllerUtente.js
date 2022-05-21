@@ -1,6 +1,18 @@
 const Utente = require('../models/Utente')
 const Locale = require('../models/Locale')
 
+exports.getUtenti = async (req, res) => {
+    try {
+        // query nel database per prendere tutti gli utenti (e popolare il campo 'locale' dalla tabella 'Locale')
+        const utenti = await Utente.find().populate('locale', 'nome')
+
+        res.status(200).json({ success: true, utenti: utenti })
+
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message })
+    }
+}
+
 exports.registrazioneLocale = async (req, res) => {
     const { nome, email, password, nomeLocale, posizione } = req.body
 
