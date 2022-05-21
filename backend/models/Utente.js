@@ -42,4 +42,8 @@ schemaUtente.pre('save', async function(next) {
     next()
 })
 
+schemaUtente.methods.checkPassword = async function(password) {
+    return await bcrypt.compare(password, this.password)
+}
+
 module.exports = mongoose.model('Utente', schemaUtente)
