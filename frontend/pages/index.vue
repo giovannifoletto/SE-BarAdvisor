@@ -1,25 +1,30 @@
 <script>
 import EventPost from "../components/EventPost.vue";
+import ErrorDiv from "../components/ErrorDiv.vue";
 export default {
     name: "IndexPage",
     data() {
         return {
             baEvents: [
                 {
-                    id: 1,
+                    _id: 1,
                     dataInizio: "Ieri",
                     descrizione: "descrizione",
                     nome: "Nome di questo evento",
                 },
             ],
+            error: {
+              status: false,
+              errorText: "Avvenuto un errore imprevisto, riprovare più tardi."
+            }
         };
     },
     async fetch() {
-        this.posts = await this.$axios.$get("/eventi");
+        this.baEvents = await this.$axios.$get("/eventi");
     },
     fetchOnServer: false,
     fetchKey: "index-events",
-    components: { EventPost }
+    components: { EventPost, ErrorDiv }
 };
 </script>
 
@@ -35,13 +40,13 @@ export default {
         style="color: var(--primary); width: 4rem; height: 4rem"
       />
     </div>
-    <div v-else-if="$fetchState.error">
-      <h1>Errore</h1>
+    <div v-else-if="$fetchState.error" class="pt-3">
+      <ErrorDiv :errorText="error.errorText" />
     </div>
     <EventPost
       v-else
       v-for="e in baEvents"
-      :key="e.id"
+      :key="e._id"
       :dataInizio="e.dataInizio"
       :descrizione="e.descrizione"
       :nome="e.nome"
