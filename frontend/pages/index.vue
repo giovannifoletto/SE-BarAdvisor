@@ -5,14 +5,7 @@ export default {
     name: "IndexPage",
     data() {
         return {
-            baEvents: [
-                {
-                    _id: 1,
-                    dataInizio: "Ieri",
-                    descrizione: "descrizione",
-                    nome: "Nome di questo evento",
-                },
-            ],
+            baEvents: [],
             error: {
               status: false,
               errorText: "Avvenuto un errore imprevisto, riprovare più tardi."
@@ -24,7 +17,8 @@ export default {
     },
     fetchOnServer: false,
     fetchKey: "index-events",
-    components: { EventPost, ErrorDiv }
+    components: { EventPost, ErrorDiv },
+
 };
 </script>
 
@@ -41,7 +35,10 @@ export default {
       />
     </div>
     <div v-else-if="$fetchState.error" class="pt-3">
-      <ErrorDiv :errorText="error.errorText" />
+      <ErrorDiv
+      :errorText="error.errorText"
+      @dismissError="error.errorText = 'Errore non eliminabile, riprovare.'"
+    />
     </div>
     <EventPost
       v-else

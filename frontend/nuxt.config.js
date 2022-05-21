@@ -28,9 +28,12 @@ export default {
   plugins: [
   ],
 
-  loading: {
-    color: 'orange',
-    height: '15px'
+  loading: false, 
+
+  loadingIndicator: {
+    name: 'circle',
+    color: '#ff9922',
+    background: 'white'
   },
 
   // Auto import components: https://go.nuxtjs.dev/config-components
