@@ -1,50 +1,53 @@
 <script>
+import EventPost from "../components/EventPost.vue";
 export default {
-  data() {
-    return {
-      baEvents: [
-        {
-          _id: 1,
-          dataInizio: "ieri",
-          descrizioneEvento: "Questo è un ottimo evento",
-          nome: "Nome di questo locale",
-        },
-      ],
-    };
-  },
-  mounted() {
-    try {
-      const baEvents = this.$axios({
-        method: "get",
-        url: "/eventi",
-      });
-
-      if (baEvents.success) this.baEvents = [...baEvents.data];
-    } catch (err) {
-      console.log(err);
-    }
-  },
+    name: "IndexPage",
+    data() {
+        return {
+            baEvents: [
+                {
+                    id: 1,
+                    dataInizio: "Ieri",
+                    descrizione: "descrizione",
+                    nome: "Nome di questo evento",
+                },
+            ],
+        };
+    },
+    async fetch() {
+        this.posts = await this.$axios.$get("/eventi");
+    },
+    fetchOnServer: false,
+    fetchKey: "index-events",
+    components: { EventPost }
 };
 </script>
 
 <template>
   <main>
-    <h1>Home Page</h1>
-    <div v-for="{ e } in baEvents" :key=e._id>
-      <EventPost
-        :dataInizio="e.dataInizio"
-        :descrizione="e.descrizioneEvento"
-        :nome="e.nomeLocale"
+    <div
+      class="d-flex justify-content-center mt-5 pt-5"
+      v-if="$fetchState.pending"
+    >
+      <div
+        class="spinner-border"
+        role="status"
+        style="color: var(--primary); width: 4rem; height: 4rem"
       />
     </div>
+    <div v-else-if="$fetchState.error">
+      <h1>Errore</h1>
+    </div>
+    <EventPost
+      v-else
+      v-for="e in baEvents"
+      :key="e.id"
+      :dataInizio="e.dataInizio"
+      :descrizione="e.descrizione"
+      :nome="e.nome"
+    />
   </main>
 </template>
-
-<script>
-export default {
-  name: "IndexPage",
-};
-</script>
 
 <style scoped>
 main {

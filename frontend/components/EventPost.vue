@@ -1,6 +1,6 @@
 <script>
 export default {
-    props: ["nome", "dataInizio", "descrizione", "route"]
+    props: ["nome", "locale", "descrizione", "dataInizio"]
 }
 </script>
 
@@ -11,9 +11,9 @@ export default {
         <div>
           <IconsAccount />
         </div>
-        <!-- <NuxtLink to="route" class="px-3">-->
+        <NuxtLink :to="/locale/ + {locale}" class="px-3">
           <h3>{{ nome }}</h3>
-        <!-- </NuxtLink> -->
+        </NuxtLink>
       </div>
     </div>
     <div class="under">
