@@ -13,6 +13,18 @@
           </div>
         </NuxtLink>
       </li>
+      <li>
+        <NuxtLink to="/login">
+          <div class="flex">
+            <div class="icon">
+              <IconsLogin />
+            </div>
+            <div>
+              <h3>Login</h3>
+            </div>
+          </div>
+        </NuxtLink>
+      </li>
     </ul>
   </div>
 </template>

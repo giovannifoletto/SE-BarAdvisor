@@ -101,3 +101,9 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* Workoround to bootstrap form colored orange */
+.form-control:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 0.3rem var(--secondaryOrange);
+}
