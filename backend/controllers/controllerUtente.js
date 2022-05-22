@@ -230,3 +230,40 @@ exports.resetToken = async (req, res) => {
         res.status(500).json({ success: false, error: err })
     }
 }
+
+exports.changePassword = async (req, res) => {
+    const {oldPassword, newPassword} = req.body
+    const userData = req.userData
+
+
+    if (!oldPassword) {
+       return res.status(400).json({ success: false, message: 'Inserire la vecchia password' })
+    }
+    try{
+        const user = await Utente.findById(userData.id) 
+
+        if(!user)
+        {
+            return res.status(400).json({success: false, message: "Utente non trovato"})
+        }
+
+        const correctPassword = await user.checkPassword(oldPassword)
+        
+        if (!correctPassword) {
+            return res.status(401).json({ success: false, message: 'Password errata' })
+        }
+        if (!newPassword){
+            return res.status(400).json({success: false, message: "Inserire la nuova password"})
+        }
+        
+        user.password=newPassword
+
+        await user.save
+
+        res.status(200).json({ success: true, message: 'Password cambiata correttamente' })
+
+    }
+    catch (err) {
+        res.status(500).json({ success: false, error: err })
+    }
+}

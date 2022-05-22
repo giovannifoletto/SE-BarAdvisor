@@ -18,11 +18,19 @@ const schemaLocale = new mongoose.Schema({
     },
     descrizione: {
        type: String
+    },
+    prossimiEventi: {
+        type: [mongoose.Types.ObjectId],
+        ref: 'Evento'
+    },
+    eventiPassati: {
+        type: [mongoose.Types.ObjectId],
+        ref: 'Evento'
     }
     },
     {
         versionKey: false
-    }
+    },
 )
 
 module.exports = mongoose.model('Locale', schemaLocale)
