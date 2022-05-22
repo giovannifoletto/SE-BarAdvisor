@@ -30,7 +30,7 @@ export default {
 
   middleware: ["auth"],
 
-  loading: false, 
+  loading: false,
 
   loadingIndicator: {
     name: 'circle',
@@ -60,7 +60,7 @@ export default {
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-    baseURL: `${process.env.baseUrl}/api/v1/`,
+    // baseURL: `${process.env.baseUrl}/api/v1/`,
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
