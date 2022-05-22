@@ -120,7 +120,7 @@ exports.loginUtente = async (req, res) => {
         
         // se tutto va bene, creo il token aggiungendo i vari campi utili
         const token = jwt.sign({
-            _id: utente._id,
+            id: utente._id,
             email: utente.email,
             ruolo: utente.ruolo,
             locale: utente.locale || ""

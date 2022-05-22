@@ -19,7 +19,7 @@ app.use(cors())
 // gestione delle routes
 app.use('/auth', authRouter)
 app.use('/locali', localsRouter)
-app.use('./eventi', eventsRouter)
+app.use('/eventi', eventsRouter)
 
 
 app.listen(config.PORT, () => {
