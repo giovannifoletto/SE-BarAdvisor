@@ -12,4 +12,7 @@ router.post('/new/gestorelocale', controllerUtente.registrazioneLocale)
 // creazione di Cliente
 router.post('/new/cliente', controllerUtente.registrazioneCliente)
 
+// login Utente
+router.post('/login', controllerUtente.loginUtente)
+
 module.exports = router
