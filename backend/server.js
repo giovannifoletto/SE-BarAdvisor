@@ -10,6 +10,7 @@ db_connection.connect()
 
 const authRouter = require('./routes/autenticazione')
 const localsRouter = require('./routes/locali')
+const eventsRouter = require('./routes/eventi')
 
 // middleware utili
 app.use(express.json())
@@ -18,6 +19,7 @@ app.use(cors())
 // gestione delle routes
 app.use('/auth', authRouter)
 app.use('/locali', localsRouter)
+app.use('./eventi', eventsRouter)
 
 
 app.listen(config.PORT, () => {
