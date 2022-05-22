@@ -28,6 +28,8 @@ export default {
   plugins: [
   ],
 
+  middleware: ["auth"],
+
   loading: false, 
 
   loadingIndicator: {
