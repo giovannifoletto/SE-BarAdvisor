@@ -38,10 +38,20 @@ export default {
         // TODO: data di cambia password ?
         try {
           const changeP = this.$axios({
-            url: `TO-BE-DEFINED`,
-            method: "POST",
-            data: JSON.stringify(),
+            url: `http://localhost:4000/auth/cambioPassword`,
+            method: "PUT",
+            headers: {
+              Authorizations: 'Bearer' + this.state.getToken(),
+            },
+            data: {
+              oldPassword: this.oldPassword,
+              newPassword: this.newPassword,
+            },
           });
+
+          if(changeP.status ==200){
+            console.log("Password Changed");
+          }
         } catch (err) {
           console.log(err);
           this.error.status = true;
