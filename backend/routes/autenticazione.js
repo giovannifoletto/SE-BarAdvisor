@@ -15,4 +15,10 @@ router.post('/new/cliente', controllerUtente.registrazioneCliente)
 // login Utente
 router.post('/login', controllerUtente.loginUtente)
 
+// password dimenticata
+router.post('/passworddimenticata', controllerUtente.passwordDimenticata)
+
+// reset password - continua passoword dimenticata
+router.put('/resetpassword/:resetToken', controllerUtente.resetToken)
+
 module.exports = router

@@ -27,6 +27,8 @@ const schemaUtente = new mongoose.Schema({
         type: mongoose.Types.ObjectId,
         ref: 'Locale'
     },
+    tokenRecuperoPassword: String,
+    scadenzaRecuperoPassword: String
     },
     {
         versionKey: false
