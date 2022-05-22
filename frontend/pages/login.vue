@@ -13,10 +13,23 @@ export default {
         status: false,
       },
       checkbox: false,
+      promise: false,
     };
+  },
+  beforeCreate() {
+    if (this.$route.query.error == "wrongRole") {
+      error.errorText = "Non si dispone dei necessari privilegi di sicurezza.";
+      error.status = true;
+    }
+
+    if (this.$route.query.error == "auth") {
+      error.errorText = "Necessario essere autenticati per accedere a questa pagina.";
+      error.status = true;
+    }
   },
   methods: {
     async handleLogin(event) {
+      this.promise = true;
       if (!this.user.email || !this.user.password) {
         this.error.text = "Necessario inserire email e password.";
         this.error.status = true;
@@ -35,8 +48,7 @@ export default {
           } else {
             this.sessionStoreToken(user.data.token);
           }
-          console.log("Success");
-
+          this.promise = false;
           window.location.href = "/";
         }
       } catch (err) {
@@ -63,7 +75,7 @@ export default {
 <template>
   <main>
     <ErrorDiv
-      :errorText=error.errorText
+      :errorText="error.errorText"
       v-if="error.status"
       @dismissError="error.status = !error.status"
     />
@@ -119,6 +131,9 @@ export default {
           <ButtonsSecondary title="Crea Nuovo Account" />
         </NuxtLink>
         <div>
+          <Loader v-if="promise" dim="4" />
+          <div class="py-1"></div>
+
           <ButtonsPrimary title="Login" @buttonClicked="handleLogin($event)" />
         </div>
       </div>

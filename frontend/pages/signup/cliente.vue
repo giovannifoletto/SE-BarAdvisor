@@ -16,10 +16,12 @@ export default {
         status: false,
       },
       password2: null,
+      promise: false,
     };
   },
   methods: {
     async handleRegistrazione() {
+      promise = true;
       if (!this.user.nomeUtente || !this.user.email || !this.user.password) {
         this.error.status = true;
         this.error.errorText = "Tutti i campi sono necessari per continuare.";
@@ -40,10 +42,12 @@ export default {
         });
 
         if (user.success) {
+          promise = false;
           window.location.href = "/login";
         } else {
           this.error.status = true;
-          this.error.errorText = "Errore durante la comunicazione con il server, riprovare.";
+          this.error.errorText =
+            "Errore durante la comunicazione con il server, riprovare.";
           return;
         }
       } catch (err) {
@@ -109,6 +113,8 @@ export default {
       </div>
       <div class="myflex">
         <div>
+          <Loader v-if="promise" dim="4" />
+          <div class="py-1"></div>
           <ButtonsPrimary
             title="Registrati"
             @buttonClicked="

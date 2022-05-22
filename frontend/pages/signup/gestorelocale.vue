@@ -1,5 +1,4 @@
 <script>
-import ErrorDiv from "../../components/ErrorDiv.vue";
 export default {
   data() {
     return {
@@ -15,10 +14,13 @@ export default {
         errorText: null,
       },
       password2: null,
+      promise: false,
     };
   },
   methods: {
     async handleRegistrazione() {
+      this.promise = true;
+
       if (
         !this.user.nomeUtente ||
         !this.user.email ||
@@ -45,6 +47,7 @@ export default {
         });
         // to check
         if (fet.success) {
+          this.promise = false;
           window.location.href = "/login";
         }
       } catch (err) {
@@ -52,6 +55,7 @@ export default {
         this.error.error = `Errore`;
 
         console.log(err);
+        this.promise = false;
       }
     },
   },
@@ -132,6 +136,9 @@ export default {
       </div>
       <div class="myflex">
         <div>
+          <Loader v-if="promise" dim="4" />
+          <div class="py-1"></div>
+
           <ButtonsPrimary
             title="Registrati"
             @buttonClicked="handleRegistrazione()"

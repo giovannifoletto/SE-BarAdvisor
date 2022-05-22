@@ -1,18 +1,12 @@
 <script>
 import EventPost from "../components/EventPost.vue";
 import ErrorDiv from "../components/ErrorDiv.vue";
+import Loader from "../components/Loader.vue";
 export default {
     name: "IndexPage",
     data() {
         return {
-            baEvents: [
-                {
-                    _id: 1,
-                    dataInizio: "Ieri",
-                    descrizione: "descrizione",
-                    nome: "Nome di questo evento",
-                },
-            ],
+            baEvents: [],
             error: {
               status: false,
               errorText: "Avvenuto un errore imprevisto, riprovare più tardi."
@@ -24,24 +18,19 @@ export default {
     },
     fetchOnServer: false,
     fetchKey: "index-events",
-    components: { EventPost, ErrorDiv }
+    components: { EventPost, ErrorDiv, Loader },
+
 };
 </script>
 
 <template>
   <main>
-    <div
-      class="d-flex justify-content-center mt-5 pt-5"
-      v-if="$fetchState.pending"
-    >
-      <div
-        class="spinner-border"
-        role="status"
-        style="color: var(--primary); width: 4rem; height: 4rem"
-      />
-    </div>
+    <Loader v-if="$fetchState.pending" dim="8"/>
     <div v-else-if="$fetchState.error" class="pt-3">
-      <ErrorDiv :errorText="error.errorText" />
+      <ErrorDiv
+      :errorText="error.errorText"
+      @dismissError="error.errorText = 'Errore non eliminabile, riprovare.'"
+    />
     </div>
     <EventPost
       v-else
