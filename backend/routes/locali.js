@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 
-const checkRole = require('../middlewares/check-role')
+const checkRole = require('../middleware/check-role')
 
 const eventiController = require('../controllers/controllerEvento')
 
