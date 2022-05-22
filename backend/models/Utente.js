@@ -27,6 +27,8 @@ const schemaUtente = new mongoose.Schema({
         type: mongoose.Types.ObjectId,
         ref: 'Locale'
     },
+    tokenRecuperoPassword: String,
+    scadenzaRecuperoPassword: String
     },
     {
         versionKey: false
@@ -41,5 +43,9 @@ schemaUtente.pre('save', async function(next) {
     this.password = await bcrypt.hash(this.password, 10)
     next()
 })
+
+schemaUtente.methods.checkPassword = async function(password) {
+    return await bcrypt.compare(password, this.password)
+}
 
 module.exports = mongoose.model('Utente', schemaUtente)
