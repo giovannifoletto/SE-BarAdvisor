@@ -57,7 +57,7 @@ exports.getEvento = async (req, res) => {
         if (evento)
             res.status(201).json({ success: true, evento: evento })
         else
-            res.status(404).json({ success: false, message: 'Nessun elemento trovato' })
+            res.status(404).json({ success: false, message: 'Nessun evento trovato' })
     }
     catch (err) {
         res.status(500).json({ success: false, error: err.message })

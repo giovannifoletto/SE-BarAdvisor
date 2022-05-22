@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 const Locale = require('../models/Locale')
 
-// controllare se, durante la creazione di un nuovo evento, l'utente che sta facendo l'operazione è il proprietario del locale che 
+// controllare se, durante la creazione di un nuovo evento, l'utente che sta facendo l'operazione è il proprietario del locale che organizza l'evento
 exports.checkOwnerLocale = async (req, res, next) => {
     const { nome, locale, dataInizio } = req.body
     const userData = req.userData
