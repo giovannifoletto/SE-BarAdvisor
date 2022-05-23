@@ -1,0 +1,26 @@
+version: "3.9"  # optional since v1.27.0
+services:
+  backend:
+    build: backend/
+    ports:
+      - "4000:4000"
+    links:
+      - mongo
+    environment:
+      - DB_URL=mongodb://mongo/restAPI
+      - DB_URL_CLUSTER=mongodb://mongo/restAPI
+      - PORT=4000
+      - EMAIL_SERVICE=hotmail
+      - EMAIL_USERNAME=nodeproject@outlook.com
+      - EMAIL_PASSWORD=progettonode2022
+      - EMAIL_FROM=nodeproject@outlook.com
+  # frontend:
+  #   build: frontend/
+  #   environment:
+  #     - NUXT_ENV_BASE_URL=http://backend/
+  #   links:
+  #     - backend
+  #   ports:
+  #     - "80:80"
+  mongo:
+    image: mongo
