@@ -14,9 +14,8 @@ export default {
         };
     },
     async fetch() {
-        this.baEvents = await this.$axios.$get("/eventi");
+        this.baEvents = await this.$axios.$get("http://localhost:4000/eventi");
     },
-    fetchOnServer: false,
     fetchKey: "index-events",
     components: { EventPost, ErrorDiv, Loader },
 

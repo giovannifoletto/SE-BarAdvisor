@@ -2,7 +2,7 @@
 export default {
   data() {
     return {
-      nomeUtente: null,
+      email: null,
       error: {
         errorText: null,
         status: false,
@@ -11,7 +11,7 @@ export default {
   },
   methods: {
     async handleMailRecupero() {
-      if (!this.nomeUtente) {
+      if (!this.email) {
         this.error.errorText = "Necessario inserire il proprio nome utente.";
         this.error.status = true;
         return;
@@ -19,16 +19,17 @@ export default {
 
       try {
         const user = this.$axios({
-          url: "ENDPOINT-DA-DEFINIRE",
+          url: "http://localhost:4000/auth/passworddimenticata",
           method: "post",
-          data: this.user,
+          data: { email: this.email },
         });
 
-        if (user.success) {
+        if (user.status == 200) {
           window.location.href = "/login";
         } else {
           this.error.status = true;
-          this.error.errorText = "Errore durante la comunicazione con il server, riprovare.";
+          this.error.errorText =
+            "Errore durante la comunicazione con il server, riprovare.";
           return;
         }
       } catch (err) {
@@ -50,14 +51,15 @@ export default {
     />
     <form>
       <div class="form-group">
-        <label for="exampleInputEmail1">Nome Utente</label>
+        <label for="exampleInputEmail1">Inserire Email</label>
         <input
+          v-model="email"
           type="text"
           class="form-control"
-          id="nomeUtente"
-          placeholder="Nome Utente"
+          id="email"
+          placeholder="Email"
         />
-        <small id="nomeUtente" class="form-text text-muted"
+        <small id="email" class="form-text text-muted"
           >Per recuperare la propria password inserire la propria mail o il
           proprio username e controllare la casella di posta.</small
         >

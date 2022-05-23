@@ -3,7 +3,7 @@ export default {
   data() {
     return {
       user: {
-        nomeUtente: null,
+        nome: null,
         email: null,
         password: null,
         nomeLocale: null,
@@ -22,7 +22,7 @@ export default {
       this.promise = true;
 
       if (
-        !this.user.nomeUtente ||
+        !this.user.nome ||
         !this.user.email ||
         !this.user.password ||
         !this.user.nomeLocale ||
@@ -41,12 +41,12 @@ export default {
 
       try {
         const fet = await this.$axios({
-          url: "auth/new/gestorelocale",
+          url: "http://localhost:4000/auth/new/gestorelocale",
           method: "post",
-          data: user,
+          data: this.user,
         });
         // to check
-        if (fet.success) {
+        if (fet.status == 200) {
           this.promise = false;
           window.location.href = "/login";
         }
@@ -71,14 +71,14 @@ export default {
     />
     <form>
       <div class="form-group mb-1">
-        <label for="nomeUtente">Nome Utente</label>
+        <label for="nome">Nome Utente</label>
 
         <input
           type="text"
           class="form-control"
-          id="nomeUtente"
+          id="nome"
           placeholder="Nome Utente"
-          v-model="user.nomeUtente"
+          v-model="user.nome"
         />
       </div>
       <div class="form-group mb-1">

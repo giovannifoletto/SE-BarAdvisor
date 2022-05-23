@@ -38,12 +38,14 @@ export default {
       try {
         const user = await this.$axios({
           method: "post",
-          url: "auth/login",
+          url: "http://localhost:4000/auth/login",
           data: this.user,
         });
         // console.log(user);
-        if (user.success) {
-          if (checkbox) {
+
+        // TO DO BETTER SAVE PASSWORD AND LOCAL STORAGE
+        if (user.status == 200) {
+          if (this.checkbox) {
             this.localStoreToken(user.data.token);
           } else {
             this.sessionStoreToken(user.data.token);
