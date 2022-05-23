@@ -13,23 +13,53 @@ export default {
       oldPassword: null,
       newPassword1: null,
       newPassword2: null,
+      user: null,
+      ruolo: null,
     };
+  },
+  beforeMount() {
+    if (process.client) {
+      if (
+        localStorage.getItem("user") == null &&
+        sessionStorage.getItem("user") == null
+      ) {
+        this.user = "Account";
+        this.ruolo = "";
+        return;
+      }
+
+      if (localStorage.getItem("user") == null) {
+        const getUser = JSON.parse(atob(sessionStorage.getItem("user")));
+        this.user = getUser["email"];
+        this.ruolo = getUser["ruolo"];
+        return;
+      }
+
+      if (sessionStorage.getItem("user") == null) {
+        const getUser = JSON.parse(atob(localStorage.getItem("user")));
+        this.user = getUser["email"];
+        this.ruolo = getUser["ruolo"];
+        return;
+      }
+    }
   },
   methods: {
     logOut() {
       try {
         localStorage.removeItem("authToken");
+        localStorage.removeItem("user");
       } catch {
         console.log("No localStorage token");
       }
 
       try {
         sessionStorage.removeItem("authToken");
+        sessionStorage.removeItem("user");
       } catch {
         console.log("No sessionStorage token");
       }
 
-      window.location.href = "/";
+      this.user = "Account";
     },
     async togglePassData() {
       if (this.passwordData.visible) {
@@ -41,7 +71,7 @@ export default {
             url: `http://localhost:4000/auth/cambioPassword`,
             method: "PUT",
             headers: {
-              Authorizations: 'Bearer' + this.state.getToken(),
+              Authorizations: "Bearer" + this.state.getToken(),
             },
             data: {
               oldPassword: this.oldPassword,
@@ -49,7 +79,7 @@ export default {
             },
           });
 
-          if(changeP.status ==200){
+          if (changeP.status == 200) {
             console.log("Password Changed");
           }
         } catch (err) {
@@ -62,13 +92,16 @@ export default {
         this.passwordData.visible = true;
       }
     },
+    creaEvento() {
+      window.location.href = "/new/evento";
+    },
   },
 };
 </script>
 
 <template>
-  <div>
-    <h1>Account</h1>
+  <div class="pt-3">
+    <h1>{{ user }}</h1>
     <div class="myflex-col">
       <ButtonsPrimary title="Logout" @buttonClicked="logOut()" />
       <div id="cambiaPassword" v-if="passwordData.visible">
@@ -111,6 +144,12 @@ export default {
       <ButtonsPrimary
         :title="passwordData.buttonText"
         @buttonClicked="togglePassData()"
+      />
+
+      <ButtonsPrimary
+        title="Crea nuovo Evento"
+        v-if="ruolo == 'GestoreLocale'"
+        @buttonClicked="creaEvento()"
       />
     </div>
   </div>

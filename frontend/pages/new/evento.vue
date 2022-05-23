@@ -16,7 +16,6 @@ export default {
       corretto: false,
     };
   },
-  middleware: 'notClient',
   methods: {
     async creaNuovoEvento() {
       this.promise = true;

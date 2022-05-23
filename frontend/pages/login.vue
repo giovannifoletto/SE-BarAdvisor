@@ -23,15 +23,16 @@ export default {
     }
 
     if (this.$route.query.error == "auth") {
-      error.errorText = "Necessario essere autenticati per accedere a questa pagina.";
+      error.errorText =
+        "Necessario essere autenticati per accedere a questa pagina.";
       error.status = true;
     }
   },
   methods: {
     async handleLogin(event) {
       this.promise = true;
-      if (!this.user.email || !this.user.password) {
-        this.error.text = "Necessario inserire email e password.";
+      if (this.user.email == null || this.user.password == null) {
+        this.error.errorText = "Necessario inserire email e password.";
         this.error.status = true;
         return;
       }
@@ -41,14 +42,19 @@ export default {
           url: "http://localhost:4000/auth/login",
           data: this.user,
         });
-        // console.log(user);
-
-        // TO DO BETTER SAVE PASSWORD AND LOCAL STORAGE
+        console.log(user);
         if (user.status == 200) {
+          const authToken = user.data.token;
+          const userData = JSON.parse(atob(user.data.token.split(".")[1]));
+
+          console.log(userData);
+
           if (this.checkbox) {
-            this.localStoreToken(user.data.token);
+            localStorage.setItem("authToken", authToken);
+            localStorage.setItem("user", JSON.stringify(userData));
           } else {
-            this.sessionStoreToken(user.data.token);
+            sessionStorage.setItem("authToken", authToken);
+            sessionStorage.setItem("user", btoa(JSON.stringify(userData)));
           }
           this.promise = false;
           window.location.href = "/";
@@ -56,17 +62,7 @@ export default {
       } catch (err) {
         console.log(err);
         this.error.status = true;
-        this.error.errorText = err;
-      }
-    },
-    localStoreToken(token) {
-      if (process.client) {
-        localStorage.setItem("authToken", token);
-      }
-    },
-    sessionStoreToken(token) {
-      if (process.client) {
-        sessionStorage.setItem("authToken", token);
+        this.error.errorText = err.message || err;
       }
     },
   },

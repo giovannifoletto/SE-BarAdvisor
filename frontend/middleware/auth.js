@@ -1,8 +1,8 @@
-export default function({store, redirect}){
-    
-    if(!process.client) return
+export default function ({ store, redirect }) {
 
-    if(!process.env.testEnv) return
+    if (!process.client) return
 
-    if(!store.getters['user']) return redirect('/login?error=auth')
+    if (!process.env.testEnv) return
+
+    if (localStorage.getItem('authToken') == null && sessionStorage.getItem('authToken') == null) return redirect('/login?error=auth')
 }
