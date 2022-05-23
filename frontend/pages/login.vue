@@ -42,7 +42,7 @@ export default {
           url: "http://localhost:4000/auth/login",
           data: this.user,
         });
-        console.log(user);
+        // console.log(user);
         if (user.status == 200) {
           const authToken = user.data.token;
           const userData = JSON.parse(atob(user.data.token.split(".")[1]));

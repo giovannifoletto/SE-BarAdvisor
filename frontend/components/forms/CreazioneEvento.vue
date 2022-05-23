@@ -22,9 +22,15 @@ export default {
       this.promise = true;
 
       try {
+
+          const auth = this.getAuth();
+
         const evento = this.$axios({
           url: `${baseUrl}/eventi`,
           method: "POST",
+          headers: {
+              'Authorization': auth,
+          },
           data: this.nuovoEvento,
         });
 
@@ -42,6 +48,10 @@ export default {
       }
     },
   },
+  getAuth(){
+      if(localStorage.getItem('user') == null) return JSON.parse(atob((sessionStorage.getItem('user'))));
+      if(sessionStorage.getItem('user') == null) return JSON.parse(atob((localStorage.getItem('user'))));
+  }
 };
 </script>
 
