@@ -9,7 +9,7 @@ const invioEmail = require('./invioEmail')
 
 exports.getUtenti = async (req, res) => {
     try {
-        // query nel database per prendere tutti gli utenti (e popolare il campo 'locale' dalla tabella 'Locale')
+        // query nel database per prendere tutti gli utenti (e popolare il campo 'locale' dalla tabella 'Locale') 
         const utenti = await Utente.find().populate('locale', 'nome')
 
         res.status(200).json({ success: true, utenti: utenti })
