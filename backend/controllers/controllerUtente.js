@@ -114,7 +114,6 @@ exports.loginUtente = async (req, res) => {
         // controllo la password
         const passwordCorretta = await utente.checkPassword(password)
 
-        // se sbagliata, ritorno un errore
         if (!passwordCorretta)
             return res.status(400).json({ success: false, message: "Password incorretta" })
         
@@ -159,7 +158,7 @@ exports.passwordDimenticata = async (req, res) => {
         user.tokenRecuperoPassword = crypto.createHash('sha256').update(resetToken).digest('hex')
 
         // impostiamo un tempo massimo per eseguire la procedura di reset della password
-        user.scadenzaRecuperoPassword = Date.now() + 10 * 60 * 1000 //10 minuti
+        user.scadenzaRecuperoPassword = Date.now() + 10 * 60 * 1000  //10 minuti
 
         await user.save()
 
