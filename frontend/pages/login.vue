@@ -13,10 +13,23 @@ export default {
         status: false,
       },
       checkbox: false,
+      promise: false,
     };
+  },
+  beforeCreate() {
+    if (this.$route.query.error == "wrongRole") {
+      error.errorText = "Non si dispone dei necessari privilegi di sicurezza.";
+      error.status = true;
+    }
+
+    if (this.$route.query.error == "auth") {
+      error.errorText = "Necessario essere autenticati per accedere a questa pagina.";
+      error.status = true;
+    }
   },
   methods: {
     async handleLogin(event) {
+      this.promise = true;
       if (!this.user.email || !this.user.password) {
         this.error.text = "Necessario inserire email e password.";
         this.error.status = true;
@@ -25,18 +38,19 @@ export default {
       try {
         const user = await this.$axios({
           method: "post",
-          url: "auth/login",
+          url: "http://localhost:4000/auth/login",
           data: this.user,
         });
         // console.log(user);
-        if (user.success) {
-          if (checkbox) {
+
+        // TO DO BETTER SAVE PASSWORD AND LOCAL STORAGE
+        if (user.status == 200) {
+          if (this.checkbox) {
             this.localStoreToken(user.data.token);
           } else {
             this.sessionStoreToken(user.data.token);
           }
-          console.log("Success");
-
+          this.promise = false;
           window.location.href = "/";
         }
       } catch (err) {
@@ -63,7 +77,7 @@ export default {
 <template>
   <main>
     <ErrorDiv
-      :errorText=error.errorText
+      :errorText="error.errorText"
       v-if="error.status"
       @dismissError="error.status = !error.status"
     />
@@ -119,6 +133,9 @@ export default {
           <ButtonsSecondary title="Crea Nuovo Account" />
         </NuxtLink>
         <div>
+          <Loader v-if="promise" dim="4" />
+          <div class="py-1"></div>
+
           <ButtonsPrimary title="Login" @buttonClicked="handleLogin($event)" />
         </div>
       </div>

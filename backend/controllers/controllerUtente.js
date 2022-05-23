@@ -1,8 +1,11 @@
 const jwt = require('jsonwebtoken')
 const config = require('../config')
+const crypto = require('crypto')
 
 const Utente = require('../models/Utente')
 const Locale = require('../models/Locale')
+
+const invioEmail = require('./invioEmail')
 
 exports.getUtenti = async (req, res) => {
     try {
@@ -117,7 +120,7 @@ exports.loginUtente = async (req, res) => {
         
         // se tutto va bene, creo il token aggiungendo i vari campi utili
         const token = jwt.sign({
-            _id: utente._id,
+            id: utente._id,
             email: utente.email,
             ruolo: utente.ruolo,
             locale: utente.locale || ""
@@ -132,5 +135,134 @@ exports.loginUtente = async (req, res) => {
         
     } catch (err) {
         res.status(500).json({ success: false, error: err.message })
+    }
+}
+
+exports.passwordDimenticata = async (req, res) => {
+    const { email } = req.body
+
+    // controllo del contenuto ricevuto
+    if (!email)
+        return res.status(400).json({ success: false, message: 'Compilare i campi' })
+
+    try {
+        // controllo se l'utente esiste
+        const user = await Utente.findOne({ email: email })
+
+        if (!user) {
+            return res.status(400).json({ success: false, message: 'Utente inesistente' })
+        }
+
+        // creazione di un token random che salviamo sull'utente corrispondente nel database
+        const resetToken = crypto.randomBytes(20).toString('hex')
+
+        user.tokenRecuperoPassword = crypto.createHash('sha256').update(resetToken).digest('hex')
+
+        // impostiamo un tempo massimo per eseguire la procedura di reset della password
+        user.scadenzaRecuperoPassword = Date.now() + 10 * 60 * 1000 //10 minuti
+
+        await user.save()
+
+        // messaggio che si invia per mail con il link al form di recupero
+        const resetURL = `http://localhost:${config.PORT}/auth/resetpassword/${resetToken}`
+
+        const message = `
+            <h1>You have requested a password reset</h1>
+            <p>Please go to this link to reset your password</p>
+            <a href=${resetURL} clicktracking=off>${resetURL}`
+
+        try {
+            await invioEmail({
+                to: user.email,
+                subject: 'Richiesta reset password',
+                text: message
+            })
+
+            res.status(200).json({ success: true, messaggio: 'Email inviata correttamente' })
+
+        } catch (err) {
+            // se ci sono problemi nell'invio della mail, resetto i campi nel database poichè l'operazione non è andata a buon fine
+            user.tokenRecuperoPassword = undefined
+            user.scadenzaRecuperoPassword = undefined
+
+            await user.save()
+
+            res.status(500).json({ success: false, error: err.message })
+        }
+
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message })
+    }
+}
+
+exports.resetToken = async (req, res) => {
+    const { password } = req.body
+
+    // controllo del contenuto ricevuto
+    if (!password) {
+        return res.status(400).json({ success: false, message: 'Nessuna password inserita' })
+    }
+
+    // faccio l'hash del token ricevuto
+    const resetPasswordToken = crypto.createHash('sha256').update(req.params.resetToken).digest('hex')
+
+    try {
+        // controllo se esiste un utente con il token ricevuto e che non sia scaduto
+        const user = await Utente.findOne({
+            tokenRecuperoPassword: resetPasswordToken,
+            scadenzaRecuperoPassword: { $gt: Date.now() }
+        })
+
+        if (!user) {
+            return res.status(400).json({ success: false, message: 'Token incorretto o scaduto' })
+        }
+
+        // aggiorno la password e resetto i campi utilizzati per il recupero
+        user.password = password
+        user.tokenRecuperoPassword = undefined
+        user.scadenzaRecuperoPassword = undefined
+
+        await user.save()
+
+        res.status(200).json({ success: true, message: 'Password cambiata correttamente' })
+
+    } catch (err) {
+        res.status(500).json({ success: false, error: err })
+    }
+}
+
+exports.changePassword = async (req, res) => {
+    // recupero i campi dal body della richiesta
+    const {oldPassword, newPassword} = req.body
+    const userData = res.userData
+
+    // controllo la presenza dei dati
+    if (!oldPassword || !newPassword)
+       return res.status(400).json({ success: false, message: 'Compilare tutti i campi' })
+
+    try{
+        // prendo dal database l'utente loggato che sta facendo la richiesta
+        const user = await Utente.findById(userData.id) 
+
+        // se non esiste, errore
+        if(!user)
+            return res.status(400).json({success: false, message: "Utente non trovato"})
+
+        // controllo se la password attuale è corretta
+        const correctPassword = await user.checkPassword(oldPassword)
+        
+        if (!correctPassword)
+            return res.status(401).json({ success: false, message: 'Password attuale errata' })
+
+        // aggiorno la password e salvo l'utente nel database
+        user.password = newPassword
+
+        await user.save()
+
+        res.status(200).json({ success: true, message: 'Password cambiata correttamente' })
+
+    }
+    catch (err) {
+        res.status(500).json({ success: false, error: err })
     }
 }

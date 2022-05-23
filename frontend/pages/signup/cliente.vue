@@ -7,7 +7,7 @@ export default {
   data() {
     return {
       user: {
-        nomeUtente: null,
+        nome: null,
         email: null,
         password: null,
       },
@@ -16,34 +16,40 @@ export default {
         status: false,
       },
       password2: null,
+      promise: false,
     };
   },
   methods: {
     async handleRegistrazione() {
-      if (!this.user.nomeUtente || !this.user.email || !this.user.password) {
+      this.promise = true;
+      if (!this.user.nome || !this.user.email || !this.user.password) {
         this.error.status = true;
         this.error.errorText = "Tutti i campi sono necessari per continuare.";
         return;
       }
 
       if (this.user.password != this.password2) {
-        error.status = true;
-        error.text = "Le password non corrispondono, riprovare.";
+        this.error.status = true;
+        this.error.text = "Le password non corrispondono, riprovare.";
         return;
       }
 
       try {
-        const user = this.$axios({
-          url: "/auth/new/cliente",
+        const user = await this.$axios({
+          url: "http://localhost:4000/auth/new/cliente",
           method: "post",
           data: this.user,
         });
 
-        if (user.success) {
+        // console.log(user);
+
+        if (user.status == 200) {
+          this.promise = false;
           window.location.href = "/login";
         } else {
           this.error.status = true;
-          this.error.errorText = "Errore durante la comunicazione con il server, riprovare.";
+          this.error.errorText =
+            "Errore durante la comunicazione con il server, riprovare. Codice " + user.status;
           return;
         }
       } catch (err) {
@@ -66,13 +72,13 @@ export default {
 
     <form class="container">
       <div class="form-group mb-1">
-        <label for="nomeUtente">Nome utente</label>
+        <label for="nome">Nome utente</label>
         <input
           type="text"
           class="form-control"
-          id="nomeUtente"
+          id="nome"
           placeholder="Inserisci Email"
-          v-model="user.nomeUtente"
+          v-model="user.nome"
           required
         />
       </div>
@@ -109,13 +115,11 @@ export default {
       </div>
       <div class="myflex">
         <div>
+          <Loader v-if="promise" dim="4" />
+          <div class="py-1"></div>
           <ButtonsPrimary
             title="Registrati"
-            @buttonClicked="
-              {
-                handleRegistrazione();
-              }
-            "
+            @buttonClicked="handleRegistrazione()"
           />
         </div>
         <NuxtLink to="/signup">

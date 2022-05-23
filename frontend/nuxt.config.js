@@ -28,9 +28,14 @@ export default {
   plugins: [
   ],
 
-  loading: {
-    color: 'orange',
-    height: '15px'
+  middleware: ["auth"],
+
+  loading: false,
+
+  loadingIndicator: {
+    name: 'circle',
+    color: '#ff9922',
+    background: 'white'
   },
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -48,10 +53,15 @@ export default {
     '@nuxtjs/axios',
   ],
 
+  env: {
+    baseUrl: process.env.BASE_URL || '/',
+    testEnv: process.env.TEST_ENV || false,
+  },
+
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-    baseURL: '/api/v1/',
+    // baseURL: `${process.env.baseUrl}/api/v1/`,
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
