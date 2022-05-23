@@ -219,8 +219,8 @@ exports.resetToken = async (req, res) => {
 
         // aggiorno la password e resetto i campi utilizzati per il recupero
         user.password = password
-        user.recuperoPasswordToken = undefined
-        user.recuperoPasswordScadenza = undefined
+        user.tokenRecuperoPassword = undefined
+        user.scadenzaRecuperoPassword = undefined
 
         await user.save()
 

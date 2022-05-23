@@ -15,9 +15,6 @@ const eventoSchema = new mongoose.Schema(
     dataInizio: {
         type: Date,
         required: true
-    },
-    partecipanti: {
-        type: Number
     }
     },
     {

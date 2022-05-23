@@ -19,11 +19,7 @@ const schemaLocale = new mongoose.Schema({
     descrizione: {
        type: String
     },
-    prossimiEventi: {
-        type: [mongoose.Types.ObjectId],
-        ref: 'Evento'
-    },
-    eventiPassati: {
+    eventi: {
         type: [mongoose.Types.ObjectId],
         ref: 'Evento'
     }

@@ -19,24 +19,27 @@ exports.getAllEventi = async (req, res) => {
 
 // creare un nuovo evento
 exports.postEvento = async (req, res) => {
-    const { nome, locale, descrizione, dataInizio } = req.body
+    // recupero dati dalla richiesta e dal token
+    const { nome, descrizione, dataInizio } = req.body
+    const userData = res.userData
 
-    if (!nome || !locale || !dataInizio)
-        return res.status(400).json({ success: false, message: 'Fornire tutti i campi' })
+    if (!nome || !dataInizio)
+        return res.status(400).json({ success: false, message: 'Compilare tutti i campi' })
 
     try{
+        // creazione dell'evento
         const evento = new Evento({
             nome: nome,
-            locale: locale,
+            locale: userData.locale,
             descrizione: descrizione,
             dataInizio: Date.parse(dataInizio)
         })
 
         const newEvent = await evento.save()
 
-        const localeOrganizzatore = await Locale.findById(locale)
+        const localeOrganizzatore = await Locale.findById(userData.locale)
 
-        // salvo l'evento nei prossimi eventi del locale
+        // salvo l'evento negi eventi del locale
         localeOrganizzatore.eventi.push(evento)
 
         await localeOrganizzatore.save()
@@ -54,10 +57,11 @@ exports.getEvento = async (req, res) => {
         const evento = await Evento.findById(req.params.eventoID)
         .populate('locale', 'nome')
 
-        if (evento)
-            res.status(201).json({ success: true, evento: evento })
-        else
-            res.status(404).json({ success: false, message: 'Nessun evento trovato' })
+        if (!evento)
+            return res.status(404).json({ success: false, message: 'Nessun evento trovato' })
+        
+        res.status(201).json({ success: true, evento: evento })
+        
     }
     catch (err) {
         res.status(500).json({ success: false, error: err.message })
