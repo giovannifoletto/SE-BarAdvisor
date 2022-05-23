@@ -232,33 +232,32 @@ exports.resetToken = async (req, res) => {
 }
 
 exports.changePassword = async (req, res) => {
+    // recupero i campi dal body della richiesta
     const {oldPassword, newPassword} = req.body
-    const userData = req.userData
+    const userData = res.userData
 
+    // controllo la presenza dei dati
+    if (!oldPassword || !newPassword)
+       return res.status(400).json({ success: false, message: 'Compilare tutti i campi' })
 
-    if (!oldPassword) {
-       return res.status(400).json({ success: false, message: 'Inserire la vecchia password' })
-    }
     try{
+        // prendo dal database l'utente loggato che sta facendo la richiesta
         const user = await Utente.findById(userData.id) 
 
+        // se non esiste, errore
         if(!user)
-        {
             return res.status(400).json({success: false, message: "Utente non trovato"})
-        }
 
+        // controllo se la password attuale è corretta
         const correctPassword = await user.checkPassword(oldPassword)
         
-        if (!correctPassword) {
-            return res.status(401).json({ success: false, message: 'Password errata' })
-        }
-        if (!newPassword){
-            return res.status(400).json({success: false, message: "Inserire la nuova password"})
-        }
-        
-        user.password=newPassword
+        if (!correctPassword)
+            return res.status(401).json({ success: false, message: 'Password attuale errata' })
 
-        await user.save
+        // aggiorno la password e salvo l'utente nel database
+        user.password = newPassword
+
+        await user.save()
 
         res.status(200).json({ success: true, message: 'Password cambiata correttamente' })
 
