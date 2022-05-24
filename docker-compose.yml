@@ -14,13 +14,13 @@ services:
       - EMAIL_USERNAME=nodeproject@outlook.com
       - EMAIL_PASSWORD=progettonode2022
       - EMAIL_FROM=nodeproject@outlook.com
-  # frontend:
-  #   build: frontend/
-  #   environment:
-  #     - NUXT_ENV_BASE_URL=http://backend/
-  #   links:
-  #     - backend
-  #   ports:
-  #     - "80:80"
+  frontend:
+    build: frontend/
+    environment:
+      - NUXT_ENV_BASE_URL=http://backend/
+    links:
+      - backend
+    ports:
+      - "80:80"
   mongo:
     image: mongo
