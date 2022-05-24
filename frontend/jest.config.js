@@ -19,5 +19,5 @@ module.exports = {
     '<rootDir>/pages/**/*.vue'
   ],
   testEnvironment: 'jsdom',
-  preset: "jest-playwright-preset",
+  testMatch: ["**/tests/**/*.(utest|uspec).[jt]s?(x)", "**/?(*.)+(uspec|utest).[jt]s?(x)" ]
 }
