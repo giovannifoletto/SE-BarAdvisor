@@ -37,13 +37,11 @@ exports.postEvento = async (req, res) => {
         })
 
         const newEvent = await evento.save()
+        
+        // salvo l'evento negli eventi del locale
+        res.locale.eventi.push(evento)
 
-        const localeOrganizzatore = await Locale.findById(userData.locale)
-
-        // salvo l'evento negi eventi del locale
-        localeOrganizzatore.eventi.push(evento)
-
-        await localeOrganizzatore.save()
+        await res.locale.save()
 
         res.status(201).json({ success: true, evento: newEvent })
 
@@ -114,6 +112,42 @@ exports.postPrenotazione = async (req, res) => {
             res.status(200).json({ success: true, message: 'Prenotazione effettuata correttamente' })
         }
         
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message })
+    }
+}
+
+// invio notifica ai partecipanti di un evento
+exports.invioNotifica = async (req, res) => {
+    // recupero del messaggio
+    const { messaggio } = req.body
+
+    if (!messaggio)
+        return res.status(400).json({ success: false, messaggio: "Compilare tutti i campi" })
+    
+    try {
+        // recupero dell'evento in questione
+        const evento = await Evento.findById(req.params.eventoID)
+
+        if (!evento)
+            return res.status(400).json({ success: false, message: 'Evento non trovato' })
+        
+        // aggiunta dei dettagli dell'evento e del locale
+        const messaggioCompleto = messaggio + "\nRelativo all'evento: " + evento.nome
+            + "\nsvoltosi in data: " + evento.dataInizio
+            + "\nnel locale: " + res.locale.nome
+        
+        // salvataggio del messaggio nelle notifiche di tutti i partecipanti
+        evento.prenotazioni.forEach(async (ev) => {
+            const utente = await Utente.findById(String(ev))
+            if (utente)
+            {
+                utente.notifiche.push(messaggioCompleto)
+                await utente.save()
+            }
+        })
+
+        res.status(200).json({ success: true, message: 'Notifica inviata correttamente' })
     } catch (err) {
         res.status(500).json({ success: false, error: err.message })
     }

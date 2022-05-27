@@ -17,8 +17,10 @@ exports.checkOwnerLocale = async (req, res, next) => {
 
         // controllo incrociato dalla parte del locale con il suo campo Gestore Locale
         if (! (String(localeOrganizzatore.gestore) === userData.id))
-            return res.status(400).json({ success: false, message: 'Questo utente non è autorizzato a creare questo evento' })
-
+            return res.status(400).json({ success: false, message: 'Questo utente non è autorizzato per questa operazione' })
+        
+        res.locale = localeOrganizzatore
+        
         next()
 
     } catch (err) {

@@ -31,6 +31,9 @@ const schemaUtente = new mongoose.Schema({
         type: [mongoose.Types.ObjectId],
         ref: 'Evento'
     },
+    notifiche: {
+        type: [String]
+    },
     tokenRecuperoPassword: String,
     scadenzaRecuperoPassword: String
     },
