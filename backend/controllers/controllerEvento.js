@@ -1,5 +1,6 @@
 const Evento = require('../models/Evento')
 const Locale = require('../models/Locale')
+const Utente = require('../models/Utente')
 
 // recuperare tutti gli eventi
 exports.getAllEventi = async (req, res) => {
@@ -64,6 +65,56 @@ exports.getEvento = async (req, res) => {
         
     }
     catch (err) {
+        res.status(500).json({ success: false, error: err.message })
+    }
+}
+
+// aggiungere/rimuovere una prenotazione di un Utente ad un evento specifico
+exports.postPrenotazione = async (req, res) => {
+    // recupero dei dati di login
+    const userData = res.userData
+
+    try {
+        // recupero gli oggetti dal database
+        const evento = await Evento.findById(req.params.eventoID)
+        const utente = await Utente.findById(userData.id)
+
+        if (!evento || !utente)
+            return res.status(500).json({ success: false, message: 'Evento o Utente insesistente' })
+        
+        // se l'evento a cui si sta provando a prenotare è scaduto, errore
+        if (Date.parse(evento.dataInizio) < Date.now())
+            return res.status(400).json({ success: false, message: 'Impossibile prenotarsi a questo evento (scaduto)' })
+        
+        // controllo se l'utente è già prenotato all'evento
+        let prenotazioneEffettuata = false
+        evento.prenotazioni.forEach((ev) => {
+            if (String(ev) === userData.id)
+                prenotazioneEffettuata = true
+        })
+
+        // se non lo è, lo aggiungo alle prenotazioni dell'evento e aggiungo l'evento alle prenotazioni dell'utente
+        if (prenotazioneEffettuata) {
+            evento.prenotazioni = evento.prenotazioni.filter(ev => String(ev) !== userData.id)
+            utente.prenotazioni = utente.prenotazioni.filter(ev => String(ev) !== String(evento._id))
+            
+            await evento.save()
+            await utente.save()
+
+            return res.status(200).json({ success: true, message: 'Prenotazione cancellata correttamente' })
+        }
+        // altrimenti, tolgo
+        else {
+            evento.prenotazioni.push(userData.id)
+            utente.prenotazioni.push(evento._id)
+
+            await evento.save()
+            await utente.save()
+    
+            res.status(200).json({ success: true, message: 'Prenotazione effettuata correttamente' })
+        }
+        
+    } catch (err) {
         res.status(500).json({ success: false, error: err.message })
     }
 }
