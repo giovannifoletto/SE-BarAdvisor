@@ -7,10 +7,15 @@ const checkAuth = require('../middleware/check-auth')
 const checkRole = require('../middleware/check-role')
 
 // restituisce tutti gli eventi
-router.get('/',controllerEvento.getAllEventi)
+router.get('/', controllerEvento.getAllEventi)
 
-// aggiungere/togliere prenotazione ad un evento
-router.post('/:eventoID/prenotazione', checkAuth, controllerEvento.postPrenotazione)
+// restituisce un evento specifico
+router.get('/:eventoID', controllerEvento.getEvento)
 
+// aggiungere/ prenotazione ad un evento
+router.post('/:eventoID/prenotazioni', checkAuth, controllerEvento.postPrenotazione)
+
+// togliere prenotazione ad un evento
+router.delete('/:eventoID/prenotazioni', checkAuth, controllerEvento.deletePrenotazione)
 
 module.exports = router
