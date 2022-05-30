@@ -29,18 +29,6 @@ exports.checkOwnerLocale = async (req, res, next) => {
     }
 },
 
-exports.checkRuolo = (ruolo) => { 
-    return (req, res, next) => {
-        try{
-            if(res.userData.ruolo!==ruolo)
-                return res.status(403).json({success: false, message: "Non hai l'autorizzazione a svolgere questa azione"})
-        } catch(err){
-            res.status(500).json({ success: false, error: err.message })
-        }
-        next()
-    }
-},
-
 // verifico che durante la cancellazione di una recensione, l'utente sia colui che ha creato tale recensione o un admin
 exports.cancellaRecensione = async(req, res,next) => {
     const userData = res.userData
