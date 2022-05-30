@@ -1,6 +1,8 @@
+const { json } = require('express/lib/response')
 const mongoose = require('mongoose')
 
 const Locale = require('../models/Locale')
+const Recensione = require('../models/Recensione')
 
 // controllare se, durante la creazione di un nuovo evento, l'utente che sta facendo l'operazione è il proprietario del locale che organizza l'evento
 exports.checkOwnerLocale = async (req, res, next) => {
@@ -23,6 +25,34 @@ exports.checkOwnerLocale = async (req, res, next) => {
         next()
 
     } catch (err) {
+        res.status(500).json({ success: false, error: err.message })
+    }
+},
+
+exports.checkRuolo = (ruolo) => { 
+    return (req, res, next) => {
+        try{
+            if(res.userData.ruolo!==ruolo)
+                return res.status(403).json({success: false, message: "Non hai l'autorizzazione a svolgere questa azione"})
+        } catch(err){
+            res.status(500).json({ success: false, error: err.message })
+        }
+        next()
+    }
+},
+
+// verifico che durante la cancellazione di una recensione, l'utente sia colui che ha creato tale recensione o un admin
+exports.cancellaRecensione = async(req, res,next) => {
+    const userData = res.userData
+    const dataRecensione = req.params.recensioneID
+
+    try {
+        if (!(dataRecensione.utenteID==userData.utenteID) && !(userData.ruolo =='Admin')) {
+            return res.status(403).json({ success: false, message: 'Questo utente non è autorizzato a svolgere questa azione' })
+    }
+    next()
+
+    } catch (err){
         res.status(500).json({ success: false, error: err.message })
     }
 }
