@@ -77,7 +77,7 @@ export default {
           type="text"
           class="form-control"
           id="nome"
-          placeholder="Inserisci Email"
+          placeholder="Inserisci Nome Utente"
           v-model="user.nome"
           required
         />

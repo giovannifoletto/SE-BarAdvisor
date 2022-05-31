@@ -3,9 +3,14 @@ const router = express.Router()
 
 const controllerEvento = require('../controllers/controllerEvento')
 
-//restituisce tutti gli eventi
+const checkAuth = require('../middleware/check-auth')
+const checkRole = require('../middleware/check-role')
+
+// restituisce tutti gli eventi
 router.get('/',controllerEvento.getAllEventi)
 
+// aggiungere/togliere prenotazione ad un evento
+router.post('/:eventoID/prenotazione', checkAuth, controllerEvento.postPrenotazione)
 
 
 module.exports = router
