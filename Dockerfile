@@ -13,16 +13,22 @@ COPY /frontend .
 
 RUN npm run generate
 
-FROM node:17
+FROM node:16
 
 WORKDIR /app
+
 COPY /backend/package.json .
+
 COPY /backend/package-lock.json .
+
 RUN npm ci
 
-COPY --from=builder /front/dist/ /static
+EXPOSE 80
 
-EXPOSE 4000
+ENV PORT=80
 
 COPY /backend .
+
+COPY --from=builder /front/dist/ ./static
+
 CMD [ "npm", "run", "start"]
