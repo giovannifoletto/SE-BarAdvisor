@@ -17,6 +17,6 @@ router.post('/:localeID/eventi', checkAuth, checkRole.checkOwnerLocale, controll
 router.get('/:localeID/eventi/:eventoID', controllerEventi.getEvento)
 
 // invio di una notifica a tutti i partecipanti ad un evento
-router.post('/:localeID/eventi/:eventoID/notifica', checkAuth, checkRole.checkOwnerLocale, controllerEventi.invioNotifica)
+router.post('/:localeID/eventi/:eventoID/notifiche', checkAuth, checkRole.checkOwnerLocale, controllerEventi.invioNotifica)
 
 module.exports = router
