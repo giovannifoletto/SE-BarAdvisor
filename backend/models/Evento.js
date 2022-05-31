@@ -15,6 +15,10 @@ const eventoSchema = new mongoose.Schema(
     dataInizio: {
         type: Date,
         required: true
+    },
+    prenotazioni: {
+        type: [mongoose.Types.ObjectId],
+        ref: 'Utente'
     }
     },
     {

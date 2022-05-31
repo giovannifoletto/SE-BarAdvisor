@@ -27,6 +27,10 @@ const schemaUtente = new mongoose.Schema({
         type: mongoose.Types.ObjectId,
         ref: 'Locale'
     },
+    prenotazioni: {
+        type: [mongoose.Types.ObjectId],
+        ref: 'Evento'
+    },
     tokenRecuperoPassword: String,
     scadenzaRecuperoPassword: String
     },
