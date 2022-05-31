@@ -39,7 +39,7 @@ export default {
   methods: {
     async handlePasswordRecovery() {
       const user = this.$axios({
-        url: `http://localhost:4000/auth/resetpassword/${this.dataUrl}`,
+        url: `/auth/resetpassword/${this.dataUrl}`,
         method: "PUT",
         data: { password: this.password },
       });

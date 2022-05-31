@@ -21,6 +21,7 @@ app.use('/auth', authRouter)
 app.use('/locali', localsRouter)
 app.use('/eventi', eventsRouter)
 
+app.use('/', express.static('static'))
 
 app.listen(config.PORT, () => {
   console.log(`BarAdvisor-API listening on ${config.PORT}`)
