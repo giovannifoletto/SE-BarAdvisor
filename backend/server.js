@@ -17,9 +17,9 @@ app.use(express.json())
 app.use(cors())
 
 // gestione delle routes
-app.use('/auth', authRouter)
-app.use('/locali', localsRouter)
-app.use('/eventi', eventsRouter)
+app.use(`/api/${config.API_VERSION}/auth`, authRouter)
+app.use(`/api/${config.API_VERSION}/locali`, localsRouter)
+app.use(`/api/${config.API_VERSION}/eventi`, eventsRouter)
 
 app.use('/', express.static('static'))
 
