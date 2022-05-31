@@ -14,7 +14,7 @@ export default {
         };
     },
     async fetch() {
-        this.baEvents = await this.$axios.$get("http://localhost:4000/eventi");
+        this.baEvents = await this.$axios.$get("/eventi");
         if(this.baEvents.lenght == 0){
           error.status = true;
           errorText = "Non sono ancora presenti eventi, riprovare più tardi";
