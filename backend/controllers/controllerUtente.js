@@ -233,7 +233,7 @@ exports.resetToken = async (req, res) => {
 exports.changePassword = async (req, res) => {
     // recupero i campi dal body della richiesta
     const {oldPassword, newPassword} = req.body
-    const userData = res.userData
+    const userData = req.userData
 
     // controllo la presenza dei dati
     if (!oldPassword || !newPassword)

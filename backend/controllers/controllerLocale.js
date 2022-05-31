@@ -1,10 +1,13 @@
 const Locale = require('../models/Locale')
+const Recensione = require('../models/Recensione')
 
+// Ritorna un locale
 exports.getLocale = async (req, res) => {
     try {
         const locale = await Locale.findById(req.params.localeID)
         .populate('gestore', 'nome')
         .populate('eventi', 'nome dataInizio')
+        .populate('recensioni', 'commento votazione')
 
         if (! locale)
             return res.status(404).json({ success: false, message: 'Locale non trovato' })
