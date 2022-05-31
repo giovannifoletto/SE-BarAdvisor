@@ -1,4 +1,5 @@
 const Locale = require('../models/Locale')
+const Recensione = require('../models/Recensione')
 
 // Ritorna un locale
 exports.getLocale = async (req, res) => {
@@ -6,6 +7,7 @@ exports.getLocale = async (req, res) => {
         const locale = await Locale.findById(req.params.localeID)
         .populate('gestore', 'nome')
         .populate('eventi', 'nome dataInizio')
+        .populate('recensioni', 'commento votazione')
 
         if (! locale)
             return res.status(404).json({ success: false, message: 'Locale non trovato' })
@@ -37,23 +39,5 @@ exports.getLocale = async (req, res) => {
 
     } catch (err) {
         res.status(500).json({ success: false, error: err.message })
-    }
-}
-
-// Ritorna tutte le recensioni del locale
-exports.getAllRecensioni = async (req, res) => {
-    try {
-        const locale = await Locale.findById(req.params.localeID)
-
-        if (! locale)
-            return res.status(400).json({ success: false, message: 'Locale non valido' })
-        
-        const recensioni = await Recensione.find()
-        .where('localeId').equals(req.params.localeID)
-
-        res.status(200).json({ success: true, recensioni: recensioni })
-
-    } catch (err) {
-        res.status(500).json({ success: false, error: err })
     }
 }

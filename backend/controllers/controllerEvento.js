@@ -21,7 +21,7 @@ exports.getAllEventi = async (req, res) => {
 exports.postEvento = async (req, res) => {
     // recupero dati dalla richiesta e dal token
     const { nome, descrizione, dataInizio } = req.body
-    const userData = res.userData
+    const userData = req.userData
 
     if (!nome || !dataInizio)
         return res.status(400).json({ success: false, message: 'Compilare tutti i campi' })

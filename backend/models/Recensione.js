@@ -1,12 +1,13 @@
 const mongoose = require('mongoose')
 
-const recensioneSchema = new mongoose.Schema({
-    utenteID: {
+const schemaRecensione = new mongoose.Schema(
+    {
+    utente: {
         type: mongoose.Types.ObjectId,
         ref: 'Utente',
         required: true
     },
-    localeID: {
+    locale: {
         type: mongoose.Types.ObjectId,
         ref: 'Locale',
         required: true
@@ -24,4 +25,4 @@ const recensioneSchema = new mongoose.Schema({
     }
 )
 
-module.exports = mongoose.model('Recensione', recensioneSchema)
+module.exports = mongoose.model('Recensione', schemaRecensione)
