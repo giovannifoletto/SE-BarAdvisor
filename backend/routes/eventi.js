@@ -4,7 +4,6 @@ const router = express.Router()
 const controllerEvento = require('../controllers/controllerEvento')
 
 const checkAuth = require('../middleware/check-auth')
-const checkRole = require('../middleware/check-role')
 
 // restituisce tutti gli eventi
 router.get('/',controllerEvento.getAllEventi)
