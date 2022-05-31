@@ -41,7 +41,7 @@ export default {
 
       try {
         const fet = await this.$axios({
-          url: "http://localhost:4000/auth/new/gestorelocale",
+          url: "/auth/new/gestorelocale",
           method: "post",
           data: this.user,
         });

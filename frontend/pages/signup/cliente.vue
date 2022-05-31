@@ -36,7 +36,7 @@ export default {
 
       try {
         const user = await this.$axios({
-          url: "http://localhost:4000/auth/new/cliente",
+          url: "/auth/new/cliente",
           method: "post",
           data: this.user,
         });

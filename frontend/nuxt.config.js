@@ -59,10 +59,22 @@ export default {
   },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
+  // axios: {
+  //   // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
+  //   // baseURL: `${process.env.baseUrl}/api/v1/`,
+  // },
+
   axios: {
-    // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-    // baseURL: `${process.env.baseUrl}/api/v1/`,
+    // proxy: true,
+    baseUrl: 'https://se-baradvisor.herokuapp.com/api/v1',
+    headers: {'Access-Control-Allow-Origin': '*'}
   },
+  
+  // proxy: {
+  //   host: 'localhost',
+  //   port: 3000
+  //   // '/': { target: '/', pathRewrite: {'^/api/v1': ''}, changeOrigin: true }
+  // },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
