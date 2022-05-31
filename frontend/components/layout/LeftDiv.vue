@@ -68,7 +68,7 @@ export default {
         // TODO: data di cambia password ?
         try {
           const changeP = this.$axios({
-            url: `http://localhost:4000/auth/cambioPassword`,
+            url: `/auth/cambioPassword`,
             method: "PUT",
             headers: {
               Authorizations: "Bearer" + this.state.getToken(),

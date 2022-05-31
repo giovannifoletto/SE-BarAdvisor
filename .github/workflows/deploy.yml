@@ -1,0 +1,40 @@
+name: Deploy on Heroku
+
+# Copiata dalla documentazione, neanche controllata.
+# Non dovrebbe funzionare per il nostro tipo di deploy, prima
+# va compilato il front e inserito nella route static di express.
+
+on:
+  push:
+    branches:
+      - main
+
+# Sarebbe da fare:
+# - deploy nello staging
+# - tesing nello staging
+# - deploy in production se lo staging funziona
+# - Smoke test 
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "se-baradvisor"
+          heroku_email: "giovanni.foletto@gmail.com"
+          branch: main
+          docker_build_args: NODE_ENV
+          usedocker: true
+        env:
+          NODE_ENV: production
+          SECRET_KEY: ${{ secrets.MY_SECRET_KEY }}
+          PORT: 80
+          DB_URL_CLUSTER: ${{ secrets.DB_URL_CLUSTER }},
+          SECRET_KEY: ${{ secrets.SECRET_KEY }},
+          EMAIL_SERVICE: ${{ secrets.EMAIL_SERVICE }},
+          EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME }},
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }},
+          EMAIL_FROM: ${{ secrets.EMAIL_FROM }} 

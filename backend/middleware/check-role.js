@@ -5,7 +5,7 @@ const Recensione = require('../models/Recensione')
 exports.checkPermessiProprietarioLocale = async (req, res, next) => {
     const userData = req.userData
 
-    // controllo se il Locale espresso nella route (sul quale si vuole postare) sia quello del Gestore che sta facendo la richiesta
+    // controllo se il Locale espresso nella route sia quello del Gestore che sta facendo la richiesta
     if (req.params.localeID !== userData.locale)
         return res.status(403).json({ success: false, message: 'Permessi mancanti per accedere alla risorsa' })
 

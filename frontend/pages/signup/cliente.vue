@@ -36,7 +36,7 @@ export default {
 
       try {
         const user = await this.$axios({
-          url: "http://localhost:4000/auth/new/cliente",
+          url: "/auth/new/cliente",
           method: "post",
           data: this.user,
         });
@@ -77,7 +77,7 @@ export default {
           type="text"
           class="form-control"
           id="nome"
-          placeholder="Inserisci Email"
+          placeholder="Inserisci Nome Utente"
           v-model="user.nome"
           required
         />

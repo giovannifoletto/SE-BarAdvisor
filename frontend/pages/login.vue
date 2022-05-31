@@ -39,7 +39,7 @@ export default {
       try {
         const user = await this.$axios({
           method: "post",
-          url: "http://localhost:4000/auth/login",
+          url: "/auth/login",
           data: this.user,
         });
         // console.log(user);
