@@ -1,0 +1,10 @@
+.env
+.editorconfig
+node_modules
+.nuxt
+.dist
+Dockerfile
+
+# Remove tesing
+# jest.config.js
+# test/
