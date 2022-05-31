@@ -23,6 +23,7 @@ lib-cov
 
 # Coverage directory used by tools like istanbul
 coverage
+playwright-report
 
 # nyc test coverage
 .nyc_output
@@ -98,3 +99,7 @@ sw.*
 .nuxt
 
 .editorconfig
+/test-results/
+/playwright-report/
+/playwright/.cache/
+state.json
