@@ -22,7 +22,7 @@ exports.getAllEventi = async (req, res) => {
 exports.postEvento = async (req, res) => {
     // recupero dati dalla richiesta e dal token
     const { nome, descrizione, dataInizio } = req.body
-    const userData = res.userData
+    const userData = req.userData
 
     if (!nome || !dataInizio)
         return res.status(400).json({ success: false, message: 'Compilare tutti i campi' })
@@ -67,7 +67,6 @@ exports.getEvento = async (req, res) => {
     }
 }
 
-// aggiungere una prenotazione di un Utente ad un evento specifico
 exports.postPrenotazione = async (req, res) => {
     // recupero dei dati di login
     const userData = res.userData
@@ -86,22 +85,14 @@ exports.postPrenotazione = async (req, res) => {
         
         // controllo se l'utente è già prenotato all'evento
         let prenotazioneEffettuata = false
-        evento.prenotazioni.forEach((ev) => {
-            if (String(ev) === userData.id)
+        evento.prenotazioni.forEach((usr) => {
+            if (String(usr) === userData.id)
                 prenotazioneEffettuata = true
         })
 
         // se non lo è, lo aggiungo alle prenotazioni dell'evento e aggiungo l'evento alle prenotazioni dell'utente
-        if (prenotazioneEffettuata) {
-            evento.prenotazioni = evento.prenotazioni.filter(ev => String(ev) !== userData.id)
-            utente.prenotazioni = utente.prenotazioni.filter(ev => String(ev) !== String(evento._id))
-            
-            await evento.save()
-            await utente.save()
-
-            return res.status(200).json({ success: true, message: 'Prenotazione cancellata correttamente' })
-        }
-        // altrimenti, tolgo
+        if (prenotazioneEffettuata)
+            return res.status(400).json({ success: false, message: 'Impossibile prenotarsi: risulta già effettuata' })
         else {
             evento.prenotazioni.push(userData.id)
             utente.prenotazioni.push(evento._id)
@@ -130,21 +121,17 @@ exports.deletePrenotazione = async (req, res) => {
         if (!evento || !utente)
             return res.status(500).json({ success: false, message: 'Evento o Utente insesistente' })
         
-        // se l'evento a cui si sta provando a prenotare è scaduto, errore
-        if (Date.parse(evento.dataInizio) < Date.now())
-            return res.status(400).json({ success: false, message: 'Impossibile prenotarsi a questo evento (scaduto)' })
-        
-        // controllo se l'utente è già prenotato all'evento
+        // controllo se l'utente è prenotato all'evento
         let prenotazioneEffettuata = false
         evento.prenotazioni.forEach((ev) => {
             if (String(ev) === userData.id)
                 prenotazioneEffettuata = true
         })
 
-        // se non lo è, lo aggiungo alle prenotazioni dell'evento e aggiungo l'evento alle prenotazioni dell'utente
+        // se lo è, lo tolgo dalle prenotazioni dell'evento e tolgo l'evento dalle prenotazioni dell'utente
         if (prenotazioneEffettuata) {
-            evento.prenotazioni = evento.prenotazioni.filter(ev => String(ev) !== userData.id)
-            utente.prenotazioni = utente.prenotazioni.filter(ev => String(ev) !== String(evento._id))
+            evento.prenotazioni = evento.prenotazioni.filter(usr => String(usr) !== userData.id)
+            utente.prenotazioni = utente.prenotazioni.filter(usr => String(usr) !== String(evento._id))
             
             await evento.save()
             await utente.save()
@@ -163,6 +150,7 @@ exports.deletePrenotazione = async (req, res) => {
 exports.invioNotifica = async (req, res) => {
     // recupero del messaggio
     const { messaggio } = req.body
+    const userData = req.userData
 
     if (!messaggio)
         return res.status(400).json({ success: false, messaggio: "Compilare tutti i campi" })
@@ -170,14 +158,15 @@ exports.invioNotifica = async (req, res) => {
     try {
         // recupero dell'evento in questione
         const evento = await Evento.findById(req.params.eventoID)
+        const locale = await Locale.findById(userData.locale)
 
-        if (!evento)
-            return res.status(400).json({ success: false, message: 'Evento non trovato' })
+        if (!evento || !locale)
+            return res.status(400).json({ success: false, message: 'Evento e/o locale non trovati' })
         
         // aggiunta dei dettagli dell'evento e del locale
         const messaggioCompleto = messaggio + "\nRelativo all'evento: " + evento.nome
             + "\nsvoltosi in data: " + evento.dataInizio
-            + "\nnel locale: " + res.locale.nome
+            + "\nnel locale: " + locale.nome
         
         // salvataggio del messaggio nelle notifiche di tutti i partecipanti
         evento.prenotazioni.forEach(async (ev) => {
@@ -190,6 +179,7 @@ exports.invioNotifica = async (req, res) => {
         })
 
         res.status(200).json({ success: true, message: 'Notifica inviata correttamente' })
+
     } catch (err) {
         res.status(500).json({ success: false, error: err.message })
     }
