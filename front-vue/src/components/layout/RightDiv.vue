@@ -5,7 +5,7 @@
         <router-link :to="{ name: 'home' }">
           <div class="flex">
             <div class="icon">
-              <IconsHome />
+              <Home />
             </div>
             <div>
               <h3>Home</h3>
@@ -17,7 +17,7 @@
         <router-link :to="{ name: 'login' }" v-if="!$store.state.token">
           <div class="flex">
             <div class="icon">
-              <IconsLogin />
+              <Login />
             </div>
             <div>
               <h3>Login</h3>
@@ -40,7 +40,12 @@
 </template>
 
 <script>
+import Home from '@/components/icons/Home'
+import Login from '@/components/icons/Login'
 export default {
+  methods: {
+    Home, Login
+  },
   methods:{
     logout(){
       this.$store.commit('resetToken')
