@@ -49,12 +49,14 @@ export default {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: this.email })
             }
-            const res = await fetch('http://localhost:4000/api/v1/auth/passworddimenticata', opzioneRichiesta)
-
-            const data = await res.json()
-
-            console.log(data)
-
+            try {
+              const res = await fetch('http://localhost:4000/api/v1/auth/passworddimenticata', opzioneRichiesta)
+  
+              const data = await res.json()
+              
+            } catch (error) {
+              console.log(error)
+            }
         }
     }
 }

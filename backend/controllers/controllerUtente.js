@@ -132,7 +132,7 @@ exports.loginUtente = async (req, res) => {
             expiresIn: "1 day"
         })
 
-        res.status(200).json({ success: true, token: token, email: email })
+        res.status(200).json({ success: true, token: token })
         
     } catch (err) {
         res.status(500).json({ success: false, error: err.message })

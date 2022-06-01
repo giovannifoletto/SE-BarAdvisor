@@ -7,7 +7,7 @@
           type="password"
           class="form-control"
           placeholder="Inserisci Password"
-          v-model="email"
+          v-model="password"
           required
         />
       </div>
@@ -18,7 +18,7 @@
           type="password"
           class="form-control"
           placeholder="Conferma Password"
-          v-model="confermaEmail"
+          v-model="confermaPassword"
           required
         />
       </div>
@@ -44,13 +44,29 @@ export default {
   },
   data() {
     return {
-      email: "",
-      confermaEmail: "",
+      password: "",
+      confermaPassword: "",
     };
   },
   methods: {
-    resetPassword() {
-      console.log("Reset Password");
+    async resetPassword() {
+      const opzioneRichiesta = {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: this.password })
+      }
+
+      try {
+        const res = await fetch('http://localhost:4000/api/v1/auth/resetpassword/' + this.passwordToken, opzioneRichiesta)
+        const data = await res.json()  
+        
+        if (data.success)
+          this.$router.push({ name: 'login' })
+          
+      } catch (error) {
+        console.log(error)
+      }
+
     },
   },
 };
