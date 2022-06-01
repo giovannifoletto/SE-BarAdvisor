@@ -1,6 +1,11 @@
 <script>
+import Account from '@/components/icons/Account'
+
 export default {
-    props: ["nome", "locale", "descrizione", "dataInizio"]
+    props: ["nome", "locale", "descrizione", "dataInizio"],
+	components: {
+		Account
+	}
 }
 </script>
 
@@ -9,11 +14,11 @@ export default {
     <div class="title pt-2">
       <div class="account">
         <div>
-          <IconsAccount />
+          <Account />
         </div>
-        <NuxtLink :to="/locale/ + {locale}" class="px-3">
+        <router-link to="/" class="px-3">
           <h3>{{ nome }}</h3>
-        </NuxtLink>
+        </router-link>
       </div>
     </div>
     <div class="under">

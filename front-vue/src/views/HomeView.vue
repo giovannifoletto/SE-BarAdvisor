@@ -14,11 +14,11 @@
 
 <script>
 import PostEvento from "@/components/PostEvento";
+
 export default {
   name: "HomeView",
   components: {
-    PostEvento,
-    EventoView,
+    PostEvento
   },
   data() {
     return {
