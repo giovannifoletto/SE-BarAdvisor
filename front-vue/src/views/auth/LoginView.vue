@@ -84,7 +84,7 @@ export default {
 
         if (data.success) {
 
-          const user = atob(data.token.split('.')[1])
+          const user = JSON.parse(atob(data.token.split('.')[1]))
 
           this.$store.commit('setToken', { token: data.token, user: user })
           this.$router.push('/')

@@ -26,11 +26,11 @@
         </router-link>
       </li>
       <li v-if="$store.state.token">
-        <div class="flex">
+        <div class="flex" @click="logout">
           <div class="icon">
             <IconsLogin />
           </div>
-          <div @click="logout">
+          <div>
             <h3>Logout</h3>
           </div>
         </div>

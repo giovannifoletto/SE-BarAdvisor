@@ -4,7 +4,7 @@ const store = createStore({
   state() {
     return {
       token: null,
-      user: null
+      user: {}
     }
   },
   mutations: {
