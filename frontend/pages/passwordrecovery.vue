@@ -19,7 +19,7 @@ export default {
 
       try {
         const user = this.$axios({
-          url: "http://localhost:4000/auth/passworddimenticata",
+          url: "/auth/passworddimenticata",
           method: "post",
           data: { email: this.email },
         });

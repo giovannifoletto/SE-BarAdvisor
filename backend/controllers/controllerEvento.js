@@ -7,6 +7,7 @@ exports.getAllEventi = async (req, res) => {
     try{
         const eventi = await Evento.find()
         .populate('locale', 'nome')
+        .populate('prenotazioni', 'email')
 
         if (eventi.length >= 0)
             res.status(200).json({ success: true, eventi: eventi })
@@ -28,6 +29,11 @@ exports.postEvento = async (req, res) => {
         return res.status(400).json({ success: false, message: 'Compilare tutti i campi' })
 
     try{
+        const locale = await Locale.findById(userData.locale)
+
+        if (!locale)
+            return res.status(400).json({ success: false, message: 'Locale inesistente' })
+        
         // creazione dell'evento
         const evento = new Evento({
             nome: nome,
@@ -36,14 +42,14 @@ exports.postEvento = async (req, res) => {
             dataInizio: Date.parse(dataInizio)
         })
 
-        const newEvent = await evento.save()
+        await evento.save()
         
         // salvo l'evento negli eventi del locale
-        res.locale.eventi.push(evento)
+        locale.eventi.push(evento)
 
-        await res.locale.save()
+        await locale.save()
 
-        res.status(201).json({ success: true, evento: newEvent })
+        res.status(201).json({ success: true, message: 'Nuovo evento creato correttamente' })
 
     } catch(err){
         res.status(500).json({ success: false, error: err.message })
@@ -55,6 +61,7 @@ exports.getEvento = async (req, res) => {
     try{
         const evento = await Evento.findById(req.params.eventoID)
         .populate('locale', 'nome')
+        .populate('prenotazioni', 'email')
 
         if (!evento)
             return res.status(404).json({ success: false, message: 'Nessun evento trovato' })
@@ -69,7 +76,7 @@ exports.getEvento = async (req, res) => {
 
 exports.postPrenotazione = async (req, res) => {
     // recupero dei dati di login
-    const userData = res.userData
+    const userData = req.userData
 
     try {
         // recupero gli oggetti dal database
@@ -111,7 +118,7 @@ exports.postPrenotazione = async (req, res) => {
 // rimuovere una prenotazione di un Utente ad un evento specifico
 exports.deletePrenotazione = async (req, res) => {
     // recupero dei dati di login
-    const userData = res.userData
+    const userData = req.userData
 
     try {
         // recupero gli oggetti dal database
@@ -123,8 +130,8 @@ exports.deletePrenotazione = async (req, res) => {
         
         // controllo se l'utente è prenotato all'evento
         let prenotazioneEffettuata = false
-        evento.prenotazioni.forEach((ev) => {
-            if (String(ev) === userData.id)
+        evento.prenotazioni.forEach((usr) => {
+            if (String(usr) === userData.id)
                 prenotazioneEffettuata = true
         })
 
@@ -165,12 +172,12 @@ exports.invioNotifica = async (req, res) => {
         
         // aggiunta dei dettagli dell'evento e del locale
         const messaggioCompleto = messaggio + "\nRelativo all'evento: " + evento.nome
-            + "\nsvoltosi in data: " + evento.dataInizio
+            + "\nsvoltosi in data: " + (new Date(evento.dataInizio)).toDateString()
             + "\nnel locale: " + locale.nome
         
         // salvataggio del messaggio nelle notifiche di tutti i partecipanti
-        evento.prenotazioni.forEach(async (ev) => {
-            const utente = await Utente.findById(String(ev))
+        await evento.prenotazioni.forEach(async (usr) => {
+            const utente = await Utente.findById(String(usr))
             if (utente)
             {
                 utente.notifiche.push(messaggioCompleto)

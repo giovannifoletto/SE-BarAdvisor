@@ -7,10 +7,12 @@ const Locale = require('../models/Locale')
 
 const invioEmail = require('./invioEmail')
 
-exports.getUtenti = async (req, res) => {
+exports.getAllUtenti = async (req, res) => {
     try {
         // query nel database per prendere tutti gli utenti (e popolare il campo 'locale' dalla tabella 'Locale') 
-        const utenti = await Utente.find().populate('locale', 'nome')
+        const utenti = await Utente.find()
+        .populate('locale', 'nome')
+        .populate('prenotazioni', 'nome')
 
         res.status(200).json({ success: true, utenti: utenti })
 
@@ -233,7 +235,7 @@ exports.resetToken = async (req, res) => {
 exports.changePassword = async (req, res) => {
     // recupero i campi dal body della richiesta
     const {oldPassword, newPassword} = req.body
-    const userData = res.userData
+    const userData = req.userData
 
     // controllo la presenza dei dati
     if (!oldPassword || !newPassword)

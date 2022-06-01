@@ -14,8 +14,11 @@ module.exports = (req, res, next) => {
         // se esiste, si controlla e se è corretto, si spacchetta e si aggiunge un campo con i dati dell'utente nella response
         const token = bearerToken.split(" ")[1]
         const decode = jwt.verify(token, config.SECRET_KEY)
+        
         req.userData = decode
+
         next()
+
     } catch (err) {
         res.status(401).json({ success: false, error: err.message })
     }
