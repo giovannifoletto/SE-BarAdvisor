@@ -165,7 +165,7 @@ exports.passwordDimenticata = async (req, res) => {
         await user.save()
 
         // messaggio che si invia per mail con il link al form di recupero
-        const resetURL = `http://${coonfig.HOST}:${config.FRONT_PORT}/resetpassword/${resetToken}`
+        const resetURL = `http://${config.HOST}:${config.FRONT_PORT}/resetpassword/${resetToken}`
 
         const message = `
             <h1>You have requested a password reset</h1>

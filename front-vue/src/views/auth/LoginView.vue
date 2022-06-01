@@ -41,7 +41,7 @@
           <Secondary title="Dimenticato la password" />
         </router-link>
         <router-link :to="{name: 'registrazione'}">
-          <ButtonsSecondary title="Crea Nuovo Account" />
+          <Secondary title="Crea Nuovo Account" />
         </router-link>
         <div>
           <div class="py-1"></div>
@@ -83,7 +83,10 @@ export default {
         const data = await res.json()
 
         if (data.success) {
-          this.$store.commit('setToken', { token: data.token, email: data.email })
+
+          const user = atob(data.token.split('.')[1])
+
+          this.$store.commit('setToken', { token: data.token, user: user })
           this.$router.push('/')
         }
         else

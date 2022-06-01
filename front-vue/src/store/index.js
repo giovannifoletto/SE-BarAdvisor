@@ -4,13 +4,13 @@ const store = createStore({
   state() {
     return {
       token: null,
-      email: ''
+      user: null
     }
   },
   mutations: {
     setToken(state, payload) {
       state.token = payload.token
-      state.email = payload.email
+      state.user = payload.user
     },
     resetToken(state) {
         state.token = null
