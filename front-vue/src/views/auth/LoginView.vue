@@ -35,7 +35,6 @@
         </div>
       </div>
       <div class="myflex">
-
         <router-link to="/passwordrecovery">
           <ButtonsSecondary title="Dimenticato la password" />
         </router-link>
