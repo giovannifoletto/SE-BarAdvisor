@@ -1,9 +1,10 @@
 <template>
   <main>
-    <form>
+    <form @submit.prevent="login">
       <div class="form-group">
         <label for="emailInput">Indirizzo Email</label>
         <input
+          v-model="utente.email"
           type="email"
           class="form-control"
           placeholder="Inserisci email"
@@ -14,6 +15,7 @@
       <div class="form-group">
         <label for="inputPassword">Password</label>
         <input
+          v-model="utente.password"
           type="password"
           class="form-control"
           placeholder="Inserisci Password"
@@ -34,19 +36,9 @@
           </div>
         </div>
       </div>
-      <div class="myflex">
-
-        <NuxtLink to="/passwordrecovery">
-          <ButtonsSecondary title="Dimenticato la password" />
-        </NuxtLink>
-        <NuxtLink to="/signup">
-          <ButtonsSecondary title="Crea Nuovo Account" />
-        </NuxtLink>
-        <div>
-          <div class="py-1"></div>
-          <ButtonsPrimary title="Login" />
+        <div class="myflex">
         </div>
-      </div>
+
     </form>
   </main>
 </template>
@@ -60,6 +52,19 @@ export default {
     components: {
         ButtonsPrimary,
         ButtonsSecondary
+    },
+    data() {
+      return {
+        utente: {
+          email: '',
+          password: ''
+        }
+      }
+    },
+    methods: {
+      async login() {
+        
+      }
     }
 }
 </script>
