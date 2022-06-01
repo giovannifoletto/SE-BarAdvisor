@@ -2,7 +2,7 @@
   <div class="navbarlist">
     <ul>
       <li>
-        <NuxtLink to="/">
+        <router-link :to="{name: 'home'}">
           <div class="flex">
             <div class="icon">
               <IconsHome />
@@ -11,10 +11,10 @@
               <h3>Home</h3>
             </div>
           </div>
-        </NuxtLink>
+        </router-link>
       </li>
       <li>
-        <NuxtLink to="/login">
+        <router-link :to="{name: 'login'}">
           <div class="flex">
             <div class="icon">
               <IconsLogin />
@@ -23,7 +23,7 @@
               <h3>Login</h3>
             </div>
           </div>
-        </NuxtLink>
+        </router-link>
       </li>
     </ul>
   </div>
