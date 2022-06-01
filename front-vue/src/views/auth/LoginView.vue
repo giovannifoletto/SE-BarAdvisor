@@ -36,37 +36,66 @@
           </div>
         </div>
       </div>
-        <div class="myflex">
-        </div>
+      <div class="myflex">
 
+        <!-- <router-link to="/passwordrecovery">
+          <ButtonsSecondary title="Dimenticato la password" />
+        </router-link> -->
+        <router-link :to="{name: 'registrazione'}">
+          <ButtonsSecondary title="Crea Nuovo Account" />
+        </router-link>
+        <div>
+          <div class="py-1"></div>
+          <ButtonsPrimary title="Login" type="submit" />
+        </div>
+      </div>
     </form>
   </main>
 </template>
 
 <script>
-import ButtonsPrimary from '@/components/buttons/Primary.vue'
-import ButtonsSecondary from '@/components/buttons/Secondary.vue'
+import ButtonsPrimary from "@/components/buttons/Primary.vue";
+import ButtonsSecondary from "@/components/buttons/Secondary.vue";
 
 export default {
-    name: 'LoginView',
-    components: {
-        ButtonsPrimary,
-        ButtonsSecondary
-    },
-    data() {
-      return {
-        utente: {
-          email: '',
-          password: ''
-        }
-      }
-    },
-    methods: {
-      async login() {
-        
-      }
+  name: "LoginView",
+  components: {
+    ButtonsPrimary,
+    ButtonsSecondary,
+  },
+  data() {
+    return {
+      utente: {
+        email: "",
+        password: "",
+      },
     }
-}
+  },
+  methods: {
+    async login() {
+      const opzioniRichiesta = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(this.utente)
+      }
+
+      try {
+        const res = await fetch('http://localhost:4000/api/v1/auth/login', opzioniRichiesta)
+        const data = await res.json()
+
+        if (data.success) {
+          this.$store.commit('setToken', { token: data.token, email: data.email })
+          this.$router.push('/')
+        }
+        else
+          console.log(data.error || data.message)
+
+      } catch (error) {
+        console.log(error)
+      }
+    },
+  },
+};
 </script>
 
 <style scoped>
