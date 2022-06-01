@@ -36,12 +36,12 @@
       </div>
       <div class="myflex">
 
-        <NuxtLink to="/passwordrecovery">
+        <router-link to="/passwordrecovery">
           <ButtonsSecondary title="Dimenticato la password" />
-        </NuxtLink>
-        <NuxtLink to="/signup">
+        </router-link>
+        <router-link :to="{name: 'registrazione'}">
           <ButtonsSecondary title="Crea Nuovo Account" />
-        </NuxtLink>
+        </router-link>
         <div>
           <div class="py-1"></div>
           <ButtonsPrimary title="Login" />
