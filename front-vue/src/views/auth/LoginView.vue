@@ -37,15 +37,15 @@
         </div>
       </div>
       <div class="myflex">
-        <router-link to="/passwordrecovery">
-          <ButtonsSecondary title="Dimenticato la password" />
+        <router-link :to="{name: 'passwordDimenticata'}">
+          <Secondary title="Dimenticato la password" />
         </router-link> -->
         <router-link :to="{name: 'registrazione'}">
           <ButtonsSecondary title="Crea Nuovo Account" />
         </router-link>
         <div>
           <div class="py-1"></div>
-          <ButtonsPrimary title="Login" type="submit" />
+          <Primary title="Login" type="submit" />
         </div>
       </div>
     </form>
@@ -53,14 +53,14 @@
 </template>
 
 <script>
-import ButtonsPrimary from "@/components/buttons/Primary.vue";
-import ButtonsSecondary from "@/components/buttons/Secondary.vue";
+import Primary from "@/components/buttons/Primary.vue";
+import Secondary from "@/components/buttons/Secondary.vue";
 
 export default {
   name: "LoginView",
   components: {
-    ButtonsPrimary,
-    ButtonsSecondary,
+    Primary,
+    Secondary,
   },
   data() {
     return {
