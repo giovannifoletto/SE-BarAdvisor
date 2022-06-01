@@ -2,7 +2,7 @@
   <div class="navbarlist">
     <ul>
       <li>
-        <router-link :to="{name: 'home'}">
+        <router-link :to="{ name: 'home' }">
           <div class="flex">
             <div class="icon">
               <IconsHome />
@@ -14,7 +14,7 @@
         </router-link>
       </li>
       <li>
-        <router-link :to="{name: 'login'}">
+        <router-link :to="{ name: 'login' }" v-if="!$store.state.token">
           <div class="flex">
             <div class="icon">
               <IconsLogin />
@@ -25,11 +25,28 @@
           </div>
         </router-link>
       </li>
+      <li v-if="$store.state.token">
+        <div class="flex">
+          <div class="icon">
+            <IconsLogin />
+          </div>
+          <div @click="logout">
+            <h3>Logout</h3>
+          </div>
+        </div>
+      </li>
     </ul>
   </div>
 </template>
 
 <script>
+export default {
+  methods:{
+    logout(){
+      this.$store.commit('resetToken')
+    }
+  }
+}
 </script>
 
 <style scoped>
@@ -59,7 +76,7 @@ li:hover {
   background: var(--secondaryOrange);
   color: var(--black);
 }
-a{
+a {
   text-decoration: none;
   color: var(--black);
 }
