@@ -7,10 +7,12 @@ const Locale = require('../models/Locale')
 
 const invioEmail = require('./invioEmail')
 
-exports.getUtenti = async (req, res) => {
+exports.getAllUtenti = async (req, res) => {
     try {
         // query nel database per prendere tutti gli utenti (e popolare il campo 'locale' dalla tabella 'Locale') 
-        const utenti = await Utente.find().populate('locale', 'nome')
+        const utenti = await Utente.find()
+        .populate('locale', 'nome')
+        .populate('prenotazioni', 'nome')
 
         res.status(200).json({ success: true, utenti: utenti })
 
@@ -130,7 +132,7 @@ exports.loginUtente = async (req, res) => {
             expiresIn: "1 day"
         })
 
-        res.status(200).json({ success: true, token: token })
+        res.status(200).json({ success: true, token: token, email: email })
         
     } catch (err) {
         res.status(500).json({ success: false, error: err.message })

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const eventoSchema = new mongoose.Schema(
+const schemaEvento = new mongoose.Schema(
     {
     nome: {
         type: String,
@@ -26,4 +26,4 @@ const eventoSchema = new mongoose.Schema(
     }
 )
 
-module.exports = mongoose.model('Evento', eventoSchema)
+module.exports = mongoose.model('Evento', schemaEvento)

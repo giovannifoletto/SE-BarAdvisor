@@ -26,4 +26,7 @@ router.post('/:localeID/recensioni', checkAuth, controllerRecensioni.postRecensi
 // cancella una recensione
 router.delete('/:localeID/recensioni/:recensioneID', checkAuth, checkRole.checkPermessiCreatoreRecensione, controllerRecensioni.deleteRecensione)
 
+// invio notifica ai partecipanti di un determinato evento
+router.post('/:localeID/eventi/:eventoID/notifiche', checkAuth, checkRole.checkPermessiProprietarioLocale, controllerEventi.invioNotifica)
+
 module.exports = router

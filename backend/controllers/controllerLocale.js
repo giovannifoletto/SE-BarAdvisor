@@ -1,7 +1,7 @@
 const Locale = require('../models/Locale')
 const Recensione = require('../models/Recensione')
 
-// Ritorna un locale
+// Ritorna un locale specifico
 exports.getLocale = async (req, res) => {
     try {
         const locale = await Locale.findById(req.params.localeID)

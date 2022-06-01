@@ -1,15 +1,20 @@
 const express = require('express')
 const router = express.Router()
 
-const controllerEvento = require('../controllers/controllerEvento')
+const controllerEventi = require('../controllers/controllerEvento')
 
 const checkAuth = require('../middleware/check-auth')
 
 // restituisce tutti gli eventi
-router.get('/',controllerEvento.getAllEventi)
+router.get('/', controllerEventi.getAllEventi)
 
-// aggiungere/togliere prenotazione ad un evento
-router.post('/:eventoID/prenotazione', checkAuth, controllerEvento.postPrenotazione)
+// restituisce un evento specifico
+router.get('/:eventoID', controllerEventi.getEvento)
 
+// aggiungere/ prenotazione ad un evento
+router.post('/:eventoID/prenotazioni', checkAuth, controllerEventi.postPrenotazione)
+
+// togliere prenotazione ad un evento
+router.delete('/:eventoID/prenotazioni', checkAuth, controllerEventi.deletePrenotazione)
 
 module.exports = router
