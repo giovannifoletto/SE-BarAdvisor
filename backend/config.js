@@ -5,6 +5,8 @@ module.exports = {
     NODE_ENV: process.env.NODE_ENV || "production",
 
     PORT: process.env.PORT || 4000,
+    FRONT_PORT: process.env.FRONT_PORT || 8080,
+    HOST: process.env.HOST || "localhost",
 
     DB_URL_LOCAL: process.env.DB_URL_LOCAL,
     DB_URL_CLUSTER: process.env.DB_URL_CLUSTER,

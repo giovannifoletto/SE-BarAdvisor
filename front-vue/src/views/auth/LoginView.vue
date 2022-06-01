@@ -39,7 +39,7 @@
       <div class="myflex">
         <router-link :to="{name: 'passwordDimenticata'}">
           <Secondary title="Dimenticato la password" />
-        </router-link> -->
+        </router-link>
         <router-link :to="{name: 'registrazione'}">
           <ButtonsSecondary title="Crea Nuovo Account" />
         </router-link>
