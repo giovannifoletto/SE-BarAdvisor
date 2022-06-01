@@ -4,6 +4,7 @@
       <div class="form-group">
         <label for="exampleInputEmail1">Inserire Email</label>
         <input
+          v-model="email"
           type="text"
           class="form-control"
           id="email"
@@ -16,7 +17,7 @@
       </div>
       <div class="myflex">
         <div>
-          <Primary title="Manda Mail di Recupero"/>
+          <Primary title="Manda Mail di Recupero" type="submit"/>
         </div>
         <router-link :to="{name: 'login'}">
           <Secondary title="Torna indietro" type="submit" />
@@ -38,17 +39,15 @@ export default {
     },
     data(){
         return {
-            email: "",
+            email: '',
         }
     },
     methods: {
         async mandaMail(){
             const opzioneRichiesta = {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({email: this.email})
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: this.email })
             }
             const res = await fetch('http://localhost:4000/api/v1/auth/passworddimenticata', opzioneRichiesta)
 

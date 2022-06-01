@@ -1,10 +1,11 @@
 
 <template>
   <div class="container pt-2">
-    <form class="container">
+    <form class="container" @submit.prevent="registrazioneCliente">
       <div class="form-group mb-1">
         <label for="nome">Nome utente</label>
         <input
+          v-model="cliente.nome"
           type="text"
           class="form-control"
           id="nome"
@@ -15,6 +16,7 @@
       <div class="form-group mb-1">
         <label for="email">Email</label>
         <input
+          v-model="cliente.email"
           type="email"
           class="form-control"
           id="email"
@@ -25,6 +27,7 @@
       <div class="form-group mb-1">
         <label for="password1">Password</label>
         <input
+          v-model="cliente.password"
           type="password"
           class="form-control"
           id="password1"
@@ -34,6 +37,7 @@
       <div class="form-group mb-1">
         <label for="password2">Conferma Password</label>
         <input
+          v-model="cliente.confermaPassword"
           type="password"
           class="form-control"
           id="password2"
@@ -43,7 +47,7 @@
       <div class="myflex">
         <div>
           <div class="py-1"></div>
-          <Primary
+          <Primary type="submit"
             title="Registrati"
           />
         </div>
@@ -65,6 +69,38 @@ export default {
     Secondary,
     Primary,
   },
+  data() {
+    return {
+      cliente: {
+        nome: '',
+        email: '',
+        password: ''
+      },
+      confermaPassword: ''
+    }
+  },
+  methods: {
+    async registrazioneCliente() {
+      const opzioniRichiesta = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(this.cliente)
+      }
+
+      try {
+        const res = await fetch('http://localhost:4000/api/v1/auth/new/cliente', opzioniRichiesta)
+        const data = await res.json()
+
+        if (data.success)
+          this.$router.push('/login')
+        else
+          console.log(data.error || data.message)
+
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  }
 };
 </script>
 

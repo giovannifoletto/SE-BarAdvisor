@@ -6,21 +6,21 @@
         <label for="nome">Nome Utente</label>
 
         <input
+          v-model="gestoreLocale.nome"
           type="text"
           class="form-control"
           id="nome"
           placeholder="Nome Utente"
-          v-model="gestoreLocale.nome"
         />
       </div>
       <div class="form-group mb-1">
         <label for="email">Email</label>
         <input
+          v-model="gestoreLocale.email"
           type="email"
           class="form-control"
           id="email"
           placeholder="Email"
-          v-model="gestoreLocale.email"
         />
         <small id="emailHelp" class="form-text text-muted"
           >We'll never share your email with anyone else.</small
@@ -29,48 +29,50 @@
       <div class="form-group mb-1">
         <label for="password1">Password</label>
         <input
+          v-model="gestoreLocale.password"
           type="password"
           class="form-control"
           id="password1"
           placeholder="Password"
-          v-model="gestoreLocale.password"
         />
       </div>
       <div class="form-group mb-1">
         <label for="password2">Conferma Password</label>
         <input
+          v-model="gestoreLocale.confermaPassword"
           type="password"
           class="form-control"
           id="password2"
           placeholder="Password"
-          v-model="confermaPassword"
         />
       </div>
       <div class="form-group mb-1">
         <label for="nomeLocale">Nome Locale</label>
         <input
+          v-model="gestoreLocale.nomeLocale"
           type="text"
           class="form-control"
           id="nomeLocale"
           placeholder="Nome Locale"
-          v-model="gestoreLocale.nomeLocale"
         />
       </div>
       <div class="form-group mb-1">
         <label for="posizione">Posizione</label>
         <input
+          v-model="gestoreLocale.posizione"
           type="text"
           class="form-control"
           id="posizione"
           placeholder="Positione"
-          v-model="gestoreLocale.posizione"
         />
       </div>
       <div class="myflex">
         <div>
           <div class="py-1"></div>
 
-          <Primary title="Registrati" />
+          <Primary type="submit"
+            title="Registrati"
+          />
         </div>
         <router-link :to="{ name: 'registrazione' }">
           <Secondary title="Torna indietro" />
@@ -93,20 +95,37 @@ export default {
   data() {
     return {
       gestoreLocale: {
-        nome: "",
-        email: "",
-        password: "",
-        nomeLocale: "",
-        posizione: "",
+        nome: '',
+        email: '',
+        password: '',
+        nomeLocale: '',
+        posizione: ''
       },
-      confermaPassword: "",
-    };
+      confermaPassword: ''
+    }
   },
   methods: {
-    registrazioneGestoreLocale() {
-      
-    },
-  },
+    async registrazioneGestoreLocale() {
+      const opzioniRichiesta = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(this.gestoreLocale)
+      }
+
+      try {
+        const res = await fetch('http://localhost:4000/api/v1/auth/new/gestorelocale', opzioniRichiesta)
+        const data = await res.json()
+
+        if (data.success)
+          this.$router.push('/login')
+        else
+          console.log(data.error || data.message)
+
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  }
 };
 </script>
 
