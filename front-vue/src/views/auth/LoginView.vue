@@ -83,6 +83,11 @@ export default {
         const data = await res.json()
 
         if (data.success) {
+
+          const user = btoa(data.token.split('.')[1])
+
+          console.log(user);
+
           this.$store.commit('setToken', { token: data.token, email: data.email })
           this.$router.push('/')
         }

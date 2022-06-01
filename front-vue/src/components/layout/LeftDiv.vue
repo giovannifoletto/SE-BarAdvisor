@@ -6,7 +6,7 @@ export default {
 
 <template>
   <div>
-    <h1>Account</h1>
+    <h1>{{ $store.state.user.name }}</h1>
   </div>
 </template>
 
