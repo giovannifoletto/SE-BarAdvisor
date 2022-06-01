@@ -28,7 +28,7 @@
       <li v-if="$store.state.token">
         <div class="flex" @click="logout">
           <div class="icon">
-            <IconsLogin />
+            <Login />
           </div>
           <div>
             <h3>Logout</h3>
@@ -43,7 +43,7 @@
 import Home from '@/components/icons/Home'
 import Login from '@/components/icons/Login'
 export default {
-  methods: {
+  components: {
     Home, Login
   },
   methods:{
