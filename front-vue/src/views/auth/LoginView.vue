@@ -84,7 +84,7 @@ export default {
 
         if (data.success) {
 
-          const user = btoa(data.token.split('.')[1])
+          const user = JSON.parse(btoa(data.token.split('.')[1]))
 
           console.log(user);
 

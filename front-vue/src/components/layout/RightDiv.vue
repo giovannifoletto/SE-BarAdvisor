@@ -43,7 +43,7 @@
 import Home from '@/components/icons/Home'
 import Login from '@/components/icons/Login'
 export default {
-  methods: {
+  components: {
     Home, Login
   },
   methods:{
