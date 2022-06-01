@@ -51,6 +51,19 @@
   </main>
 </template>
 
+<script>
+import ButtonsPrimary from '@/components/buttons/Primary.vue'
+import ButtonsSecondary from '@/components/buttons/Secondary.vue'
+
+export default {
+    name: 'LoginView',
+    components: {
+        ButtonsPrimary,
+        ButtonsSecondary
+    }
+}
+</script>
+
 <style scoped>
 main {
   min-height: 60vh;
