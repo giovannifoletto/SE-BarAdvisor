@@ -4,6 +4,9 @@ import LoginView from '../views/auth/LoginView'
 import RegistrazioneView from '../views/auth/RegistrazioneView'
 import RegistrazioneClienteView from '@/views/auth/RegistrazioneClienteView'
 import RegistrazioneGestoreLocaleView from '@/views/auth/RegistrazioneGestoreLocaleView'
+import EventoView from '@/views/evento/EventoView'
+import PasswordDimenticata from '@/views/auth/PasswordDimenticataView'
+import ResetPassword from '@/views/auth/ResetPasswordView'
 
 const routes = [
   {
@@ -30,6 +33,23 @@ const routes = [
     path: '/registrazione/gestorelocale', 
     name: 'registrazioneGestoreLocale',
     component: RegistrazioneGestoreLocaleView
+  },
+  {
+    path: '/passworddimenticata',
+    name: 'passwordDimenticata',
+    component: PasswordDimenticata,
+  },
+  {
+    path: '/resetpassword/:passwordToken',
+    name: 'resetPassword',
+    component: ResetPassword,
+    props: true,
+  },
+  {
+    path: '/evento/:idEvento',
+    name: 'paginaEvento',
+    component: EventoView,
+    props: true
   },
 ]
 

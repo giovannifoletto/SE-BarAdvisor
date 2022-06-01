@@ -1,7 +1,6 @@
 
 <template>
   <div class="container pt-2">
-
     <form @submit.prevent="registrazioneGestoreLocale">
       <div class="form-group mb-1">
         <label for="nome">Nome Utente</label>
@@ -75,7 +74,7 @@
             title="Registrati"
           />
         </div>
-        <router-link :to="{name: 'registrazione'}">
+        <router-link :to="{ name: 'registrazione' }">
           <Secondary title="Torna indietro" />
         </router-link>
       </div>
