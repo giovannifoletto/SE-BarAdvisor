@@ -26,6 +26,39 @@
     <div class="info">
         <h5>{{ evento.descrizione }}</h5>
     </div>
+
+	<div class="comments">
+      <div class="info-comments px-4 mt-3 mb-2">
+        <h3>Recensioni</h3>
+
+        <Errors :error="error" />
+
+        <div class="form-recensione" v-if="$store.state.token">
+          <div>
+            <input
+              type="text"
+              class="form-control"
+              required
+              v-model="recensione.commento"
+            />
+            <div>
+                <select v-model="recensione.votazione" required>
+                  <option :value="index" v-for="index in 5" :key="index">{{index}}</option>
+                </select>
+            </div>
+            <Primary title="Commenta" @buttonClicked="postRecensione"/>
+          </div>
+        </div>
+
+      </div>
+      <div class="comm-row">
+        <Recensione
+          v-for="recensione in locale.recensioni"
+          :key="recensione._id"
+          :recensione="recensione"
+        />
+      </div>
+    </div>
 </div>
 </template>
 

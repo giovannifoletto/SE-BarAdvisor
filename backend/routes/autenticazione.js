@@ -8,6 +8,9 @@ const checkAuth = require('../middleware/check-auth')
 // ottenere tutti gli utenti nel database (per development)
 router.get('/utenti', controllerUtenti.getAllUtenti)
 
+// ottenere il nome utente di un utente
+router.get('/utenti/:utenteID', controllerUtenti.getNomeUtente)
+
 // creazione di Gestore Locale e relativo Locale
 router.post('/new/gestorelocale', controllerUtenti.registrazioneLocale)
 

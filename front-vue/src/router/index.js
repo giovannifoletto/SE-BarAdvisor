@@ -4,16 +4,22 @@ import auth from '@/middleware/authentication'
 import role from '@/middleware/role'
 
 import HomeView from '../views/HomeView.vue'
+
+import EventoView from '@/views/evento/EventoView.vue'
+
 import LoginView from '../views/auth/LoginView.vue'
 import RegistrazioneView from '../views/auth/RegistrazioneView.vue'
 import RegistrazioneClienteView from '@/views/auth/RegistrazioneClienteView.vue'
 import RegistrazioneGestoreLocaleView from '@/views/auth/RegistrazioneGestoreLocaleView.vue'
-import EventoView from '@/views/evento/EventoView.vue'
 import PasswordDimenticata from '@/views/auth/PasswordDimenticataView.vue'
 import ResetPassword from '@/views/auth/ResetPasswordView.vue'
+
 import LocaleView from '@/views/locale/LocaleView.vue'
+
 import CreaEvento from '@/views/forms/CreaEvento.vue'
+
 import Error403 from '@/views/pagineErrore/403.vue'
+import PageNotFound from '@/views/pagineErrore/PageNotFound'
 
 const routes = [
   {
@@ -75,6 +81,12 @@ const routes = [
     path: '/403', 
     name: 'error403',
     component: Error403
+  },
+  // default route se non trova nessun pagina
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'pageNotFound',
+    component: PageNotFound
   }
 ]
 

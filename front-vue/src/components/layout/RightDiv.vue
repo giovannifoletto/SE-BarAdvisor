@@ -35,6 +35,18 @@
           </div>
         </div>
       </li>
+      <li>
+        <router-link :to="{ name: 'paginaLocale', params: { localeID: $store.state.user.locale } }" v-if="$store.state.token">
+          <div class="flex">
+            <div class="icon">
+              <Login />
+            </div>
+            <div>
+              <h3>Vai al mio account</h3>
+            </div>
+          </div>
+        </router-link>
+      </li>
     </ul>
   </div>
 </template>
