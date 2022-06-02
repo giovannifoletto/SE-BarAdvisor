@@ -2,7 +2,7 @@
 import Account from '@/components/icons/Account'
 
 export default {
-    props: ["nome", "locale", "descrizione", "dataInizio"],
+    props: ["id", "nome", "locale", "descrizione", "dataInizio"],
 	components: {
 		Account
 	}
@@ -16,7 +16,7 @@ export default {
         <div>
           <Account />
         </div>
-        <router-link to="/" class="px-3">
+        <router-link :to="{ name: 'paginaEvento', params: { eventoID: id } }" class="px-3">
           <h3>{{ nome }}</h3>
         </router-link>
       </div>

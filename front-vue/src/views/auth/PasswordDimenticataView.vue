@@ -9,6 +9,7 @@
           class="form-control"
           id="email"
           placeholder="Email"
+          required
         />
         <small id="email" class="form-text text-muted"
           >Per recuperare la propria password inserire la propria mail o il
