@@ -1,5 +1,10 @@
 <template>
   <main class="container pt-2">
+
+    <Message :message="message" />
+
+    <Errors :error="error" />
+
     <form @submit.prevent="mandaMail">
       <div class="form-group">
         <label for="exampleInputEmail1">Inserire Email</label>
@@ -9,6 +14,7 @@
           class="form-control"
           id="email"
           placeholder="Email"
+          required
         />
         <small id="email" class="form-text text-muted"
           >Per recuperare la propria password inserire la propria mail o il
@@ -30,16 +36,28 @@
 <script>
 import Primary from '@/components/buttons/Primary.vue'
 import Secondary from '@/components/buttons/Secondary.vue'
+import Message from '@/components/Message.vue'
+import Errors from '@/components/Errors.vue'
 
 export default {
     name: 'passwordDimenticata',
     components: {
-        Primary,
-        Secondary
-    },
+    Primary,
+    Secondary,
+    Message,
+    Errors
+},
     data(){
         return {
             email: '',
+            message: {
+              text: "Inserire email",
+              status: true
+            },
+            error: {
+              text: "Messaggio di errore", 
+              status: true
+            }
         }
     },
     methods: {
