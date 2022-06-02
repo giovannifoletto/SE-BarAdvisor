@@ -2,13 +2,14 @@ import { createRouter, createWebHistory } from 'vue-router'
 import auth from '@/middleware/authentication'
 
 import HomeView from '../views/HomeView.vue'
-import LoginView from '../views/auth/LoginView'
-import RegistrazioneView from '../views/auth/RegistrazioneView'
-import RegistrazioneClienteView from '@/views/auth/RegistrazioneClienteView'
-import RegistrazioneGestoreLocaleView from '@/views/auth/RegistrazioneGestoreLocaleView'
-import EventoView from '@/views/evento/EventoView'
-import PasswordDimenticata from '@/views/auth/PasswordDimenticataView'
-import ResetPassword from '@/views/auth/ResetPasswordView'
+import LoginView from '../views/auth/LoginView.vue'
+import RegistrazioneView from '../views/auth/RegistrazioneView.vue'
+import RegistrazioneClienteView from '@/views/auth/RegistrazioneClienteView.vue'
+import RegistrazioneGestoreLocaleView from '@/views/auth/RegistrazioneGestoreLocaleView.vue'
+import EventoView from '@/views/evento/EventoView.vue'
+import PasswordDimenticata from '@/views/auth/PasswordDimenticataView.vue'
+import ResetPassword from '@/views/auth/ResetPasswordView.vue'
+import LocaleView from '@/views/locale/LocaleView.vue'
 
 const routes = [
   {
@@ -48,11 +49,17 @@ const routes = [
     props: true,
   },
   {
-    path: '/evento/:eventoID',
+    path: '/eventi/:eventoID',
     name: 'paginaEvento',
     component: EventoView,
     props: true
   },
+  {
+    path: '/locali/:localeID',
+    name: 'paginaLocale',
+    component: LocaleView,
+    props: true
+  }
 ]
 
 const router = createRouter({

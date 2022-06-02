@@ -7,6 +7,7 @@
       :key="evento._id"
       :id="evento._id"
       :nome="evento.nome"
+      :localeID="evento.locale._id"
       :locale="evento.locale.nome"
       :descrizione="evento.descrizione"
       :dataInizio="evento.dataInizio"
