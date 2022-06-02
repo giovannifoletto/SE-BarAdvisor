@@ -21,7 +21,7 @@
       <div class="info-comments px-4 mt-3 mb-2">
         <h3>Prossimi Eventi</h3>
       </div>
-      <div>
+      <div v-if="prossimiEventi.length != 0">
         <div class="comm-row">
           <CardEvento
             v-for="evento in prossimiEventi"
@@ -30,9 +30,13 @@
           />
         </div>
       </div>
+      <div v-else>
+      <Message :isSuccess="false" :message="{status: true, text: 'Nessun evento in programma.'}"/>
     </div>
+    </div>
+    
 
-    <div class="comments">
+    <div class="comments" v-if="eventiPassati.length != 0">
       <div class="info-comments px-4 mt-3 mb-2">
         <h3>Eventi Passati</h3>
       </div>
@@ -45,6 +49,9 @@
           />
         </div>
       </div>
+    </div>
+    <div v-else>
+      <Message isSuccess="false"/>
     </div>
 
     <div class="comments">
@@ -64,12 +71,13 @@
 import CardEvento from "@/components/CardEvento.vue"
 import Ranking from '@/components/Ranking'
 import Account from '@/components/icons/Account'
+import Message from '@/components/Message'
 
 export default {
   name: "paginaLocale",
   props: ["localeID"],
   components: {
-    CardEvento, Ranking, Account
+    CardEvento, Ranking, Account, Message
   },
   data() {
     return {

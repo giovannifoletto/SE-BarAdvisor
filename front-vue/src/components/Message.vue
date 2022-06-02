@@ -1,9 +1,9 @@
 <template>
-  <div :class=" isSuccess ? alert-success : alert-secondary" class="alert dad mt-3 border" role="alert" v-if="message.status">
+  <div :class="{ 'alert-secondary': !isSuccess, 'alert-success': isSuccess }" class="alert dad mt-3 border" role="alert" v-if="message.status">
     <div class="text">
       {{ message.text }}
     </div>
-    <div class="cancel">
+    <div class="cancel" v-if="isSuccess">
       <button @click="message.status = !message.status">
         <Cross />
       </button>
@@ -21,11 +21,11 @@ import Cross from '@/components/icons/Cross'
  * @param {bool} message.status - Perametro per settare la visibilità del messaggio.
  */
 export default {
-  name: "Errors",
+  name: "Message",
   components: {
       Cross
   },
-  props: ["message", "isSuccess"]
+  props: ["message", "isSuccess"],
 };
 </script>
 
