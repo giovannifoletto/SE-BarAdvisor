@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
+
 import auth from '@/middleware/authentication'
+import role from '@/middleware/role'
 
 import HomeView from '../views/HomeView.vue'
 import LoginView from '../views/auth/LoginView.vue'
@@ -10,6 +12,8 @@ import EventoView from '@/views/evento/EventoView.vue'
 import PasswordDimenticata from '@/views/auth/PasswordDimenticataView.vue'
 import ResetPassword from '@/views/auth/ResetPasswordView.vue'
 import LocaleView from '@/views/locale/LocaleView.vue'
+import CreaEvento from '@/views/forms/CreaEvento.vue'
+import Error403 from '@/views/pagineErrore/403.vue'
 
 const routes = [
   {
@@ -59,6 +63,18 @@ const routes = [
     name: 'paginaLocale',
     component: LocaleView,
     props: true
+  },
+  {
+    path: '/locali/:localeID/creaevento',
+    name: 'formCreazioneEvento',
+    props: true,
+    component: CreaEvento,
+    beforeEnter: [auth, role]
+  },
+  {
+    path: '/403', 
+    name: 'error403',
+    component: Error403
   }
 ]
 

@@ -17,6 +17,12 @@
       </div>
     </div>
 
+    <div>
+      <router-link :to="{ name: 'formCreazioneEvento' }">
+        <Primary title="Crea Evento" />
+      </router-link>
+    </div>
+
     <div class="comments">
       <div class="info-comments px-4 mt-3 mb-2">
         <h3>Prossimi Eventi</h3>
@@ -45,7 +51,7 @@
           <CardEvento
             v-for="evento in eventiPassati"
             :key="evento._id"
-            :evento=evento
+            :evento="evento"
           />
         </div>
       </div>
@@ -72,12 +78,13 @@ import CardEvento from "@/components/CardEvento.vue"
 import Ranking from '@/components/Ranking'
 import Account from '@/components/icons/Account'
 import Message from '@/components/Message'
+import Primary from '@/components/buttons/Primary'
 
 export default {
   name: "paginaLocale",
   props: ["localeID"],
   components: {
-    CardEvento, Ranking, Account, Message
+    CardEvento, Ranking, Account, Message, Primary
   },
   data() {
     return {

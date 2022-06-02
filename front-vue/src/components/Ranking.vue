@@ -1,6 +1,6 @@
 <template>
   <div class="beer">
-    <Beer v-for="index in ranking" :key="index" />
+    <Beer v-for="index in ranking" :key="index" :active="true" />
   </div>
 </template>
 

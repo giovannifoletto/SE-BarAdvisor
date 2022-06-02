@@ -11,10 +11,12 @@ const store = createStore({
     setToken(state, payload) {
       state.token = payload.token
       state.user = payload.user
+      localStorage.setItem('token', payload.token)
     },
     resetToken(state) {
         state.token = null
-    }
+        localStorage.removeItem('token')
+    },
   }
 })
 

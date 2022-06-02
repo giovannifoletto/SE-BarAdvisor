@@ -1,5 +1,5 @@
 <template>
-  <div class="comment">
+  <div class="comment py-2">
     <div class="left">
       <account />
     </div>
@@ -10,14 +10,14 @@
         <h6 v-if="evento.dataInizio < (new Date().now)" class="pb-0 pt-0 px-2">Data: {{ evento.dataInizio }}</h6>
       </div>
 
-      <div class="column">
+      <div class="column"  v-if="$store.state.token">
         <div class="unfollow">
           <div>
             <router-link :to="{ name: 'paginaEvento', params: { eventoID: evento._id } }">
               <Secondary title="Visualizza" />
             </router-link>
           </div>
-          <div v-if="$store.state.token">
+          <div>
             <Secondary title="Disiscriviti" />
           </div>
         </div>
@@ -36,7 +36,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .comment {
   display: flex;
   flex-flow: row nowrap;
