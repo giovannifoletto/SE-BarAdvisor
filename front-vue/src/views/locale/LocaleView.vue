@@ -3,9 +3,12 @@
     <div class="title">
       <div class="first-title">
         <div class="title-account">
-          <AccountIcon />
+          <Account />
         </div>
         <h3>{{ locale.nome }}</h3>
+        <div class="ranking">
+          <Ranking :ranking="locale.ranking" />
+        </div>
       </div>
 
       <div class="bio-title">
@@ -18,19 +21,22 @@
       <div class="info-comments px-4 mt-3 mb-2">
         <h3>Prossimi Eventi</h3>
       </div>
-      <div>
+      <div v-if="prossimiEventi.length != 0">
         <div class="comm-row">
           <CardEvento
             v-for="evento in prossimiEventi"
             :key="evento._id"
-            :nomeEvento="evento.nome"
-            :dataEvento="evento.dataInizio"
+            :evento="evento"
           />
         </div>
       </div>
+      <div v-else>
+      <Message :isSuccess="false" :message="{status: true, text: 'Nessun evento in programma.'}"/>
     </div>
+    </div>
+    
 
-    <div class="comments">
+    <div class="comments" v-if="eventiPassati.length != 0">
       <div class="info-comments px-4 mt-3 mb-2">
         <h3>Eventi Passati</h3>
       </div>
@@ -39,11 +45,13 @@
           <CardEvento
             v-for="evento in eventiPassati"
             :key="evento._id"
-            :nomeEvento="evento.nome"
-            dataEvento=""
+            :evento=evento
           />
         </div>
       </div>
+    </div>
+    <div v-else>
+      <Message isSuccess="false"/>
     </div>
 
     <div class="comments">
@@ -52,7 +60,7 @@
       </div>
       <div class="comm">
         <div class="comm-row">
-          <Ranking :ranking="locale.ranking" />
+          
         </div>
       </div>
     </div>
@@ -62,12 +70,14 @@
 <script>
 import CardEvento from "@/components/CardEvento.vue"
 import Ranking from '@/components/Ranking'
+import Account from '@/components/icons/Account'
+import Message from '@/components/Message'
 
 export default {
   name: "paginaLocale",
   props: ["localeID"],
   components: {
-    CardEvento, Ranking
+    CardEvento, Ranking, Account, Message
   },
   data() {
     return {
@@ -82,7 +92,11 @@ export default {
     );
     const data = await res.json();
 
-    console.log(data);
+    if (data.success) {
+      this.locale = data.locale
+      this.prossimiEventi = data.prossimiEventi
+      this.eventiPassati = data.eventiPassati
+    }
   },
 };
 </script>
