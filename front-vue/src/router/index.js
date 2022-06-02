@@ -48,7 +48,7 @@ const routes = [
     props: true,
   },
   {
-    path: '/evento/:idEvento',
+    path: '/evento/:eventoID',
     name: 'paginaEvento',
     component: EventoView,
     props: true

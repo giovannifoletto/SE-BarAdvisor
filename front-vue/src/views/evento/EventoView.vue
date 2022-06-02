@@ -1,3 +1,11 @@
 <template>
-    <h1>Pagina evento</h1>
+    <h1>Pagina evento {{ eventoID }}</h1>
 </template>
+
+<script>
+
+export default {
+    name: 'paginaEvento',
+    props: ['eventoID']
+}
+</script>

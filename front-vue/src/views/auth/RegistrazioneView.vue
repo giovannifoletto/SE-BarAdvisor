@@ -2,13 +2,13 @@
   <div class="myflex">
 
     <router-link :to="{name: 'registrazioneCliente'}">
-      <Secondary title="Registrati come Cliente"/>
+      <Primary title="Registrati come Cliente"/>
     </router-link>
     <router-link :to="{name: 'registrazioneGestoreLocale'}">
-      <Secondary title="Registrati come gestore di locale"/>
+      <Primary title="Registrati come gestore di locale"/>
     </router-link>
     <router-link :to="{name: 'login'}">
-      <Primary title="Torna indietro"/>
+      <Secondary title="Torna indietro"/>
     </router-link>
   </div>
 </template>

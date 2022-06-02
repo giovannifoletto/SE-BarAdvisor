@@ -5,6 +5,7 @@
     <PostEvento
       v-for="evento in eventi"
       :key="evento._id"
+      :id="evento._id"
       :nome="evento.nome"
       :locale="evento.locale"
       :descrizione="evento.descrizione"

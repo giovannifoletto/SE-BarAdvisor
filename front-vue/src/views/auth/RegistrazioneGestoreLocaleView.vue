@@ -11,6 +11,7 @@
           class="form-control"
           id="nome"
           placeholder="Nome Utente"
+          required
         />
       </div>
       <div class="form-group mb-1">
@@ -21,6 +22,7 @@
           class="form-control"
           id="email"
           placeholder="Email"
+          required
         />
         <small id="emailHelp" class="form-text text-muted"
           >We'll never share your email with anyone else.</small
@@ -34,6 +36,7 @@
           class="form-control"
           id="password1"
           placeholder="Password"
+          required
         />
       </div>
       <div class="form-group mb-1">
@@ -44,6 +47,7 @@
           class="form-control"
           id="password2"
           placeholder="Password"
+          required
         />
       </div>
       <div class="form-group mb-1">
@@ -54,6 +58,7 @@
           class="form-control"
           id="nomeLocale"
           placeholder="Nome Locale"
+          required
         />
       </div>
       <div class="form-group mb-1">
@@ -64,6 +69,7 @@
           class="form-control"
           id="posizione"
           placeholder="Positione"
+          required
         />
       </div>
       <div class="myflex">
