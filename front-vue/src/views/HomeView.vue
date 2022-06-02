@@ -1,6 +1,7 @@
 <template>
   <div>
-    <h1>bacheca</h1>
+    <Errors :error="error"/>
+
     <PostEvento
       v-for="evento in eventi"
       :key="evento._id"
@@ -14,16 +15,18 @@
 
 <script>
 import PostEvento from "@/components/PostEvento";
+import Errors from '@/components/Errors'
 
 export default {
   name: "HomeView",
   components: {
-    PostEvento
+    PostEvento, Errors
   },
-  data() {
+  data(){
     return {
       eventi: [],
-    };
+      error: {}
+    }
   },
   async mounted() {
     try {
@@ -32,9 +35,17 @@ export default {
 
       if (data.success) {
         this.eventi = data.eventi;
+        if(this.eventi.length == 0){
+          this.error.status = true
+          this.error.text = "Non sono presenti ancora eventi sul database."
+        }
+      } else {
+        this.error.status = true;
+        this.error.text = data.message || "Errore imprevisto";
       }
     } catch (error) {
-      console.log(error);
+      this.error.status = true;
+      this.error.text = error || "Errore imprevisto";
     }
   },
 };
