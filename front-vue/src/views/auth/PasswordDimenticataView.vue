@@ -1,7 +1,7 @@
 <template>
   <main class="container pt-2">
 
-    <Message :message="message" />
+    <Message :message="message" isSuccess="true"/>
 
     <Errors :error="error" />
 

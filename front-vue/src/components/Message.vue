@@ -1,5 +1,5 @@
 <template>
-  <div class="alert alert-success dad mt-3" role="alert" v-if="message.status">
+  <div :class=" isSuccess ? alert-success : alert-secondary" class="alert dad mt-3 border" role="alert" v-if="message.status">
     <div class="text">
       {{ message.text }}
     </div>
@@ -25,7 +25,7 @@ export default {
   components: {
       Cross
   },
-  props: ["message"]
+  props: ["message", "isSuccess"]
 };
 </script>
 
