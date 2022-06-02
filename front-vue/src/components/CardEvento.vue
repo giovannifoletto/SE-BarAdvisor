@@ -5,17 +5,21 @@
     </div>
     <div class="right py-2">
       <div class="title-event">
-        <h5 class="pb-0 pt-0 px-2">{{ nomeEvento }}</h5>
-        <hr />
-        <h6 class="pb-0 pt-0 px-2">Data: {{ dataEvento }}</h6>
+        <h5 class="pb-0 pt-0 px-2">{{ evento.nome }}</h5>
+        <!-- <hr /> -->
+        <h6 v-if="evento.dataInizio < (new Date().now)" class="pb-0 pt-0 px-2">Data: {{ evento.dataInizio }}</h6>
       </div>
 
       <div class="column">
         <div class="unfollow">
           <div>
-            <Secondary title="Visualizza" />
+            <router-link :to="{ name: 'paginaEvento', params: { eventoID: evento._id } }">
+              <Secondary title="Visualizza" />
+            </router-link>
           </div>
-          <div><Secondary title="Disiscriviti" /></div>
+          <div v-if="$store.state.token">
+            <Secondary title="Disiscriviti" />
+          </div>
         </div>
       </div>
     </div>
@@ -28,7 +32,7 @@ import Secondary from '@/components/buttons/Secondary'
 
 export default {
   components: { Account, Secondary },
-  props: [""],
+  props: ["evento"],
 };
 </script>
 

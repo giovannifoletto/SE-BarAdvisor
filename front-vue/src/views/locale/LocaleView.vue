@@ -3,9 +3,12 @@
     <div class="title">
       <div class="first-title">
         <div class="title-account">
-          <AccountIcon />
+          <Account />
         </div>
         <h3>{{ locale.nome }}</h3>
+        <div class="ranking">
+          <Ranking :ranking="locale.ranking" />
+        </div>
       </div>
 
       <div class="bio-title">
@@ -23,8 +26,7 @@
           <CardEvento
             v-for="evento in prossimiEventi"
             :key="evento._id"
-            :nomeEvento="evento.nome"
-            :dataEvento="evento.dataInizio"
+            :evento="evento"
           />
         </div>
       </div>
@@ -39,8 +41,7 @@
           <CardEvento
             v-for="evento in eventiPassati"
             :key="evento._id"
-            :nomeEvento="evento.nome"
-            dataEvento=""
+            :evento=evento
           />
         </div>
       </div>
@@ -52,7 +53,7 @@
       </div>
       <div class="comm">
         <div class="comm-row">
-          <Ranking :ranking="locale.ranking" />
+          
         </div>
       </div>
     </div>
@@ -62,12 +63,13 @@
 <script>
 import CardEvento from "@/components/CardEvento.vue"
 import Ranking from '@/components/Ranking'
+import Account from '@/components/icons/Account'
 
 export default {
   name: "paginaLocale",
   props: ["localeID"],
   components: {
-    CardEvento, Ranking
+    CardEvento, Ranking, Account
   },
   data() {
     return {
@@ -82,7 +84,11 @@ export default {
     );
     const data = await res.json();
 
-    console.log(data);
+    if (data.success) {
+      this.locale = data.locale
+      this.prossimiEventi = data.prossimiEventi
+      this.eventiPassati = data.eventiPassati
+    }
   },
 };
 </script>
