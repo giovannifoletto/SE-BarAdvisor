@@ -1,22 +1,14 @@
 <template>
-  <div class="comment">
+  <div class="comment my-2">
     <div class="left">
       <Account height="{val}" width="{val}" />
     </div>
     <div class="right py-2">
       <div class="upper">
-        <div class="nome-utente">
-          <h5 class="pb-0">
-            {{ nomeUtente }}
-          </h5>
-        </div>
-        <div class="beer">
-          <Beer
-            v-for="index in recensione.votazione"
-            :key="index"
-            :active="true"
-          />
-        </div>
+        <h5 class="pb-0">
+          {{ nomeUtente }}
+        </h5>
+        <Ranking :ranking="recensione.votazione" />
       </div>
       <hr />
       <div class="commento">
@@ -28,7 +20,7 @@
 
 <script>
 import Account from "@/components/icons/Account";
-import Beer from "@/components/icons/Beer";
+import Ranking from "./Ranking.vue";
 
 export default {
   name: "Commento",
@@ -40,7 +32,7 @@ export default {
   },
   components: {
     Account,
-    Beer,
+    Ranking,
   },
   async mounted() {
     try {
@@ -87,8 +79,8 @@ export default {
 .upper {
   display: flex;
   flex-flow: row nowrap;
-  justify-content: space-between;
-  column-gap: 1px;
+  justify-items: baseline;
+  column-gap: 40px;
 }
 .beer {
   padding-right: 0.7rem;
