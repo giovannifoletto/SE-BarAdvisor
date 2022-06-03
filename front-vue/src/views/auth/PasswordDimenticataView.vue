@@ -55,7 +55,7 @@ export default {
               status: true
             },
             error: {
-              text: "Messaggio di errore", 
+              messaggio: "Messaggio di errore", 
               status: true
             }
         }

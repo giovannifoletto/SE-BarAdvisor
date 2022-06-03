@@ -26,6 +26,9 @@ export default {
     LeftDiv,
     RightDiv,
   },
+  // mounted(){
+  //   this.$store.commit('recoverState')
+  // }
 };
 </script>
 

@@ -181,7 +181,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${this.$store.state.token}`,
+          "Authorization": `Bearer ${this.$store.state.token}`,
         },
         body: JSON.stringify(this.recensione),
       };

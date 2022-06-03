@@ -16,6 +16,8 @@ import ResetPassword from '@/views/auth/ResetPasswordView.vue'
 
 import LocaleView from '@/views/locale/LocaleView.vue'
 
+import ProfiloPersonale from '@/views/account/ProfiloPersonale'
+
 import CreaEvento from '@/views/forms/CreaEvento.vue'
 
 import Error403 from '@/views/pagineErrore/403.vue'
@@ -76,6 +78,13 @@ const routes = [
     props: true,
     component: CreaEvento,
     beforeEnter: [auth, role]
+  },
+  {
+    path: '/account',
+    name: 'profiloPersonale',
+    props: true,
+    component: ProfiloPersonale,
+    // beforeEnter: [auth]
   },
   {
     path: '/403', 

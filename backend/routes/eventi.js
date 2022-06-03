@@ -11,10 +11,13 @@ router.get('/', controllerEventi.getAllEventi)
 // restituisce un evento specifico
 router.get('/:eventoID', controllerEventi.getEvento)
 
-// aggiungere/ prenotazione ad un evento
+// aggiungere prenotazione ad un evento
 router.post('/:eventoID/prenotazioni', checkAuth, controllerEventi.postPrenotazione)
 
 // togliere prenotazione ad un evento
 router.delete('/:eventoID/prenotazioni', checkAuth, controllerEventi.deletePrenotazione)
+
+// aggiungere un commento ad un evento
+router.post('/:eventoID/commenti', checkAuth, controllerEventi.postCommento)
 
 module.exports = router
