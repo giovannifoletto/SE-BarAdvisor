@@ -1,19 +1,28 @@
 <template>
   <div class="post" v-if="locale">
     <div class="title">
-      <div class="first-title">
+      <div class="head-title">
         <div class="title-account">
           <Account />
         </div>
-        <h3>{{ locale.nome }}</h3>
-        <div class="ranking">
-          <Ranking :ranking="Math.round(locale.ranking)" />
-        </div>
+        <h3>
+          {{ locale.nome[0].toUpperCase() + locale.nome.slice(1, 1000) }}
+        </h3>
       </div>
 
-      <div class="bio-title">
-        <h4>Descrizione Locale</h4>
-        <h5>{{ locale.descrizione }}</h5>
+      <div class="bio">
+        <div class="bio-title">
+          <h4>Descrizione Locale</h4>
+          <button class="beer-button">
+            {{ Math.round(locale.ranking * 10) / 10 }} / 5
+            <div class="">
+              <Beer :active="true" />
+            </div>
+          </button>
+        </div>
+        <div>
+          <h5>{{ locale.descrizione }}</h5>
+        </div>
       </div>
     </div>
 
@@ -44,7 +53,7 @@
       </div>
     </div>
 
-    <div class="comments" >
+    <div class="comments">
       <div class="info-comments px-4 mt-3 mb-2">
         <h3>Eventi Passati</h3>
       </div>
@@ -58,38 +67,53 @@
         </div>
       </div>
       <div v-else>
-      <Message
+        <Message
           :isSuccess="false"
           :message="{ status: true, text: 'Nessun evento in programma.' }"
         />
+      </div>
     </div>
-    </div>
-    
+
+    <!-- RECENSIONI -->
 
     <div class="comments">
-      <div class="info-comments px-4 mt-3 mb-2">
-        <h3>Recensioni</h3>
+      <h3>Recensioni</h3>
 
-        <Errors :error="error" />
+      <!-- FORM RECENSIONE -->
+      <Errors :error="error" />
 
-        <div class="form-recensione" v-if="$store.state.token">
-          <div>
-            <input
-              type="text"
-              class="form-control"
+      <div class="form-recensione" v-if="$store.state.token">
+        <div class="input-group mb-3">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Inserisci nuovo commento"
+            v-model="recensione.commento"
+          />
+          <div class="input-group-append">
+            <select
+              class="
+                custom-select
+                border-top border-bottom
+                py-1
+                rounded
+                text-center
+              "
+              v-model="recensione.votazione"
               required
-              v-model="recensione.commento"
-            />
-            <div>
-                <select v-model="recensione.votazione" required>
-                  <option :value="index" v-for="index in 5" :key="index">{{index}}</option>
-                </select>
-            </div>
-            <Primary title="Commenta" @buttonClicked="postRecensione"/>
+            >
+              <option value="" disabled selected>Vota</option>
+              <option :value="index" v-for="index in 5" :key="index">
+                {{ index }}
+              </option>
+            </select>
+            <Primary title="Commenta" @buttonClicked="postRecensione" />
           </div>
         </div>
-
       </div>
+
+      <!-- ELENCO RECENSIONI -->
+
       <div class="comm-row">
         <Recensione
           v-for="recensione in locale.recensioni"
@@ -102,13 +126,14 @@
 </template>
 
 <script>
-import CardEvento from "@/components/CardEvento.vue";
+import CardEvento from "@/components/CardEvento";
 import Ranking from "@/components/Ranking";
 import Account from "@/components/icons/Account";
 import Message from "@/components/Message";
 import Primary from "@/components/buttons/Primary";
 import Recensione from "@/components/Recensione";
-import Errors from '@/components/Errors';
+import Errors from "@/components/Errors";
+import Beer from "../../components/icons/Beer";
 
 export default {
   name: "paginaLocale",
@@ -120,7 +145,8 @@ export default {
     Message,
     Primary,
     Recensione,
-    Errors
+    Errors,
+    Beer,
   },
   data() {
     return {
@@ -128,50 +154,55 @@ export default {
       prossimiEventi: null,
       eventiPassati: null,
       recensione: {
-        commento: "", 
+        commento: "",
         votazione: "",
         utente: "",
-        locale: ""
-      }, 
-      error : {
+        locale: "",
+      },
+      error: {
         status: false,
-        text: "Messaggio di default."
-      }
+        text: "Messaggio di default.",
+      },
     };
   },
-  methods:{
-    async postRecensione(){
-
-      this.recensione.locale = this.localeID
-      this.recensione.utente = this.$store.state.user.id
+  methods: {
+    async postRecensione() {
+      this.recensione.locale = this.localeID;
+      this.recensione.utente = this.$store.state.user.id;
 
       const opzioniRichiesta = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${this.$store.state.token}` },
-        body: JSON.stringify(this.recensione)
-      }
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${this.$store.state.token}`,
+        },
+        body: JSON.stringify(this.recensione),
+      };
       try {
-        const res = await fetch(`http://localhost:4000/api/v1/locali/${this.localeID}/recensioni`, opzioniRichiesta)
+        const res = await fetch(
+          `http://localhost:4000/api/v1/locali/${this.localeID}/recensioni`,
+          opzioniRichiesta
+        );
 
         const data = await res.json();
 
-        if(!data.success){
-          this.error.status =  true
-          this.error.messaggio = data.error || data.message || "Errore del server, riprovare."
-        } else this.$router.go()
+        if (!data.success) {
+          this.error.status = true;
+          this.error.messaggio =
+            data.error || data.message || "Errore del server, riprovare.";
+        } else this.$router.go();
       } catch (error) {
-        console.log(error)
-        this.error.status =  true
-        this.error.messaggio = error || "Errore del server, riprovare."
+        console.log(error);
+        this.error.status = true;
+        this.error.messaggio = error || "Errore del server, riprovare.";
       }
-    }
+    },
   },
   async mounted() {
     const res = await fetch(
       `http://localhost:4000/api/v1/locali/${this.localeID}`
     );
     const data = await res.json();
-
     if (data.success) {
       this.locale = data.locale;
       this.prossimiEventi = data.prossimiEventi;
@@ -181,8 +212,7 @@ export default {
 };
 </script>
 
-
-<style>
+<style scoped>
 .post {
   display: flex;
   flex-flow: column nowrap;
@@ -195,10 +225,33 @@ export default {
   padding: 10px;
   border-bottom: 1px solid black;
 }
-.first-title {
+.title-account {
+  padding-right: 1rem;
+}
+.title-locale-name {
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
+}
+.title-locale-row {
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
+}
+.bio-title {
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
+  justify-items: baseline;
+}
+.head-title {
   display: flex;
   flex-flow: row;
   gap: 10px;
+}
+.first-title {
+  display: flex;
+  flex-flow: row;
 }
 .comments {
   display: flex;
@@ -223,5 +276,44 @@ export default {
 }
 .comm-row {
   display: relative;
+}
+.form-group {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 0;
+}
+.custom-select {
+  background-color: white;
+  border: none;
+  margin-left: 1px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  -ms-appearance: none;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+.custom-select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 0.3rem var(--secondaryOrange);
+}
+.beer-button {
+  border: 1px solid var(--primary);
+  background: none;
+  color: #ff9922;
+  font: inherit;
+  padding-top: 0.1rem;
+  cursor: pointer;
+  outline: inherit;
+  border-radius: 4px;
+  display: flex;
+  flex-flow: row;
+  align-items: baseline;
+  column-gap: 3px;
+  margin: 0;
+}
+.beer-button:hover {
+  border: 1px solid #c27419;
+  color: #c27419;
 }
 </style>

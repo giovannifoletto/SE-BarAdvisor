@@ -1,12 +1,11 @@
 <template>
-  <div class="comment py-2">
+  <div class="comment my-2">
     <div class="left">
       <account />
     </div>
     <div class="right py-2">
       <div class="title-event">
-        <h5 class="pb-0 pt-0 px-2">{{ evento.nome }}</h5>
-        <!-- <hr /> -->
+        <h5 class="pb-0 pt-0 px-2">{{ evento.nome[0].toUpperCase() + evento.nome.slice(1, 1000)  }}</h5>
         <h6 v-if="evento.dataInizio < (new Date().now)" class="pb-0 pt-0 px-2">Data: {{ evento.dataInizio }}</h6>
       </div>
 

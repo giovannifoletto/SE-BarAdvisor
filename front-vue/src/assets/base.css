@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;1,500&display=swap');
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css");
 :root {
 
   /* Project palette */
@@ -100,6 +101,14 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+a{
+  color: black;
+  text-decoration: none;
+}
+a:hover{
+  color: var(--primaryHover)
 }
 
 /* Workoround to bootstrap form colored orange */

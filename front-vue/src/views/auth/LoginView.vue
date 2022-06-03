@@ -22,6 +22,7 @@
           required
         />
       </div>
+<!--       
       <div class="form-group myflex">
         <div class="form-check checkbox">
           <input
@@ -35,7 +36,7 @@
             </label>
           </div>
         </div>
-      </div>
+      </div> -->
       <div class="myflex">
         <router-link :to="{name: 'passwordDimenticata'}">
           <Secondary title="Dimenticato la password" />
