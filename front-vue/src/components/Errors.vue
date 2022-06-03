@@ -1,7 +1,7 @@
 <template>
   <div class="alert alert-danger dad mt-3" role="alert" v-if="error.status">
     <div class="text">
-      {{ error.text }}
+      {{ error.messaggio }}
     </div>
     <div class="cancel">
       <button @click="error.status = !error.status">
@@ -17,7 +17,7 @@ import Cross from '@/components/icons/Cross'
 /**
  * @required
  * @param {Object} error - Oggetto errore che setta il testo e il visible.
- * @param {String} error.text - Parametro del testo dell'errore.
+ * @param {String} error.messaggio - Parametro del testo dell'errore.
  * @param {bool} error.status - Perametro per settare la visibilità del messaggio di errore.
  */
 export default {

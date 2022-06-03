@@ -48,7 +48,7 @@
       <div v-else>
         <Message
           :isSuccess="false"
-          :message="{ status: true, text: 'Nessun evento in programma.' }"
+          :message="{ status: true, messaggio: 'Nessun evento in programma.' }"
         />
       </div>
     </div>
@@ -69,7 +69,7 @@
       <div v-else>
         <Message
           :isSuccess="false"
-          :message="{ status: true, text: 'Nessun evento in programma.' }"
+          :message="{ status: true, messaggio: 'Nessun evento in programma.' }"
         />
       </div>
     </div>
@@ -88,6 +88,7 @@
             type="text"
             class="form-control"
             placeholder="Inserisci nuovo commento"
+            required
             v-model="recensione.commento"
           />
           <div class="input-group-append">
@@ -161,12 +162,18 @@ export default {
       },
       error: {
         status: false,
-        text: "Messaggio di default.",
+        messaggio: "Messaggio di default.",
       },
     };
   },
   methods: {
     async postRecensione() {
+      if (!this.commento || !this.votazione) {
+        this.error.status = true;
+        this.error.messaggio = "Compilare tutti i campi";
+        return
+      }
+
       this.recensione.locale = this.localeID;
       this.recensione.utente = this.$store.state.user.id;
 

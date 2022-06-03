@@ -1,28 +1,19 @@
 <template>
   <main>
+    <Errors :error="error" />
+
     <form @submit.prevent="login">
       <div class="form-group">
         <label for="emailInput">Indirizzo Email</label>
-        <input
-          v-model="utente.email"
-          type="email"
-          class="form-control"
-          placeholder="Inserisci email"
-          required
-        />
+        <input v-model="utente.email" type="email" class="form-control" placeholder="Inserisci email" required />
       </div>
       <br />
       <div class="form-group">
         <label for="inputPassword">Password</label>
-        <input
-          v-model="utente.password"
-          type="password"
-          class="form-control"
-          placeholder="Inserisci Password"
-          required
-        />
+        <input v-model="utente.password" type="password" class="form-control" placeholder="Inserisci Password"
+          required />
       </div>
-<!--       
+      <!--       
       <div class="form-group myflex">
         <div class="form-check checkbox">
           <input
@@ -38,10 +29,10 @@
         </div>
       </div> -->
       <div class="myflex">
-        <router-link :to="{name: 'passwordDimenticata'}">
+        <router-link :to="{ name: 'passwordDimenticata' }">
           <Secondary title="Dimenticato la password" />
         </router-link>
-        <router-link :to="{name: 'registrazione'}">
+        <router-link :to="{ name: 'registrazione' }">
           <Secondary title="Crea Nuovo Account" />
         </router-link>
         <div>
@@ -56,12 +47,14 @@
 <script>
 import Primary from "@/components/buttons/Primary.vue";
 import Secondary from "@/components/buttons/Secondary.vue";
+import Errors from '@/components/Errors.vue'
 
 export default {
   name: "LoginView",
   components: {
     Primary,
     Secondary,
+    Errors
   },
   data() {
     return {
@@ -69,6 +62,10 @@ export default {
         email: "",
         password: "",
       },
+      error: {
+        status: false,
+        messaggio: "Messaggio di default.",
+      }
     }
   },
   methods: {
@@ -90,11 +87,15 @@ export default {
           this.$store.commit('setToken', { token: data.token, user: user })
           this.$router.push('/')
         }
-        else
-          console.log(data.error || data.message)
+        else {
+          this.error.status = true;
+        	this.error.messaggio = data?.error || data?.message;
+        }
 
       } catch (error) {
         console.log(error)
+        this.error.status = true;
+        this.error.messaggio = error || "Errore del server, riprovare.";
       }
     },
   },
@@ -106,12 +107,14 @@ main {
   min-height: 60vh;
   padding: 15px;
 }
+
 form {
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
   padding: 10px;
 }
+
 .myflex {
   display: flex;
   flex-flow: column nowrap;
@@ -119,6 +122,7 @@ form {
   gap: 5px;
   padding-top: 10px;
 }
+
 .checkbox {
   display: flex;
   flex-flow: row nowrap;
