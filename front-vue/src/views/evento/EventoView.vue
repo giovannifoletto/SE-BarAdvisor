@@ -18,15 +18,12 @@
         >
           <Secondary title="Visita il Locale gestore dell'evento" />
         </router-link>
-
-
-<!-- v-if="$store.state.user.locale === evento.locale._id" -->
         <router-link
           :to="{
             name: 'formInviaNotifica',
             params: { localeID: evento.locale._id },
           }"
-          
+          v-if="$store.state.user.locale === evento.locale._id"
         >
           <Primary title="Invia una notifica a questo evento" />
         </router-link>
