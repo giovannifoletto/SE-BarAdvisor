@@ -79,6 +79,8 @@ import Secondary from "@/components/buttons/Secondary.vue";
 import Errors from "@/components/Errors.vue";
 import Commento from "@/components/Commento.vue";
 
+import config from "@/config";
+
 export default {
   name: "paginaEvento",
   props: ["eventoID"],
@@ -112,13 +114,13 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${this.$store.state.token}`,
+          Authorization: `Bearer ${this.$store.state.token}`,
         },
         body: JSON.stringify(this.commento),
       };
       try {
         const res = await fetch(
-          `http://localhost:4000/api/v1/eventi/${this.eventoID}/commenti`,
+          `${config.baseURL}/eventi/${this.eventoID}/commenti`,
           opzioneRichiesta
         );
         const data = await res.json();
@@ -142,7 +144,7 @@ export default {
       };
 
       const res = await fetch(
-        `http://localhost:4000/api/v1/eventi/${this.eventoID}/prenotazioni`,
+        `${config.baseURL}/eventi/${this.eventoID}/prenotazioni`,
         opzioniRichiesta
       );
       const data = await res.json();
@@ -150,7 +152,7 @@ export default {
       if (data.success) this.utentePrenotato = true;
       else {
         this.error.status = true;
-        this.error.messaggio = data?.error || data?.message;
+        this.error.messaggio = data?.error || data?.message || "Errore inaspettato, riprovare";
       }
     },
     async deletePrenotazione() {
@@ -160,7 +162,7 @@ export default {
       };
 
       const res = await fetch(
-        `http://localhost:4000/api/v1/eventi/${this.eventoID}/prenotazioni`,
+        `${config.baseURL}/eventi/${this.eventoID}/prenotazioni`,
         opzioniRichiesta
       );
       const data = await res.json();
@@ -168,15 +170,13 @@ export default {
       if (data.success) this.utentePrenotato = false;
       else {
         this.error.status = true;
-        this.error.messaggio = data?.error || data?.message;
+        this.error.messaggio = data?.error || data?.message || "Errore inaspettato, riprovare";
       }
     },
   },
   async mounted() {
     try {
-      const res = await fetch(
-        "http://localhost:4000/api/v1/eventi/" + this.eventoID
-      );
+      const res = await fetch(`${config.baseURL}/eventi/${this.eventoID}`);
       const data = await res.json();
 
       if (data.success) {

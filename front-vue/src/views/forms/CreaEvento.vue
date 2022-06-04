@@ -50,6 +50,8 @@ import Errors from "@/components/Errors";
 import Primary from "@/components/buttons/Primary";
 import Secondary from "@/components/buttons/Secondary";
 
+import config from "@/config";
+
 export default {
   components: {
     Errors,
@@ -80,7 +82,7 @@ export default {
       console.log(opzioniRichiesta)
       try {
         const res = await fetch(
-          "http://localhost:4000/api/v1/locali/" + this.localeID + "/eventi",
+          `${config.baseURL}/locali/${this.localeID}/eventi`,
           opzioniRichiesta
         );
         const data = await res.json();
@@ -90,7 +92,7 @@ export default {
         if (data.success) this.$router.push({ name: "paginaLocale" });
         else {
           this.error.status = true
-          this.error.text = data?.message || data?.error || "Errore nel fetch."
+          this.error.text = data?.message || data?.error || "Errore imprevisto."
         }
       } catch (error) {
         console.log(error)

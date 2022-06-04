@@ -26,9 +26,10 @@ export default {
     LeftDiv,
     RightDiv,
   },
-  // mounted(){
-  //   this.$store.commit('recoverState')
-  // }
+  data(){
+    this.$store.commit('recoverState')
+    return{}
+  }
 };
 </script>
 
