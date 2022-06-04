@@ -12,14 +12,14 @@
         <label for="inputPassword">Password</label>
         <input v-model="utente.password" type="password" class="form-control" placeholder="Inserisci Password"
           required />
-      </div>
-      <!--       
+      </div>     
       <div class="form-group myflex">
         <div class="form-check checkbox">
           <input
             class="form-check-input"
             type="checkbox"
             id="remainLoggedIn"
+            v-model="restaLoggato"
           />
           <div>
             <label class="form-check-label" for="remainLoggedIn">
@@ -27,7 +27,7 @@
             </label>
           </div>
         </div>
-      </div> -->
+      </div>
       <div class="myflex">
         <router-link :to="{ name: 'passwordDimenticata' }">
           <Secondary title="Dimenticato la password" />
@@ -49,6 +49,8 @@ import Primary from "@/components/buttons/Primary.vue";
 import Secondary from "@/components/buttons/Secondary.vue";
 import Errors from '@/components/Errors.vue'
 
+import config from "@/config";
+
 export default {
   name: "LoginView",
   components: {
@@ -65,7 +67,8 @@ export default {
       error: {
         status: false,
         messaggio: "Messaggio di default.",
-      }
+      },
+      restaLoggato: false,
     }
   },
   methods: {
@@ -77,23 +80,22 @@ export default {
       }
 
       try {
-        const res = await fetch('http://localhost:4000/api/v1/auth/login', opzioniRichiesta)
+        const res = await fetch(`${config.baseURL}/auth/login`, opzioniRichiesta)
         const data = await res.json()
 
         if (data.success) {
 
           const user = JSON.parse(atob(data.token.split('.')[1]))
 
-          this.$store.commit('setToken', { token: data.token, user: user })
+          this.$store.commit('setLogin', { token: data.token, user: user }, this.restaLoggato)
           this.$router.push('/')
         }
         else {
           this.error.status = true;
-        	this.error.messaggio = data?.error || data?.message;
+        	this.error.messaggio = data?.error || data?.message || "Errore inaspettato";
         }
 
       } catch (error) {
-        console.log(error)
         this.error.status = true;
         this.error.messaggio = error || "Errore del server, riprovare.";
       }
