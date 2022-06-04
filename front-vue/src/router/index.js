@@ -19,6 +19,7 @@ import LocaleView from '@/views/locale/LocaleView.vue'
 import ProfiloPersonale from '@/views/account/ProfiloPersonale'
 
 import CreaEvento from '@/views/forms/CreaEvento.vue'
+import InviaNotifica from '@/views/forms/InviaNotifica.vue'
 
 import Error403 from '@/views/pagineErrore/403.vue'
 import PageNotFound from '@/views/pagineErrore/PageNotFound'
@@ -70,6 +71,12 @@ const routes = [
     path: '/locali/:localeID',
     name: 'paginaLocale',
     component: LocaleView,
+    props: true
+  },
+  {
+    path: '/locali/:localeID/invianotifica/:eventoID',
+    name: 'formInviaNotifica',
+    component: InviaNotifica,
     props: true
   },
   {

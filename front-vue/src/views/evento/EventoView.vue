@@ -13,10 +13,22 @@
         <router-link
           :to="{
             name: 'paginaLocale',
-            params: { localeID: evento.locale._id },
+            params: { localeID: evento.locale._id, eventoID: eventoID },
           }"
         >
           <Secondary title="Visita il Locale gestore dell'evento" />
+        </router-link>
+
+
+<!-- v-if="$store.state.user.locale === evento.locale._id" -->
+        <router-link
+          :to="{
+            name: 'formInviaNotifica',
+            params: { localeID: evento.locale._id },
+          }"
+          
+        >
+          <Primary title="Invia una notifica a questo evento" />
         </router-link>
 
         <div v-if="$store.state.token" class="py-2">
