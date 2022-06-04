@@ -17,7 +17,8 @@
 
 <script>
 import PostEvento from "@/components/PostEvento";
-import Errors from '@/components/Errors'
+import Errors from '@/components/Errors';
+import config from "@/config";
 
 export default {
   name: "HomeView",
@@ -32,7 +33,7 @@ export default {
   },
   async mounted() {
     try {
-      const res = await fetch("http://localhost:4000/api/v1/eventi");
+      const res = await fetch(`${config.baseURL}/eventi`);
       const data = await res.json();
 
       if (data.success) {

@@ -21,6 +21,8 @@
 import Account from "@/components/icons/Account";
 import Ranking from "./Ranking.vue";
 
+import config from "@/config";
+
 export default {
   name: "Commento",
   props: ["idUtente", "commento"],
@@ -36,7 +38,7 @@ export default {
   async mounted() {
     try {
       const res = await fetch(
-        `http://localhost:4000/api/v1/auth/utenti/${this.idUtente}`
+        `${config.baseURL}/auth/utenti/${this.idUtente}`
       );
       const data = await res.json();
 

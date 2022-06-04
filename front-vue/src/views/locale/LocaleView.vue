@@ -48,7 +48,7 @@
       <div v-else>
         <Message
           :isSuccess="false"
-          :message="{ status: true, messaggio: 'Nessun evento in programma.' }"
+          :messaggio="{ status: true, messaggio: 'Nessun evento in programma.' }"
         />
       </div>
     </div>
@@ -69,7 +69,7 @@
       <div v-else>
         <Message
           :isSuccess="false"
-          :message="{ status: true, messaggio: 'Nessun evento in programma.' }"
+          :messaggio="{ status: true, messaggio: 'Nessun evento in programma.' }"
         />
       </div>
     </div>
@@ -136,6 +136,8 @@ import Recensione from "@/components/Recensione";
 import Errors from "@/components/Errors";
 import Beer from "../../components/icons/Beer";
 
+import config from "@/config";
+
 export default {
   name: "paginaLocale",
   props: ["localeID"],
@@ -187,7 +189,7 @@ export default {
       };
       try {
         const res = await fetch(
-          `http://localhost:4000/api/v1/locali/${this.localeID}/recensioni`,
+          `${config.baseURL}/locali/${this.localeID}/recensioni`,
           opzioniRichiesta
         );
 
@@ -207,7 +209,7 @@ export default {
   },
   async mounted() {
     const res = await fetch(
-      `http://localhost:4000/api/v1/locali/${this.localeID}`
+      `${config.baseURL}/locali/${this.localeID}`
     );
     const data = await res.json();
     if (data.success) {

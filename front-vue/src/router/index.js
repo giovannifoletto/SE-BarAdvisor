@@ -19,6 +19,7 @@ import LocaleView from '@/views/locale/LocaleView.vue'
 import ProfiloPersonale from '@/views/account/ProfiloPersonale'
 
 import CreaEvento from '@/views/forms/CreaEvento.vue'
+import CambiaPassword from '@/views/forms/CambiaPassword.vue'
 
 import Error403 from '@/views/pagineErrore/403.vue'
 import PageNotFound from '@/views/pagineErrore/PageNotFound'
@@ -80,11 +81,16 @@ const routes = [
     beforeEnter: [auth, role]
   },
   {
+    path: '/cambiapassword',
+    name: 'fromCambiaPassword',
+    component: CambiaPassword,
+    beforeEnter: [auth]
+  },
+  {
     path: '/account',
     name: 'profiloPersonale',
-    props: true,
     component: ProfiloPersonale,
-    // beforeEnter: [auth]
+    beforeEnter: [auth]
   },
   {
     path: '/403', 
