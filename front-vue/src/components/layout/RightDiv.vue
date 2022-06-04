@@ -42,7 +42,19 @@
               <Login />
             </div>
             <div>
-              <h3>Vai al mio account</h3>
+              <h3>Vai al mio Locale</h3>
+            </div>
+          </div>
+        </router-link>
+      </li>
+      <li>
+        <router-link v-if="$store.state.user.ruolo === 'Cliente'" :to="{ name: 'profiloPersonale' }">
+          <div class="flex">
+            <div class="icon">
+              <Login />
+            </div>
+            <div>
+              <h3>Vai al mio profilo</h3>
             </div>
           </div>
         </router-link>

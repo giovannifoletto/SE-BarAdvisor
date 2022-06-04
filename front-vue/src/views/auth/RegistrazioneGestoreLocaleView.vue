@@ -1,6 +1,9 @@
 
 <template>
   <div class="container pt-2">
+
+    <Errors :error="error" />
+
     <form @submit.prevent="registrazioneGestoreLocale">
       <div class="form-group mb-1">
         <label for="nome">Nome Utente</label>
@@ -76,9 +79,7 @@
         <div>
           <div class="py-1"></div>
 
-          <Primary type="submit"
-            title="Registrati"
-          />
+          <Primary type="submit" title="Registrati" />
         </div>
         <router-link :to="{ name: 'registrazione' }">
           <Secondary title="Torna indietro" />
@@ -91,47 +92,63 @@
 <script>
 import Primary from "@/components/buttons/Primary.vue";
 import Secondary from "@/components/buttons/Secondary.vue";
+import Errors from "@/components/Errors.vue";
+
+import config from "@/config";
 
 export default {
   name: "RegistrazionView",
   components: {
     Secondary,
     Primary,
+    Errors
   },
   data() {
     return {
       gestoreLocale: {
-        nome: '',
-        email: '',
-        password: '',
-        nomeLocale: '',
-        posizione: ''
+        nome: "",
+        email: "",
+        password: "",
+        nomeLocale: "",
+        posizione: "",
       },
-      confermaPassword: ''
-    }
+      confermaPassword: "",
+      error: {
+        status: "",
+        messagggio: "Messaggio di Errore"
+      }
+    };
   },
   methods: {
     async registrazioneGestoreLocale() {
       const opzioniRichiesta = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(this.gestoreLocale)
-      }
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(this.gestoreLocale),
+      };
 
       try {
-        const res = await fetch('http://localhost:4000/api/v1/auth/new/gestorelocale', opzioniRichiesta)
-        const data = await res.json()
+        const res = await fetch(
+          `${config.baseURL}/auth/new/gestorelocale`,
+          opzioniRichiesta
+        );
+        const data = await res.json();
 
-        if (data.success)
-          this.$router.push('/login')
-        else
-          console.log(data.error || data.message)
-
+        if (data.success) this.$router.push("/login");
+        else {
+          console.log(data.error || data.message);
+          this.error.status = true;
+          this.error.messaggio =
+            data.error || data.message || "Errore inaspettato, riprovare";
+        }
       } catch (error) {
-        console.log(error)
+        console.log(error);
+        this.error.status = true;
+        this.error.messaggio =
+          data.error || data.message || "Errore inaspettato, riprovare";
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -2,9 +2,14 @@
   <div class="post">
     <div class="title">
       <div>
-        <h3>{{ user.nome }}</h3>
+        <h3>
+          {{ nomeUtente.slice(0, 1).toUpperCase() + nomeUtente.slice(1, 1000) }}
+        </h3>
       </div>
     </div>
+
+    <Errors :error="error" />
+
     <!-- 
 	<div class="under">
 		<div class="img">
@@ -44,7 +49,7 @@
       <div v-if="user.prenotazioni.length != 0">
         <div class="comm-row">
           <CardEvento
-            v-for="evento in user.prenotazioni"
+            v-for="evento in prenotazioni"
             :key="evento._id"
             :evento="evento"
           />
@@ -56,34 +61,41 @@
           :message="{ status: true, messaggio: 'Nessun evento in programma.' }"
         />
       </div>
-    </div>
+    </div> -->
 
     <div class="comments">
       <div class="info-comments px-4 mt-3 mb-2">
         <h3>Notifiche</h3>
       </div>
-      <div class="comm">
-        <div class="comm-row">
-          {#each notifications as n}
-          <NotificationListItem />
-          {/each}
-        </div>
+      <div class="comm-row" v-if="notifiche.length !== 0">
+        <CardNotifica
+          v-for="not in notifiche"
+          :key="not"
+          :testoCompleto="not"
+        />
       </div>
-    </div> -->
+      <div v-else>
+        <Message
+          :isSuccess="false"
+          :messaggio="{ status: true, messaggio: 'Nessuna notifica.' }"
+        />
+      </div>
+    </div>
 
     <div class="final-button mt-3 mb-1">
       <div class="info-comments px-4 mt-3 mb-2">
         <h3>Sezione Personale</h3>
       </div>
       <div class="p-1">
-        <Primary title="Cambia password" @buttonClicked="formCambiaPassoword = !formCambiaPassoword"/>
-        <div class="form-cambia-password" v-if="formCambiaPassoword">
-            <h1>Cambia passoword</h1>
+        <div class="p-1 text-center">
+            <router-link :to="{name: 'fromCambiaPassword'}">
+                <Primary title="Cambia password" />
+            </router-link>
         </div>
 
-      </div>
-      <div class="p-1">
-        <Primary title="Elimina Account" />
+        <div class="p-1 text-center">
+          <Primary title="Elimina Account" />
+        </div>
       </div>
     </div>
   </div>
@@ -94,26 +106,51 @@ import Primary from "@/components/buttons/Primary";
 import CardLocale from "@/components/CardLocale.vue";
 import CardEvento from "@/components/CardEvento.vue";
 import Message from "@/components/Message.vue";
+import CardNotifica from "@/components/CardNotifica";
+import Errors from "@/components/Errors.vue";
+
+import config from "@/config";
+
 export default {
   components: {
     Primary,
     CardLocale,
     CardEvento,
     Message,
+    CardNotifica,
+    Errors,
   },
   data() {
     return {
-      user: {},
-      formCambiaPassoword: false
+      user: this.$store.state.user,
+      nomeUtente: "",
+      notifiche: [],
+      prenotazioni: [],
+      formCambiaPassoword: false,
+      error: {
+        status: false,
+        messaggio: "Messaggio di default.",
+      },
     };
   },
-  mounted() {
-    this.user = {
-      nome: "Giovanni",
-      prenotazioni: [],
-      notifiche: [],
-      email: [],
-    };
+  async mounted() {
+    try {
+      const res = await fetch(
+        `${config.baseURL}/auth/utenti/${this.$store.state.user.id}`
+      );
+      const data = await res.json();
+      if (data.success) {
+        this.notifiche = data.notifiche;
+        this.prenotazioni = data.prenotazioni;
+        this.nomeUtente = data.nomeUtente;
+      } else {
+        this.error.status = true;
+        this.error.messaggio = data.error || data.message || "Errore del server, riprovare.";
+      }
+    } catch (error) {
+      this.error.status = true;
+      this.error.messaggio = error || "Errore del server 1, riprovare.";
+    }
   },
 };
 </script>

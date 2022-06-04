@@ -39,6 +39,8 @@ import Secondary from '@/components/buttons/Secondary.vue'
 import Message from '@/components/Message.vue'
 import Errors from '@/components/Errors.vue'
 
+import config from '@/config'
+
 export default {
     name: 'passwordDimenticata',
     components: {
@@ -51,7 +53,7 @@ export default {
         return {
             email: '',
             message: {
-              text: "Inserire email",
+              messaggio: "Inserire email",
               status: true
             },
             error: {
@@ -68,7 +70,7 @@ export default {
                 body: JSON.stringify({ email: this.email })
             }
             try {
-              const res = await fetch('http://localhost:4000/api/v1/auth/passworddimenticata', opzioneRichiesta)
+              const res = await fetch(`${config.baseURL}/auth/passworddimenticata`, opzioneRichiesta)
   
               const data = await res.json()
               
