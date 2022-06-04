@@ -19,7 +19,7 @@ export default {
   mounted() {
     for (let i = 0; i < 5; ++i) {
       var r;
-      if (this.ranking >= i) {
+      if (this.ranking > i) {
         r = { index: i, active: true };
       } else {
         r = { index: i, active: false };

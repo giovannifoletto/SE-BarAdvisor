@@ -145,7 +145,7 @@ export default {
         this.nomeUtente = data.nomeUtente;
       } else {
         this.error.status = true;
-        this.error.messaggio = "Errore del server, riprovare.";
+        this.error.messaggio = data.error || data.message || "Errore del server, riprovare.";
       }
     } catch (error) {
       this.error.status = true;

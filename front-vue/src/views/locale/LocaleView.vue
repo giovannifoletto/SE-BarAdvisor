@@ -170,9 +170,9 @@ export default {
   },
   methods: {
     async postRecensione() {
-      if (!this.commento || !this.votazione) {
+      if (!this.recensione.commento || !this.recensione.votazione) {
         this.error.status = true;
-        this.error.messaggio = "Compilare tutti i campi";
+        this.error.messaggio = "Compilare tutti i campi.";
         return
       }
 
