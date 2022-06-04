@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 import auth from '@/middleware/authentication'
 import role from '@/middleware/role'
+import admin from '@/middleware/admin'
 
 import HomeView from '../views/HomeView.vue'
 
@@ -24,6 +25,7 @@ import Error403 from '@/views/pagineErrore/403.vue'
 import PageNotFound from '@/views/pagineErrore/PageNotFound'
 
 import AdminHomePage from '@/views/admin/AdminHomeView'
+import formVerificaLocali from '@/views/admin/VerificaLocali'
 
 const routes = [
   {
@@ -97,12 +99,20 @@ const routes = [
     path: '/admin',
     name: 'homePageAdmin',
     component: AdminHomePage,
+    beforeEnter: [auth, admin]
+  },
+  {
+    path: '/admin/verificalocali',
+    name: 'formVerificaLocale',
+    component: formVerificaLocali,
+    beforeEnter: [auth, admin]
   },
   // default route se non trova nessun pagina
   {
     path: '/:pathMatch(.*)*',
     name: 'pageNotFound',
-    component: PageNotFound
+    component: PageNotFound,
+    // beforeEnter: [auth, admin]
   }
 ]
 
