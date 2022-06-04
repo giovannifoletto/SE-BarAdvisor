@@ -23,6 +23,8 @@ import CreaEvento from '@/views/forms/CreaEvento.vue'
 import Error403 from '@/views/pagineErrore/403.vue'
 import PageNotFound from '@/views/pagineErrore/PageNotFound'
 
+import AdminHomePage from '@/views/admin/AdminHomeView'
+
 const routes = [
   {
     path: '/',
@@ -84,12 +86,17 @@ const routes = [
     name: 'profiloPersonale',
     props: true,
     component: ProfiloPersonale,
-    // beforeEnter: [auth]
+    beforeEnter: [auth]
   },
   {
     path: '/403', 
     name: 'error403',
     component: Error403
+  },
+  {
+    path: '/admin',
+    name: 'homePageAdmin',
+    component: AdminHomePage,
   },
   // default route se non trova nessun pagina
   {
