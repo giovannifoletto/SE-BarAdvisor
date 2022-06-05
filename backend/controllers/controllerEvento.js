@@ -173,9 +173,11 @@ exports.invioNotifica = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Evento e/o locale non trovati' })
         
         // aggiunta dei dettagli dell'evento e del locale
-        const messaggioCompleto = messaggio + "\nRelativo all'evento: " + evento.nome
-            + "\nsvoltosi in data: " + (new Date(evento.dataInizio)).toDateString()
-            + "\nnel locale: " + locale.nome
+        const messaggioCompleto = 
+            messaggio 
+            + "//" + evento.nome
+            + "//" + (new Date(evento.dataInizio)).toDateString()
+            + "//" + locale.nome
         
         // salvataggio del messaggio nelle notifiche di tutti i partecipanti
         await evento.prenotazioni.forEach(async (usr) => {

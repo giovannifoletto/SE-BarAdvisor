@@ -1,5 +1,6 @@
 <template>
   <main>
+    <Errors :error="error"/>
     <form @submit.prevent="resetPassword">
       <div class="form-group">
         <label for="inputPassword">Inserisci nuova password</label>
@@ -35,17 +36,26 @@
 <script>
 import Primary from "@/components/buttons/Primary.vue";
 import Secondary from "@/components/buttons/Secondary.vue";
+import Errors from "@/components/Errors.vue";
+
+import config from "@/config";
+
 export default {
   name: "resetPassword",
   props: ["passwordToken"],
   components: {
     Primary,
     Secondary,
+    Errors
   },
   data() {
     return {
       password: "",
       confermaPassword: "",
+      error: {
+        status: false,
+        messaggio: "Errore generico del server"
+      }
     };
   },
   methods: {
@@ -57,14 +67,20 @@ export default {
       }
 
       try {
-        const res = await fetch('http://localhost:4000/api/v1/auth/resetpassword/' + this.passwordToken, opzioneRichiesta)
+        const res = await fetch(`${config.baseURL}/auth/resetpassword/${this.passwordToken}`, opzioneRichiesta)
         const data = await res.json()  
         
-        if (data.success)
+        if (data.success){
           this.$router.push({ name: 'login' })
+        } else {
+          this.error.status = true
+          this.error.messaggio = data.error || data.message || "Errore inaspettato, riprovare"
+        }
           
       } catch (error) {
         console.log(error)
+        this.error.status = true
+        this.error.messaggio = error || "Errore inaspettato, riprovare"
       }
 
     },

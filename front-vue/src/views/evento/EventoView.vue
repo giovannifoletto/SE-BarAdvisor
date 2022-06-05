@@ -18,11 +18,22 @@
       <div class="description text-center">
         <h5>{{ evento.descrizione }}</h5>
 
-        <router-link :to="{
-          name: 'paginaLocale',
-          params: { localeID: evento.locale._id },
-        }">
+        <router-link
+          :to="{
+            name: 'paginaLocale',
+            params: { localeID: evento.locale._id },
+          }"
+        >
           <Secondary title="Visita il Locale gestore dell'evento" />
+        </router-link>
+        <router-link
+          :to="{
+            name: 'formInviaNotifica',
+            params: { localeID: evento.locale._id, eventoID: eventoID},
+          }"
+          v-if="$store.state.user.locale === evento.locale._id"
+        >
+          <Primary title="Invia una notifica a questo evento" />
         </router-link>
 
         <div v-if="$store.state.token" class="py-2">
@@ -59,6 +70,8 @@ import Secondary from "@/components/buttons/Secondary.vue";
 import Errors from "@/components/Errors.vue";
 import Commento from "@/components/Commento.vue";
 import axios from 'axios'
+
+import config from "@/config";
 
 export default {
   name: "paginaEvento",
@@ -114,13 +127,13 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${this.$store.state.token}`,
+          Authorization: `Bearer ${this.$store.state.token}`,
         },
         body: JSON.stringify(this.commento),
       };
       try {
         const res = await fetch(
-          `http://localhost:4000/api/v1/eventi/${this.eventoID}/commenti`,
+          `${config.baseURL}/eventi/${this.eventoID}/commenti`,
           opzioneRichiesta
         );
         const data = await res.json();
@@ -144,7 +157,7 @@ export default {
       };
 
       const res = await fetch(
-        `http://localhost:4000/api/v1/eventi/${this.eventoID}/prenotazioni`,
+        `${config.baseURL}/eventi/${this.eventoID}/prenotazioni`,
         opzioniRichiesta
       );
       const data = await res.json();
@@ -152,7 +165,7 @@ export default {
       if (data.success) this.utentePrenotato = true;
       else {
         this.error.status = true;
-        this.error.messaggio = data?.error || data?.message;
+        this.error.messaggio = data?.error || data?.message || "Errore inaspettato, riprovare";
       }
     },
     async deletePrenotazione() {
@@ -162,7 +175,7 @@ export default {
       };
 
       const res = await fetch(
-        `http://localhost:4000/api/v1/eventi/${this.eventoID}/prenotazioni`,
+        `${config.baseURL}/eventi/${this.eventoID}/prenotazioni`,
         opzioniRichiesta
       );
       const data = await res.json();
@@ -171,15 +184,13 @@ export default {
         this.utentePrenotato = false;
       else {
         this.error.status = true;
-        this.error.messaggio = data?.error || data?.message;
+        this.error.messaggio = data?.error || data?.message || "Errore inaspettato, riprovare";
       }
     },
   },
   async mounted() {
     try {
-      const res = await fetch(
-        `http://localhost:4000/api/v1/eventi/${this.eventoID}`
-      );
+      const res = await fetch(`${config.baseURL}/eventi/${this.eventoID}`);
       const data = await res.json();
 
       if (data.success) {
@@ -193,7 +204,7 @@ export default {
 
       const response = await axios.get(`http://localhost:4000/api/v1/eventi/${this.eventoID}/copertina`)
 
-      if (response.data.success) {
+      if (response.data.success && response.data.imm) {
         var bytes = new Uint8Array(response.data.imm.file.data.data)
         var binary = bytes.reduce((data, b) => data += String.fromCharCode(b), '')
         this.copertina = `data:${response.data.imm.file.contentType};base64,${btoa(binary)}`

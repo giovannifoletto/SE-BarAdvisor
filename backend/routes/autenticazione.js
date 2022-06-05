@@ -27,6 +27,6 @@ router.post('/passworddimenticata', controllerUtenti.passwordDimenticata)
 router.put('/resetpassword/:resetToken', controllerUtenti.resetToken)
 
 // cambio password - diverso da password dimenticata
-router.put('/cambioPassword', checkAuth, controllerUtenti.changePassword)
+router.put('/cambiopassword', checkAuth, controllerUtenti.changePassword)
 
 module.exports = router

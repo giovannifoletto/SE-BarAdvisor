@@ -41,6 +41,9 @@
               {{ months[new Date(dataInizio).getMonth()] }}
               {{ new Date(dataInizio).getFullYear() }}
             </h4>
+            <h4>
+              ore: {{ new Date(dataInizio).toLocaleTimeString() }}
+            </h4>
           </div>
 
         </div>

@@ -2,11 +2,11 @@
   <div>
     <Header></Header>
     <div class="page">
-      <RightDiv></RightDiv>
+      <LeftDiv></LeftDiv>
       <div class="content">
         <router-view></router-view>
       </div>
-      <LeftDiv></LeftDiv>
+      <RightDiv></RightDiv>
     </div>
     <Footer></Footer>
   </div>
@@ -26,9 +26,10 @@ export default {
     LeftDiv,
     RightDiv,
   },
-  // mounted(){
-  //   this.$store.commit('recoverState')
-  // }
+  data(){
+    this.$store.commit('recoverState')
+    return{}
+  }
 };
 </script>
 
