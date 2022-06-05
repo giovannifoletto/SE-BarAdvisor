@@ -1,8 +1,16 @@
 <template>
   <div>
     <Errors :error="error" />
+    <div>
+      <form enctype="multipart/form-data" @submit.prevent="caricaImmagine">
+        <input type="file" @change="fileSelezionato">
+        <button class="submit">Carica</button>
+      </form>
 
-    <div class="event" v-if="evento">
+    </div>
+    <div class="event" v-if="eventoCaricato">
+      <img class="image" alt="" :src="copertina" v-if="copertinaCaricata">
+      
       <div class="title">
         <h3>{{ evento.nome[0].toUpperCase() + evento.nome.slice(1, 1000) }}</h3>
       </div>
@@ -10,26 +18,16 @@
       <div class="description text-center">
         <h5>{{ evento.descrizione }}</h5>
 
-        <router-link
-          :to="{
-            name: 'paginaLocale',
-            params: { localeID: evento.locale._id },
-          }"
-        >
+        <router-link :to="{
+          name: 'paginaLocale',
+          params: { localeID: evento.locale._id },
+        }">
           <Secondary title="Visita il Locale gestore dell'evento" />
         </router-link>
 
         <div v-if="$store.state.token" class="py-2">
-          <Primary
-            title="Prenota"
-            v-if="!utentePrenotato"
-            @buttonClicked="postPrenotazione"
-          />
-          <Secondary
-            title="Cancella prenotazione"
-            v-if="utentePrenotato"
-            @buttonClicked="deletePrenotazione"
-          />
+          <Primary title="Prenota" v-if="!utentePrenotato" @buttonClicked="postPrenotazione" />
+          <Secondary title="Cancella prenotazione" v-if="utentePrenotato" @buttonClicked="deletePrenotazione" />
         </div>
       </div>
 
@@ -39,24 +37,15 @@
 
           <div class="form-recensione" v-if="$store.state.token">
             <div class="input-group mb-3">
-              <input
-                type="text"
-                class="form-control"
-                required
-                v-model="commento.commento"
-              />
+              <input type="text" class="form-control" required v-model="commento.commento" />
               <div class="input-group-append">
                 <Primary title="Commenta" @buttonClicked="postCommento" />
               </div>
             </div>
           </div>
           <div class="comm-row">
-            <Commento
-              v-for="commento in evento.commenti"
-              :key="commento._id"
-              :commento="commento.commento"
-              :idUtente="commento.utente"
-            />
+            <Commento v-for="commento in evento.commenti" :key="commento._id" :commento="commento.commento"
+              :idUtente="commento.utente" />
           </div>
         </div>
       </div>
@@ -69,6 +58,7 @@ import Primary from "@/components/buttons/Primary.vue";
 import Secondary from "@/components/buttons/Secondary.vue";
 import Errors from "@/components/Errors.vue";
 import Commento from "@/components/Commento.vue";
+import axios from 'axios'
 
 export default {
   name: "paginaEvento",
@@ -82,7 +72,11 @@ export default {
   data() {
     return {
       evento: null,
+      eventoCaricato: false,
+      copertinaCaricata: false,
       utentePrenotato: false,
+      immagine: null,
+      copertina: null,
       commento: {
         utente: null,
         commento: "",
@@ -94,6 +88,23 @@ export default {
     };
   },
   methods: {
+    fileSelezionato(event) {
+      this.immagine = event.target.files[0]
+    },
+    async caricaImmagine() {
+      const fd = new FormData()
+      fd.append('immagine', this.immagine)
+
+      try {
+        const res = await axios.post(`http://localhost:4000/api/v1/eventi/${this.eventoID}/copertina`, fd)
+
+        if (res.data.success)
+          console.log('woowwww')
+
+      } catch (error) {
+        console.log(error)
+      }
+    },
     async postCommento() {
       this.commento.utente = this.$store.state.user.id;
 
@@ -156,7 +167,8 @@ export default {
       );
       const data = await res.json();
 
-      if (data.success) this.utentePrenotato = false;
+      if (data.success) 
+        this.utentePrenotato = false;
       else {
         this.error.status = true;
         this.error.messaggio = data?.error || data?.message;
@@ -166,17 +178,28 @@ export default {
   async mounted() {
     try {
       const res = await fetch(
-        "http://localhost:4000/api/v1/eventi/" + this.eventoID
+        `http://localhost:4000/api/v1/eventi/${this.eventoID}`
       );
       const data = await res.json();
 
       if (data.success) {
-        this.evento = data.evento;
+        this.evento = data.evento
+        this.eventoCaricato = true
         this.evento.prenotazioni.forEach((usr) => {
           if (usr._id === this.$store.state.user.id)
             this.utentePrenotato = true;
         });
       }
+
+      const response = await axios.get(`http://localhost:4000/api/v1/eventi/${this.eventoID}/copertina`)
+
+      if (response.data.success) {
+        var bytes = new Uint8Array(response.data.imm.file.data.data)
+        var binary = bytes.reduce((data, b) => data += String.fromCharCode(b), '')
+        this.copertina = `data:${response.data.imm.file.contentType};base64,${btoa(binary)}`
+        this.copertinaCaricata = true
+      }
+      
     } catch (error) {
       console.log(error);
       this.error.status = true;
@@ -192,6 +215,11 @@ export default {
   flex-flow: column nowrap;
   border-radius: 4px;
   justify-content: baseline;
+}
+
+.image {
+  width: 70px;
+  height: 70px;
 }
 
 .title {

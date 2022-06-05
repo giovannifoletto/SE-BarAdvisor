@@ -65,37 +65,38 @@ export default {
         descrizione: "",
       },
       error: {
-        text: null,
+        messaggio: null,
         status: false,
       },
     };
   },
   methods: {
     async postEvento() {
+      const token = this.$store.token || localStorage.getItem('token')
       const opzioniRichiesta = {
         method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${this.$store.token || localStorage.getItem('token')}` },
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
         body: JSON.stringify(this.evento),
       };
-      console.log(opzioniRichiesta)
+      
       try {
         const res = await fetch(
-          "http://localhost:4000/api/v1/locali/" + this.localeID + "/eventi",
+          `http://localhost:4000/api/v1/locali/${this.localeID}/eventi`,
           opzioniRichiesta
         );
         const data = await res.json();
 
-        console.log(data)
+        
 
         if (data.success) this.$router.push({ name: "paginaLocale" });
         else {
           this.error.status = true
-          this.error.text = data?.message || data?.error || "Errore nel fetch."
+          this.error.messaggio = data?.message || data?.error || "Errore nel fetch."
         }
       } catch (error) {
         console.log(error)
         this.error.status = true
-        this.error.text = error || "Errore imprevisto."
+        this.error.messaggio = error || "Errore imprevisto."
       }
     },
   },
