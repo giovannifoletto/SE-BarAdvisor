@@ -6,6 +6,8 @@ services:
       - /home/giovannifoletto/Documents/UNI/SE-BarAdvisor/backend:/app
     ports:
       - "4000:4000"
+    volumes:
+      - ./backend:/app
     links:
       - mongo
     environment:
