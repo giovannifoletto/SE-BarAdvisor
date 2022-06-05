@@ -21,6 +21,19 @@ exports.getAllUtenti = async (req, res) => {
     }
 }
 
+exports.getNomeUtente = async (req, res) => {
+    try {
+        const utente = await Utente.findById(req.params.utenteID).populate('prenotazioni', 'nome dataInizo')
+
+        if (! utente)
+            return res.status(400).json({ success: false, message: 'Utente inesistente' })
+        
+        res.status(200).json({ success: true, nomeUtente: utente.nome, prenotazioni: utente.prenotazioni, notifiche: utente.notifiche })
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message })
+    }
+}
+
 exports.registrazioneLocale = async (req, res) => {
     const { nome, email, password, nomeLocale, posizione } = req.body
 
@@ -122,6 +135,7 @@ exports.loginUtente = async (req, res) => {
         // se tutto va bene, creo il token aggiungendo i vari campi utili
         const token = jwt.sign({
             id: utente._id,
+            nome: utente.nome,
             email: utente.email,
             ruolo: utente.ruolo,
             locale: utente.locale || ""
@@ -132,7 +146,7 @@ exports.loginUtente = async (req, res) => {
             expiresIn: "1 day"
         })
 
-        res.status(200).json({ success: true, token: token, email: email })
+        res.status(200).json({ success: true, token: token })
         
     } catch (err) {
         res.status(500).json({ success: false, error: err.message })
@@ -165,7 +179,7 @@ exports.passwordDimenticata = async (req, res) => {
         await user.save()
 
         // messaggio che si invia per mail con il link al form di recupero
-        const resetURL = `http://localhost:${config.PORT}/auth/resetpassword/${resetToken}`
+        const resetURL = `http://${config.HOST}:${config.FRONT_PORT}/resetpassword/${resetToken}`
 
         const message = `
             <h1>You have requested a password reset</h1>

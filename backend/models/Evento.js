@@ -19,6 +19,14 @@ const schemaEvento = new mongoose.Schema(
     prenotazioni: {
         type: [mongoose.Types.ObjectId],
         ref: 'Utente'
+    },
+    commenti: {
+        type: [mongoose.Types.ObjectId],
+        ref: 'Commento'
+    },
+    copertina: {
+        type: mongoose.Types.ObjectId,
+        ref: 'Immagine'
     }
     },
     {

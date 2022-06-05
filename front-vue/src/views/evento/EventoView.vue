@@ -1,0 +1,271 @@
+<template>
+  <div>
+    <Errors :error="error" />
+    <div>
+      <form enctype="multipart/form-data" @submit.prevent="caricaImmagine">
+        <input type="file" @change="fileSelezionato">
+        <button class="submit">Carica</button>
+      </form>
+
+    </div>
+    <div class="event" v-if="eventoCaricato">
+      <img class="image" alt="" :src="copertina" v-if="copertinaCaricata">
+      
+      <div class="title">
+        <h3>{{ evento.nome[0].toUpperCase() + evento.nome.slice(1, 1000) }}</h3>
+      </div>
+
+      <div class="description text-center">
+        <h5>{{ evento.descrizione }}</h5>
+
+        <router-link
+          :to="{
+            name: 'paginaLocale',
+            params: { localeID: evento.locale._id },
+          }"
+        >
+          <Secondary title="Visita il Locale gestore dell'evento" />
+        </router-link>
+        <router-link
+          :to="{
+            name: 'formInviaNotifica',
+            params: { localeID: evento.locale._id, eventoID: eventoID},
+          }"
+          v-if="$store.state.user.locale === evento.locale._id"
+        >
+          <Primary title="Invia una notifica a questo evento" />
+        </router-link>
+
+        <div v-if="$store.state.token" class="py-2">
+          <Primary title="Prenota" v-if="!utentePrenotato" @buttonClicked="postPrenotazione" />
+          <Secondary title="Cancella prenotazione" v-if="utentePrenotato" @buttonClicked="deletePrenotazione" />
+        </div>
+      </div>
+
+      <div class="comments">
+        <div class="info-comments px-4 mt-3 mb-2">
+          <h3>Commenti</h3>
+
+          <div class="form-recensione" v-if="$store.state.token">
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" required v-model="commento.commento" />
+              <div class="input-group-append">
+                <Primary title="Commenta" @buttonClicked="postCommento" />
+              </div>
+            </div>
+          </div>
+          <div class="comm-row">
+            <Commento v-for="commento in evento.commenti" :key="commento._id" :commento="commento.commento"
+              :idUtente="commento.utente" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import Primary from "@/components/buttons/Primary.vue";
+import Secondary from "@/components/buttons/Secondary.vue";
+import Errors from "@/components/Errors.vue";
+import Commento from "@/components/Commento.vue";
+import axios from 'axios'
+
+import config from "@/config";
+
+export default {
+  name: "paginaEvento",
+  props: ["eventoID"],
+  components: {
+    Primary,
+    Secondary,
+    Errors,
+    Commento,
+  },
+  data() {
+    return {
+      evento: null,
+      eventoCaricato: false,
+      copertinaCaricata: false,
+      utentePrenotato: false,
+      immagine: null,
+      copertina: null,
+      commento: {
+        utente: null,
+        commento: "",
+      },
+      error: {
+        status: false,
+        messaggio: "Messaggio di default.",
+      },
+    };
+  },
+  methods: {
+    fileSelezionato(event) {
+      this.immagine = event.target.files[0]
+    },
+    async caricaImmagine() {
+      const fd = new FormData()
+      fd.append('immagine', this.immagine)
+
+      try {
+        const res = await axios.post(`http://localhost:4000/api/v1/eventi/${this.eventoID}/copertina`, fd)
+
+        if (res.data.success)
+          console.log('woowwww')
+
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async postCommento() {
+      this.commento.utente = this.$store.state.user.id;
+
+      console.log(this.commento);
+
+      const opzioneRichiesta = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${this.$store.state.token}`,
+        },
+        body: JSON.stringify(this.commento),
+      };
+      try {
+        const res = await fetch(
+          `${config.baseURL}/eventi/${this.eventoID}/commenti`,
+          opzioneRichiesta
+        );
+        const data = await res.json();
+
+        if (data.success) {
+          this.$router.go();
+        } else {
+          this.error.status = true;
+          this.error.messaggio =
+            data.error || data.message || "Errore interno, riprovare.";
+        }
+      } catch (error) {
+        this.error.status = true;
+        this.error.messaggio = error || "Errore imprevisto, ripro.";
+      }
+    },
+    async postPrenotazione() {
+      const opzioniRichiesta = {
+        method: "POST",
+        headers: { Authorization: `Bearer ${this.$store.state.token}` },
+      };
+
+      const res = await fetch(
+        `${config.baseURL}/eventi/${this.eventoID}/prenotazioni`,
+        opzioniRichiesta
+      );
+      const data = await res.json();
+
+      if (data.success) this.utentePrenotato = true;
+      else {
+        this.error.status = true;
+        this.error.messaggio = data?.error || data?.message || "Errore inaspettato, riprovare";
+      }
+    },
+    async deletePrenotazione() {
+      const opzioniRichiesta = {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${this.$store.state.token}` },
+      };
+
+      const res = await fetch(
+        `${config.baseURL}/eventi/${this.eventoID}/prenotazioni`,
+        opzioniRichiesta
+      );
+      const data = await res.json();
+
+      if (data.success) 
+        this.utentePrenotato = false;
+      else {
+        this.error.status = true;
+        this.error.messaggio = data?.error || data?.message || "Errore inaspettato, riprovare";
+      }
+    },
+  },
+  async mounted() {
+    try {
+      const res = await fetch(`${config.baseURL}/eventi/${this.eventoID}`);
+      const data = await res.json();
+
+      if (data.success) {
+        this.evento = data.evento
+        this.eventoCaricato = true
+        this.evento.prenotazioni.forEach((usr) => {
+          if (usr._id === this.$store.state.user.id)
+            this.utentePrenotato = true;
+        });
+      }
+
+      const response = await axios.get(`http://localhost:4000/api/v1/eventi/${this.eventoID}/copertina`)
+
+      if (response.data.success && response.data.imm) {
+        var bytes = new Uint8Array(response.data.imm.file.data.data)
+        var binary = bytes.reduce((data, b) => data += String.fromCharCode(b), '')
+        this.copertina = `data:${response.data.imm.file.contentType};base64,${btoa(binary)}`
+        this.copertinaCaricata = true
+      }
+      
+    } catch (error) {
+      console.log(error);
+      this.error.status = true;
+      this.error.messaggio = error || "Errore del server, riprovare.";
+    }
+  },
+};
+</script>
+
+<style scoped>
+.event {
+  display: flex;
+  flex-flow: column nowrap;
+  border-radius: 4px;
+  justify-content: baseline;
+}
+
+.image {
+  width: 70px;
+  height: 70px;
+}
+
+.title {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-between;
+  justify-items: baseline;
+  padding: 10px;
+  border-bottom: 1px solid black;
+}
+
+.description {
+  display: flex;
+  flex-flow: column;
+  align-content: center;
+  padding-top: 0.5rem;
+}
+
+.comments {
+  display: flex;
+  flex-flow: column nowrap;
+  text-align: center;
+  align-content: space-around;
+  justify-content: space-evenly;
+  padding-top: 0.5rem;
+}
+
+.info-comments {
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
+  justify-items: baseline;
+}
+
+.comm-row {
+  display: relative;
+}
+</style>

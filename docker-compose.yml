@@ -2,6 +2,8 @@ version: "3.9"  # optional since v1.27.0
 services:
   backend:
     build: backend/
+    volumes:
+      - /home/giovannifoletto/Documents/UNI/SE-BarAdvisor/backend:/app
     ports:
       - "4000:4000"
     volumes:
@@ -9,20 +11,24 @@ services:
     links:
       - mongo
     environment:
-      - DB_URL=mongodb://mongo/restAPI
-      - DB_URL_CLUSTER=mongodb://mongo/restAPI
+      - PORT=400
+      - FRONT_PORT=8080
+      - FRONT_HOST=localhost
+      - DB_URL_LOCAL=mongodb://mongo/restAPI
+      - NODE_ENV=production
+      - DB_URL_CLUSTER=mongodb+srv://barAdvisor2022:C9U9HnvkRi87Fl0O@cluster0.4hoxp.mongodb.net/barAdvisor?retryWrites=true&w=majority
       - PORT=4000
       - EMAIL_SERVICE=hotmail
       - EMAIL_USERNAME=nodeproject@outlook.com
       - EMAIL_PASSWORD=progettonode2022
       - EMAIL_FROM=nodeproject@outlook.com
   frontend:
-    build: frontend/
-    environment:
-      - NUXT_ENV_BASE_URL=http://backend/
+    build: front-vue/
+    volumes:
+      - /home/giovannifoletto/Documents/UNI/SE-BarAdvisor/front-vue:/app
     links:
       - backend
     ports:
-      - "80:80"
+      - "8080:8080"
   mongo:
     image: mongo

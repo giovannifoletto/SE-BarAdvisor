@@ -6,6 +6,8 @@ module.exports = {
     NODE_ENV: process.env.NODE_ENV || "development",
 
     PORT: process.env.PORT || 4000,
+    FRONT_PORT: process.env.FRONT_PORT || 8080,
+    HOST: process.env.HOST || "localhost",
 
     DB_URL_LOCAL: process.env.DB_URL_LOCAL || 'mongodb://localhost:27017',
     DB_URL_CLUSTER: process.env.DB_URL_CLUSTER,
