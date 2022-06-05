@@ -10,13 +10,10 @@
         </h5>
         <hr />
         <h5>
-          tenuto da: {{ locale }}, il giorno
+          tenuto da: {{ locale }}, in data
           <h4>
-              {{ new Date(dataInizio).getDate() }}
-              {{ months[new Date(dataInizio).getMonth()] }}
-              {{ new Date(dataInizio).getFullYear() }}
-              ore: {{ new Date(dataInizio).toLocaleTimeString() }}
-            </h4>
+            {{ dataEvento }}
+          </h4>
         </h5>
       </div>
       <hr />
@@ -38,7 +35,7 @@ export default {
     return {
       messaggio: "",
       evento: "",
-      data: "",
+      dataEvento: "",
       locale: "",
       months: [
         "Gennaio",
@@ -59,7 +56,7 @@ export default {
   mounted() {
     this.messaggio = this.testoCompleto.split("//")[0];
     this.evento = this.testoCompleto.split("//")[1];
-    this.data = this.testoCompleto.split("//")[2];
+    this.dataEvento = this.testoCompleto.split("//")[2];
     this.locale = this.testoCompleto.split("//")[3];
   },
 };

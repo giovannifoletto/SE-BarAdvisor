@@ -41,12 +41,12 @@
           <CardLocale :locale="user.Array" />
         </div>
       </div>
-    </div> 
+    </div>  -->
     <div class="comments">
       <div class="info-comments px-4 mt-3 mb-2">
-        <h3>Prossimi Eventi</h3>
+        <h3>Eventi in programma</h3>
       </div>
-      <div v-if="user.prenotazioni.length != 0">
+      <div v-if="prenotazioni.length != 0">
         <div class="comm-row">
           <CardEvento
             v-for="evento in prenotazioni"
@@ -58,10 +58,10 @@
       <div v-else>
         <Message
           :isSuccess="false"
-          :message="{ status: true, messaggio: 'Nessun evento in programma.' }"
+          :messaggio="{ status: true, messaggio: 'Nessun evento in programma.' }"
         />
       </div>
-    </div> -->
+    </div>
 
     <div class="comments">
       <div class="info-comments px-4 mt-3 mb-2">
@@ -69,9 +69,9 @@
       </div>
       <div class="comm-row" v-if="notifiche.length !== 0">
         <CardNotifica
-          v-for="not in notifiche"
-          :key="not"
-          :testoCompleto="not"
+          v-for="notifica in notifiche"
+          :key="notifica"
+          :testoCompleto="notifica"
         />
       </div>
       <div v-else>

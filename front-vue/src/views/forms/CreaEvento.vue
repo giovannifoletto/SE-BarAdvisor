@@ -40,6 +40,9 @@
 
       <div class="myflex">
         <Primary title="Conferma" @buttonClicked="postEvento" />
+        <router-link :to="{ name: 'paginaLocale', props: { localeID: localeID } }">
+          <Secondary title="Indietro"/>
+        </router-link>
       </div>
     </form>
   </main>

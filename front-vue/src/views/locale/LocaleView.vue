@@ -26,7 +26,7 @@
       </div>
     </div>
 
-    <div v-if="localeID === $store.state.user.locale && $store.state.token">
+    <div v-if="localeID === $store.state.user?.locale && $store.state.token">
       <router-link :to="{ name: 'formCreazioneEvento' }">
         <Primary title="Crea Evento" />
       </router-link>

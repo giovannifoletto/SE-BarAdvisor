@@ -1,7 +1,7 @@
 <template>
   <main class="container pt-2">
 
-    <Message :message="message" isSuccess="true"/>
+    <Message :messaggio="messaggio" isSuccess="true"/>
 
     <Errors :error="error" />
 
@@ -52,13 +52,13 @@ export default {
     data(){
         return {
             email: '',
-            message: {
+            messaggio: {
               messaggio: "Inserire email",
-              status: true
+              status: false
             },
             error: {
               messaggio: "Messaggio di errore", 
-              status: true
+              status: false
             }
         }
     },
@@ -73,9 +73,19 @@ export default {
               const res = await fetch(`${config.baseURL}/auth/passworddimenticata`, opzioneRichiesta)
   
               const data = await res.json()
+
+              if (data.success) {
+                this.messaggio.messaggio = 'Email inviata correttamente'
+                this.messaggio.status = true
+              }
+              else {
+                this.error.messaggio = data.error || data.message || 'Qualcosa è andato storto'
+                this.error.status = true
+              }
               
             } catch (error) {
-              console.log(error)
+              this.error.messaggio = error || 'Errore imprevisto con il server'
+              this.error.status = true
             }
         }
     }

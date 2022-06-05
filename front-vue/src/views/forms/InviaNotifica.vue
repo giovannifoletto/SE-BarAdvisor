@@ -1,13 +1,13 @@
 <template>
   <main>
     <Errors :error="error" />
-    <Message :message="message" />
+    <Message :messaggio="messaggio" />
+
     <form @submit.prevent="inviaNotifica">
       <div class="form-group">
-        <label for="emailInput">Inserisci testo della Notifica</label>
+        <label for="text">Inserisci testo della Notifica</label>
         <input
           v-model="testo"
-          type="email"
           class="form-control"
           placeholder="Inserisci testo notifica"
           required
@@ -33,6 +33,7 @@ import Errors from "@/components/Errors.vue";
 import Message from "@/components/Message.vue";
 import Primary from "@/components/buttons/Primary.vue";
 import Secondary from "@/components/buttons/Secondary.vue";
+import config from '@/config'
 
 export default {
   components: {
@@ -49,36 +50,30 @@ export default {
         status: false,
         messaggio: "Messggio di errore",
       },
-      message: {
-        isSuccess: true,
-        message: "Messaggio di conferma",
+      messaggio: {
+        isSuccess: false,
+        messaggio: "Messaggio di conferma",
       },
     };
   },
   methods: {
     async inviaNotifica() {
-      const form = {
-        testo: this.testo,
-        locale: this.localeID,
-        evento: this.eventoID,
-      };
-
       const opzioniRichiesta = {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${this.$store.state.token}`,
+          "Authorization": `Bearer ${this.$store.state.token}`,
         },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ messaggio: this.testo }),
       };
 
       try {
-        const res = await fetch("MISSING ENDPOINT", opzioniRichiesta);
+        const res = await fetch(`${config.baseURL}/locali/${this.localeID}/eventi/${this.eventoID}/notifiche`, opzioniRichiesta);
         const data = await res.json();
 
         if (data.success) {
-          this.message.status = true;
-          this.message.messaggio = data.message || "Messaggio inviato correttamente.";
+          this.messaggio.status = true;
+          this.messaggio.messaggio = data.message || "Messaggio inviato correttamente.";
         } else {
           this.error.status = true;
           this.error.messaggio =

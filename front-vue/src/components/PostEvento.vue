@@ -6,18 +6,18 @@
           <Account />
         </div>
         <router-link
-          :to="{ name: 'paginaEvento', params: { eventoID: id } }"
+          :to="{ name: 'paginaEvento', params: { eventoID: evento._id } }"
           class="px-3"
         >
-          <h3>{{ nome[0].toUpperCase() + nome.slice(1, 1000) }}</h3>
+          <h3>{{ evento.nome[0].toUpperCase() + evento.nome.slice(1, 1000) }}</h3>
         </router-link>
       </div>
     </div>
     <div class="under">
 
       <!-- Sezione immagine -->
-      <div class="img-section">
-        <h1>Image</h1>
+      <div class="img-section" v-if="copertinaCaricata">
+        <img :src="copertina" class="img"/>
       </div>
       
       <!-- Sezione del testo laterale -->
@@ -28,38 +28,39 @@
           <div class="locale">
             <h6>Locale</h6>
             <router-link
-              :to="{ name: 'paginaLocale', params: { localeID: localeID } }"
+              :to="{ name: 'paginaLocale', params: { localeID: locale._id } }"
             >
-              <h4>{{ locale[0].toUpperCase() + locale.slice(1, 1000) }}</h4>
+              <h4>{{ locale.nome[0].toUpperCase() + locale.nome.slice(1, 1000) }}</h4>
             </router-link>
           </div>
 
           <div class="data-inizio">
             <h6>Data di inizio</h6>
             <h4>
-              {{ new Date(dataInizio).getDate() }}
-              {{ months[new Date(dataInizio).getMonth()] }}
-              {{ new Date(dataInizio).getFullYear() }}
+              {{ new Date(evento.dataInizio).getDate() }}
+              {{ months[new Date(evento.dataInizio).getMonth()] }}
+              {{ new Date(evento.dataInizio).getFullYear() }}
             </h4>
             <h4>
-              ore: {{ new Date(dataInizio).toLocaleTimeString() }}
+              ore: {{ new Date(evento.dataInizio).toLocaleTimeString().split(':')[0] + ":" + new Date(evento.dataInizio).toLocaleTimeString().split(':')[1] }}
             </h4>
           </div>
 
         </div>
 
         <h6>informazioni</h6>
-        <h5>{{ descrizione }}</h5>
+        <h5>{{ evento.descrizione }}</h5>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import Account from "@/components/icons/Account";
+import Account from "@/components/icons/Account"
+import axios from'axios'
 
 export default {
-  props: ["id", "nome", "localeID", "locale", "descrizione", "dataInizio"],
+  props: ["evento", "locale"],
   components: {
     Account,
   },
@@ -79,9 +80,28 @@ export default {
         "Novembre",
         "Dicembre",
       ],
-    };
+      copertina: null,
+      copertinaCaricata: false
+    }
   },
-};
+  async mounted() {
+    try {
+      if (this.evento.copertina) {
+        // get immagine dell'evento
+        const response = await axios.get(`http://localhost:4000/api/v1/eventi/${this.evento._id}/copertina`)
+
+        if (response.data.success) {
+          var bytes = new Uint8Array(response.data.imm.file.data.data)
+          var binary = bytes.reduce((data, b) => data += String.fromCharCode(b), '')
+          this.copertina = `data:${response.data.imm.file.contentType};base64,${btoa(binary)}`
+          this.copertinaCaricata = true
+        }
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+}
 </script>
 
 <style scoped>
@@ -115,6 +135,11 @@ export default {
 .img-section {
   width: 40%;
   text-align: center;
+}
+
+.img {
+  height: 50px;
+  width: 50px;
 }
 .important-info{
   display: flex;

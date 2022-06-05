@@ -1,15 +1,15 @@
 <template>
-  <div class="comment my-2">
+  <div class="comment my-2" v-if="caricato">
     <div class="left">
       <account />
     </div>
     <div class="right py-2">
       <div class="title-event">
-        <h5 class="pb-0 pt-0 px-2">{{ evento.nome[0].toUpperCase() + evento.nome.slice(1, 1000)  }}</h5>
+        <h5 class="pb-0 pt-0 px-2">{{ evento.nome[0].toUpperCase() + evento.nome.slice(1, 1000) }}</h5>
         <h6 v-if="evento.dataInizio < (new Date().now)" class="pb-0 pt-0 px-2">Data: {{ evento.dataInizio }}</h6>
       </div>
 
-      <div class="column"  v-if="$store.state.token">
+      <div class="column">
         <div class="unfollow">
           <div>
             <router-link :to="{ name: 'paginaEvento', params: { eventoID: evento._id } }">
@@ -17,7 +17,8 @@
             </router-link>
           </div>
           <div>
-            <Secondary title="Disiscriviti" />
+            <Primary title="Prenotati" v-if="$store.state.token && !utentePrenotato" @click="postPrenotazione"/>
+            <Secondary title="Disiscriviti" v-if="$store.state.token && utentePrenotato" @click="deletePrenotazione"/>
           </div>
         </div>
       </div>
@@ -27,11 +28,88 @@
 
 <script>
 import Account from "@/components/icons/Account.vue"
+import Primary from "@/components/buttons/Primary.vue";
 import Secondary from '@/components/buttons/Secondary'
+import Errors from '@/components/Errors'
+import config from '@/config'
 
 export default {
-  components: { Account, Secondary },
+  components: { Account, Secondary, Primary, Errors },
   props: ["evento"],
+  data() {
+    return {
+      caricato: false,
+      utentePrenotato: false,
+      error: {
+        status: false,
+        messaggio: ""
+      }
+    }
+  },
+  methods: {
+    async postPrenotazione() {
+      const opzioniRichiesta = {
+        method: "POST",
+        headers: { Authorization: `Bearer ${this.$store.state.token}` },
+      };
+      try {
+        const res = await fetch(
+          `${config.baseURL}/eventi/${this.evento._id}/prenotazioni`,
+          opzioniRichiesta
+        );
+        const data = await res.json();
+
+        if (data.success) this.utentePrenotato = true;
+        else {
+          this.error.status = true;
+          this.error.messaggio = data?.error || data?.message || "Errore inaspettato, riprovare";
+        }
+      }
+      catch (error) {
+        this.error.status = true;
+        this.error.messaggio = error || "Errore inaspettato, riprovare";
+      }
+    },
+    async deletePrenotazione() {
+      const opzioniRichiesta = {
+        method: "DELETE",
+        headers: { "Authorization": `Bearer ${this.$store.state.token}` },
+      }
+      try {
+        const res = await fetch(
+          `${config.baseURL}/eventi/${this.evento._id}/prenotazioni`,
+          opzioniRichiesta
+        );
+        const data = await res.json()
+
+        if (data.success)
+          this.utentePrenotato = false
+        else {
+          this.error.status = true
+          this.error.messaggio = data?.error || data?.message || "Errore inaspettato, riprovare"
+        }
+      }
+      catch (error) {
+        this.error.status = true
+        this.error.messaggio = error || "Errore inaspettato, riprovare"
+      }
+    }
+  },
+  async mounted() {
+    try {
+      const res = await fetch(`${config.baseURL}/eventi/${this.evento._id}`)
+      const data = await res.json()
+
+      if (data.success) {
+        data.evento.prenotazioni.forEach(usr => {
+          if (usr._id === this.$store.state.user.id) this.utentePrenotato = true
+        })
+      }
+      this.caricato = true
+    } catch (error) {
+      console.log(error)
+    }
+  }
 };
 </script>
 
@@ -43,12 +121,14 @@ export default {
   border: 1px solid black;
   border-radius: 4px;
 }
+
 .left {
   display: flex;
   align-items: center;
   padding-left: 10px;
   padding-right: 10px;
 }
+
 .right {
   display: flex;
   flex-flow: row nowrap;
@@ -58,14 +138,17 @@ export default {
   padding-right: 0.7rem;
   width: 100%;
 }
+
 hr {
   padding: 0;
   margin: 0.3rem;
 }
+
 .title-event {
   display: flex;
   flex-flow: column nowrap;
 }
+
 .unfollow {
   display: flex;
   flex-flow: row nowrap;
@@ -73,6 +156,7 @@ hr {
   text-align: center;
   gap: 20px;
 }
+
 .column {
   display: flex;
   flex-flow: column nowrap;

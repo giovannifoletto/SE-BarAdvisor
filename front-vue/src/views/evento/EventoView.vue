@@ -1,16 +1,19 @@
 <template>
   <div>
     <Errors :error="error" />
-    <div>
+
+    <div v-if="$store.state.token && $store.state.user?.locale === evento?.locale._id">
       <form enctype="multipart/form-data" @submit.prevent="caricaImmagine">
-        <input type="file" @change="fileSelezionato">
+        <input type="file" @change="fileSelezionato" id="1" class="custom-file-input">
         <button class="submit">Carica</button>
       </form>
-
+      <button @click="annullaCaricamento">Annulla</button>
     </div>
+
     <div class="event" v-if="eventoCaricato">
-      <img class="image" alt="" :src="copertina" v-if="copertinaCaricata">
-      
+      <img class="image" :src="copertina" v-if="copertinaCaricata && !preview">
+      <img class="image" :src="preview" v-if="preview">
+
       <div class="title">
         <h3>{{ evento.nome[0].toUpperCase() + evento.nome.slice(1, 1000) }}</h3>
       </div>
@@ -18,21 +21,16 @@
       <div class="description text-center">
         <h5>{{ evento.descrizione }}</h5>
 
-        <router-link
-          :to="{
-            name: 'paginaLocale',
-            params: { localeID: evento.locale._id },
-          }"
-        >
+        <router-link :to="{
+          name: 'paginaLocale',
+          params: { localeID: evento?.locale?._id },
+        }">
           <Secondary title="Visita il Locale gestore dell'evento" />
         </router-link>
-        <router-link
-          :to="{
-            name: 'formInviaNotifica',
-            params: { localeID: evento.locale._id, eventoID: eventoID},
-          }"
-          v-if="$store.state.user.locale === evento.locale._id"
-        >
+        <router-link :to="{
+          name: 'formInviaNotifica',
+          params: { localeID: evento?.locale?._id, eventoID: eventoID },
+        }" v-if="$store.state.user?.locale === evento?.locale?._id">
           <Primary title="Invia una notifica a questo evento" />
         </router-link>
 
@@ -54,9 +52,12 @@
               </div>
             </div>
           </div>
-          <div class="comm-row">
+          <div class="comm-row" v-if="evento.commenti.length != 0">
             <Commento v-for="commento in evento.commenti" :key="commento._id" :commento="commento.commento"
               :idUtente="commento.utente" />
+          </div>
+          <div v-else>
+            <Message :isSuccess="false" :messaggio="{ status: true, messaggio: 'Ancora nessun commento.' }" />
           </div>
         </div>
       </div>
@@ -65,10 +66,11 @@
 </template>
 
 <script>
-import Primary from "@/components/buttons/Primary.vue";
-import Secondary from "@/components/buttons/Secondary.vue";
-import Errors from "@/components/Errors.vue";
-import Commento from "@/components/Commento.vue";
+import Primary from "@/components/buttons/Primary.vue"
+import Secondary from "@/components/buttons/Secondary.vue"
+import Errors from "@/components/Errors.vue"
+import Message from '@/components/Message'
+import Commento from "@/components/Commento.vue"
 import axios from 'axios'
 
 import config from "@/config";
@@ -80,6 +82,7 @@ export default {
     Primary,
     Secondary,
     Errors,
+    Message,
     Commento,
   },
   data() {
@@ -89,6 +92,7 @@ export default {
       copertinaCaricata: false,
       utentePrenotato: false,
       immagine: null,
+      preview: null,
       copertina: null,
       commento: {
         utente: null,
@@ -103,23 +107,39 @@ export default {
   methods: {
     fileSelezionato(event) {
       this.immagine = event.target.files[0]
+      this.preview = URL.createObjectURL(this.immagine)
+    },
+    annullaCaricamento() {
+      this.preview = null
+      document.getElementById('1').value = ''
     },
     async caricaImmagine() {
+      if (!this.immagine) {
+        this.error.status = true;
+        this.error.messaggio = 'Selezionare almeno 1 file'
+        return
+      }
       const fd = new FormData()
       fd.append('immagine', this.immagine)
 
       try {
         const res = await axios.post(`http://localhost:4000/api/v1/eventi/${this.eventoID}/copertina`, fd)
 
-        if (res.data.success)
-          console.log('woowwww')
+        if (!res.data.success) {
+          this.error.status = true;
+          this.error.messaggio = res.data?.error || res.data?.message
+        }
+        else {
+          this.preview = null
+          this.$router.go()
+        }
 
       } catch (error) {
         console.log(error)
       }
     },
     async postCommento() {
-      this.commento.utente = this.$store.state.user.id;
+      this.commento.utente = this.$store.state?.user.id;
 
       console.log(this.commento);
 
@@ -127,7 +147,7 @@ export default {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${this.$store.state.token}`,
+          "Authorization": `Bearer ${this.$store.state.token}`,
         },
         body: JSON.stringify(this.commento),
       };
@@ -147,77 +167,94 @@ export default {
         }
       } catch (error) {
         this.error.status = true;
-        this.error.messaggio = error || "Errore imprevisto, ripro.";
+        this.error.messaggio = error || "Errore imprevisto, riprovare.";
       }
     },
+
     async postPrenotazione() {
       const opzioniRichiesta = {
         method: "POST",
-        headers: { Authorization: `Bearer ${this.$store.state.token}` },
+        headers: { "Authorization": `Bearer ${this.$store.state.token}` },
       };
+      try {
+        const res = await fetch(
+          `${config.baseURL}/eventi/${this.eventoID}/prenotazioni`,
+          opzioniRichiesta
+        );
+        const data = await res.json();
 
-      const res = await fetch(
-        `${config.baseURL}/eventi/${this.eventoID}/prenotazioni`,
-        opzioniRichiesta
-      );
-      const data = await res.json();
-
-      if (data.success) this.utentePrenotato = true;
-      else {
+        if (data.success) this.utentePrenotato = true;
+        else {
+          this.error.status = true;
+          this.error.messaggio = data?.error || data?.message || "Errore inaspettato, riprovare";
+        }
+      }
+      catch (error) {
         this.error.status = true;
-        this.error.messaggio = data?.error || data?.message || "Errore inaspettato, riprovare";
+        this.error.messaggio = error || "Errore inaspettato, riprovare";
       }
     },
+
     async deletePrenotazione() {
       const opzioniRichiesta = {
         method: "DELETE",
-        headers: { Authorization: `Bearer ${this.$store.state.token}` },
-      };
-
-      const res = await fetch(
-        `${config.baseURL}/eventi/${this.eventoID}/prenotazioni`,
-        opzioniRichiesta
-      );
-      const data = await res.json();
-
-      if (data.success) 
-        this.utentePrenotato = false;
-      else {
-        this.error.status = true;
-        this.error.messaggio = data?.error || data?.message || "Errore inaspettato, riprovare";
+        headers: { "Authorization": `Bearer ${this.$store.state.token}` },
       }
-    },
+      try {
+        const res = await fetch(
+          `${config.baseURL}/eventi/${this.eventoID}/prenotazioni`,
+          opzioniRichiesta
+        );
+        const data = await res.json()
+
+        if (data.success)
+          this.utentePrenotato = false
+        else {
+          this.error.status = true
+          this.error.messaggio = data?.error || data?.message || "Errore inaspettato, riprovare"
+        }
+      }
+      catch (error) {
+        this.error.status = true
+        this.error.messaggio = error || "Errore inaspettato, riprovare"
+      }
+    }
   },
   async mounted() {
     try {
-      const res = await fetch(`${config.baseURL}/eventi/${this.eventoID}`);
-      const data = await res.json();
+      // get informazioni dell'evento
+      const res = await fetch(`${config.baseURL}/eventi/${this.eventoID}`)
+      const data = await res.json()
 
       if (data.success) {
         this.evento = data.evento
         this.eventoCaricato = true
         this.evento.prenotazioni.forEach((usr) => {
-          if (usr._id === this.$store.state.user.id)
-            this.utentePrenotato = true;
-        });
+          if (usr._id === this.$store.state?.user.id)
+            this.utentePrenotato = true
+        })
       }
 
-      const response = await axios.get(`http://localhost:4000/api/v1/eventi/${this.eventoID}/copertina`)
+      // se l'evento ha la copertina, recuperala
+      if (this.evento.copertina) {
+        // get immagine dell'evento
+        const response = await axios.get(`http://localhost:4000/api/v1/eventi/${this.eventoID}/copertina`)
 
-      if (response.data.success && response.data.imm) {
-        var bytes = new Uint8Array(response.data.imm.file.data.data)
-        var binary = bytes.reduce((data, b) => data += String.fromCharCode(b), '')
-        this.copertina = `data:${response.data.imm.file.contentType};base64,${btoa(binary)}`
-        this.copertinaCaricata = true
+        if (response.data.success) {
+          var bytes = new Uint8Array(response.data.imm.file.data.data)
+          var binary = bytes.reduce((data, b) => data += String.fromCharCode(b), '')
+          this.copertina = `data:${response.data.imm.file.contentType};base64,${btoa(binary)}`
+          this.copertinaCaricata = true
+        }
       }
-      
+
     } catch (error) {
       console.log(error);
       this.error.status = true;
-      this.error.messaggio = error || "Errore del server, riprovare.";
+      this.error.messaggio = error || "Errore del server, riprovare."
     }
-  },
-};
+  }
+}
 </script>
 
 <style scoped>
@@ -267,5 +304,32 @@ export default {
 
 .comm-row {
   display: relative;
+}
+
+.custom-file-input::-webkit-file-upload-button {
+  visibility: hidden;
+}
+
+.custom-file-input::before {
+  content: 'Select some files';
+  display: inline-block;
+  background: linear-gradient(top, #f9f9f9, #e3e3e3);
+  border: 1px solid #999;
+  border-radius: 3px;
+  padding: 5px 8px;
+  outline: none;
+  white-space: nowrap;
+  cursor: pointer;
+  text-shadow: 1px 1px #fff;
+  font-weight: 700;
+  font-size: 10pt;
+}
+
+.custom-file-input:hover::before {
+  border-color: black;
+}
+
+.custom-file-input:active::before {
+  background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
 }
 </style>
