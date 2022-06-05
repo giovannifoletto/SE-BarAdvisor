@@ -7,9 +7,7 @@ module.exports = (req, res, next) => {
     try {
         // si controlla semplicemente se esiste un token nel campo "Authorization" nell'header della request
         // l'header è del tipo: "Bearer token..."
-        const bearerToken = req.headers['Authorization']
-
-        console.log('Token in middleware:', bearerToken)
+        const bearerToken = req.headers['authorization']
 
         if (!bearerToken)
             return res.status(400).json({ success: false, message: "Utente non loggato, impossibile procedere" })

@@ -85,46 +85,46 @@ describe('Test auth', () => {
         });
 
     test(('POST /login ok'), async () => {
-        const res = await (await request(app).post('/api/v1/auth/login').send({
+        const res = await request(app).post('/api/v1/auth/login').send({
             email: "pippo@gmail.com",
             password: "123"
         })
-        )
         expect(res.status).toBe(200)
     });
 
     test(('POST /login email sbagliata'), async () => {
-        const res = await (await request(app).post('/api/v1/auth/login').send({
+        const res = await request(app).post('/api/v1/auth/login').send({
             email: "pappo@gmail.com",
             password: "123"
         })
-        )
         expect(res.status).toBe(400)
         expect(res.body).toEqual({message: "Utente inesistente", success: false})
     });
 
     test(('POST /login password sbagliata'), async () => {
-        const res = await (await request(app).post('/api/v1/auth/login').send({
+        const res = await request(app).post('/api/v1/auth/login').send({
             email: "pippo@gmail.com",
             password: "13"
         })
-        )
+        
         expect(res.status).toBe(400)
         expect(res.body).toEqual({message: "Password incorretta", success: false})
     });
 
     test(('POST /login email mancante'), async () => {
-        const res = await (await request(app).post('/api/v1/auth/login').send({
+        const res = await request(app).post('/api/v1/auth/login').send({
             password: "123"
-        }))
+        })
+
         expect(res.status).toBe(400)
         expect(res.body).toEqual({message: "Compilare tutti i campi", success: false})
     });
 
     test(('POST /login password mancante'), async () => {
-        const res = await (await request(app).post('/api/v1/auth/login').send({
+        const res = await request(app).post('/api/v1/auth/login').send({
             email: "pippo@gmail.com"
-        }))
+        })
+
         expect(res.status).toBe(400)
         expect(res.body).toEqual({message: "Compilare tutti i campi", success: false})
     });

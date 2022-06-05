@@ -11,7 +11,6 @@ db_connection.connect()
 const authRouter = require('./routes/autenticazione')
 const localsRouter = require('./routes/locali')
 const eventsRouter = require('./routes/eventi')
-const { NODE_ENV } = require('./config')
 
 // middleware utili
 app.use(express.json())
@@ -31,8 +30,10 @@ app.use(`/api/${config.API_VERSION}/eventi`, eventsRouter)
 
 app.use('/', express.static('static'))
 
-// app.listen(config.PORT, () => {
-//   console.log(`BarAdvisor-API listening on ${config.PORT}`)
-// })
+if(config.NODE_ENV !== "testing"){
+  app.listen(config.PORT, () => {
+    console.log(`BarAdvisor-API listening on ${config.PORT}`)
+  })
+}
 
 module.exports = app
