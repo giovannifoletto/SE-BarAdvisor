@@ -11,7 +11,7 @@ RUN npm ci
 
 COPY /frontend .
 
-RUN npm run generate
+RUN npm run build
 
 FROM node:16
 
