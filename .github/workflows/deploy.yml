@@ -1,33 +1,40 @@
 name: Deploy on Heroku
 
-# Copiata dalla documentazione, neanche controllata.
-# Non dovrebbe funzionare per il nostro tipo di deploy, prima
-# va compilato il front e inserito nella route static di express.
-
 on:
   push:
     branches:
       - main
 
-# Sarebbe da fare:
-# - deploy nello staging
-# - tesing nello staging
-# - deploy in production se lo staging funziona
-# - Smoke test 
-
 jobs:
-  build:
+  build-and-push-docker-image:
+    name: Build and push docker image to the container
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: akhileshns/heroku-deploy@v3.12.12
+      - name: "Checkout"
+        uses: actions/checkout@v2
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+      - name: "Login to heroku:container"
+        run: docker login --username=${{ docker.username }} --email=${{ secrets.HEROKU_MAIL}} --password=${{ docker.TOKEN }} registry.heroku.com
+
+# docker tag se-baradvisor registry.heroku.com/se-baradvisor/web
+# docker push registry.heroku.com/se-baradvisor/web
+
+# Create a docker file to do all this thing inside that 
+
+# TODO: 
+# - loggin
+# - CI/CD procedur accomplish
+# - set up Jenkins or Chef to automate buildin, testing and deploy on heroku
+
+      - name: "Docker buil image"
+        run: docker 
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: "se-baradvisor"
-          heroku_email: "giovanni.foletto@gmail.com"
+          heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+          heroku_email: ${{ secrets.HEROKU_MAIL }}
           branch: main
-          docker_build_args: NODE_ENV
-          usedocker: true
         env:
           NODE_ENV: production
           SECRET_KEY: ${{ secrets.MY_SECRET_KEY }}
