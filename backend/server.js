@@ -28,7 +28,10 @@ app.use(`/api/${config.API_VERSION}/auth`, authRouter)
 app.use(`/api/${config.API_VERSION}/locali`, localsRouter)
 app.use(`/api/${config.API_VERSION}/eventi`, eventsRouter)
 
-app.use('/', express.static('static'))
+if (config.NODE_ENV === 'production') {
+  app.use(express.static(__dirname + '/public/'))
+  app.get('/*', (req, res) => res.sendFile(__dirname + '/public/index.html'))
+}
 
 if(config.NODE_ENV !== "testing"){
   app.listen(config.PORT, () => {
