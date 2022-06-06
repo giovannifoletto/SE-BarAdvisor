@@ -16,7 +16,7 @@
               <Secondary title="Visualizza" />
             </router-link>
           </div>
-          <div>
+          <div v-if="!eventoScaduto">
             <Primary title="Prenotati" v-if="$store.state.token && !utentePrenotato" @click="postPrenotazione"/>
             <Secondary title="Disiscriviti" v-if="$store.state.token && utentePrenotato" @click="deletePrenotazione"/>
           </div>
@@ -42,6 +42,7 @@ export default {
     return {
       caricato: false,
       utentePrenotato: false,
+      eventoScaduto: false,
       error: {
         status: false,
         messaggio: ""
@@ -70,8 +71,10 @@ export default {
       const data = await res.json()
 
       if (data.success) {
+        if (Date.parse(this.evento.dataInizio) < Date.now())
+          this.eventoScaduto = true
         data.evento.prenotazioni.forEach(usr => {
-          if (usr._id === this.$store.state?.user.id) this.utentePrenotato = true
+          if (usr._id === this.$store.state?.user?.id) this.utentePrenotato = true
         })
       }
       this.caricato = true

@@ -99,6 +99,7 @@ export default {
         const data = await res.json()
 
         if (data.success){
+            this.$store.commit('resetToken')
             this.$router.push('/login')
         } else{
             this.error.status = true

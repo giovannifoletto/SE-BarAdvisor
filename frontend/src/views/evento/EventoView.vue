@@ -52,7 +52,7 @@
           <Primary title="Invia una notifica a questo evento" />
         </router-link>
 
-        <div v-if="$store.state.token" class="py-2">
+        <div v-if="$store.state.token && !eventoScaduto" class="py-2">
           <Primary
             title="Prenota"
             v-if="!utentePrenotato"
@@ -131,6 +131,7 @@ export default {
   data() {
     return {
       evento: null,
+      eventoScaduto: false,
       eventoCaricato: false,
       copertinaCaricata: false,
       utentePrenotato: false,
@@ -240,8 +241,10 @@ export default {
       if (data.success) {
         this.evento = data.evento;
         this.eventoCaricato = true;
+        if (Date.parse(this.evento.dataInizio) < Date.now())
+          this.eventoScaduto = true
         this.evento.prenotazioni.forEach((usr) => {
-          if (usr._id === this.$store.state?.user.id)
+          if (usr._id === this.$store.state?.user?.id)
             this.utentePrenotato = true;
         });
       }
