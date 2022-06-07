@@ -17,6 +17,9 @@ router.post('/:localeID/eventi', checkAuth, checkRole.checkPermessiProprietarioL
 // informazioni relative ad un evento specifico
 router.get('/:localeID/eventi/:eventoID', controllerEventi.getEvento)
 
+// eliminare un evento
+router.delete('/:localeID/eventi/:eventoID', checkAuth, checkRole.checkPermessiProprietarioLocale, controllerEventi.deleteEvento)
+
 // restituisce tutte le recensioni di un locale
 router.get('/:localeID/recensioni', controllerRecensioni.getAllRecensioni)
 
