@@ -63,10 +63,6 @@ describe('Test eventi', () => {
         expect(utente.status).toBe(200)
     })
 
-    afterAll(async () => {
-        await mongoose.connection.db.dropDatabase()
-    })
-
     test('GET /', async () => {
         const url = '/api/v1/eventi/'
         const res = await request(app).get(url)
