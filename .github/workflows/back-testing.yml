@@ -2,7 +2,7 @@ name: Testing Backend
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, development ]
   pull_request:
     branches: [ development, main ]
 
