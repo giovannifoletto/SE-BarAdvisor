@@ -6,8 +6,9 @@
   "scripts": {
     "dev": "nodemon server.js",
     "start": "node server.js",
-    "test": "NODE_ENV=testing; jest",
-    "test:watch": "NODE_ENV=testing; jest --watch",
+    "test": "export NODE_ENV=testing; jest",
+    "test:watch": "export NODE_ENV=testing; jest --watch",
+    "test:ci": "jest --ci --reporters=default --watchAll=false --forceExit",
     "test-giusti": "jest"
   },
   "repository": {
