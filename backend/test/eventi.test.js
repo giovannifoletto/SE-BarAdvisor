@@ -149,7 +149,7 @@ describe('Test eventi', () => {
         expect(res.body).toBe({ success: false, message: 'Compilare tutti i campi' })
     });
 
-    test.only('GET /:eventoID ok', async () => {
+    test('GET /:eventoID ok', async () => {
         const url = '/api/v1/eventi/' + localState.evento.eventoID
         const res = await request(app).get(url)
         console.log(res.body)
