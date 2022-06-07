@@ -42,16 +42,16 @@ const state = {
  * Solo per retrocompatibilità con i test.
  * @deprecated
  */
-const user = []
+const users = []
 const main = () => {
     for(let i=0; i<VAL_TEST; ++i){
-        user.push(casual.user)
+        users.push(casual.user)
     }
 }
 
 module.exports= {
     main,
-    user,
+    users,
     VAL_TEST,
     state
 }
