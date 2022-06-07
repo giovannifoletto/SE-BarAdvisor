@@ -87,7 +87,7 @@ describe('Test eventi', () => {
             descrizione: mockData.state.users.nome,
             dataInizio: "11/12/22"
         })
-        expect(res.status).toBe(400)
+        expect(res.status).toBe(401)
         expect(res.body).toEqual({ success: false, message: "Utente non loggato, impossibile procedere" })
     });
 
@@ -99,7 +99,6 @@ describe('Test eventi', () => {
             descrizione: mockData.state.users.nome,
             dataInizio: "11/12/22"
         }))
-        memorize.evento=await Evento.findById(res.eventoID)
         expect(res.status).toBe(400)
         expect(res.body).toBe({message: "Locale inesistente", success: false})
     });
@@ -111,7 +110,6 @@ describe('Test eventi', () => {
             descrizione: mockData.state.users.nome,
             dataInizio: "11/12/22"
         }))
-        memorize.evento=await Evento.findById(res.eventoID)
         expect(res.status).toBe(400)
         expect(res.body).toBe({ success: false, message: 'Compilare tutti i campi' })
     });
@@ -123,7 +121,6 @@ describe('Test eventi', () => {
             nome: mockData.state.users.nome,
             dataInizio: "11/12/22"
         }))
-        memorize.evento=await Evento.findById(res.eventoID)
         expect(res.status).toBe(200)
         expect(res.body).toBe({message: "Nuovo evento creato correttamente", success: true})
     });
@@ -135,7 +132,6 @@ describe('Test eventi', () => {
             descrizione: mockData.state.users.nome,
             nome: mockData.state.users.nome
         }))
-        memorize.evento=await Evento.findById(res.eventoID)
         expect(res.status).toBe(400)
         expect(res.body).toBe({ success: false, message: 'Compilare tutti i campi' })
     });
