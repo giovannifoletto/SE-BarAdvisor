@@ -20,11 +20,11 @@
   "devDependencies": {
     "jest": "^28.1.0",
     "nodemon": "^2.0.16",
-    "supertest": "^6.2.3"
+    "supertest": "^6.2.3",
+    "casual": "^1.6.2"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
-    "casual": "^1.6.2",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "dotenv": "^16.0.1",

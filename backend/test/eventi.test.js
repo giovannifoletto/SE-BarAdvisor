@@ -64,12 +64,12 @@ describe('Test eventi', () => {
     })
 
     // Non dovrebbero esistere eventi sul database.
-    test.skip('GET /', async () => {
-        const url = '/api/v1/eventi/'
-        const res = await request(app).get(url)
-        expect(res.status).toBe(404 || 200)
+    // test.skip('GET /', async () => {
+    //     const url = '/api/v1/eventi/'
+    //     const res = await request(app).get(url)
+    //     expect(res.status).toBe(404 || 200)
 
-    });
+    // });
 
     test('POST /:localeID/eventi ok', async () => {
         const res = await request(app)

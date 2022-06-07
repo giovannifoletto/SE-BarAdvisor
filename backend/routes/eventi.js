@@ -23,7 +23,7 @@ router.delete('/:eventoID/prenotazioni', checkAuth, controllerEventi.deletePreno
 router.post('/:eventoID/commenti', checkAuth, controllerEventi.postCommento)
 
 // upload immagine evento
-router.post('/:eventoID/copertina' ,uploadImmagine.single('immagine'), controllerUploads.uploadImmagine)
+router.post('/:eventoID/copertina', uploadImmagine.single('immagine'), controllerUploads.uploadImmagine)
 
 // get immagine evento
 router.get('/:eventoID/copertina', controllerUploads.getImmagine)

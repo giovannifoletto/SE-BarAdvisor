@@ -101,6 +101,9 @@ describe('Test auth', () => {
         expect(res.status).toBe(400)
         expect(res.body).toEqual({message: "Compilare tutti i campi", success: false})
     });
+
+    test.todo('DELETE Account Cliente')
+    test.todo('DELETE Account GestoreLocale')
 })
 
 
