@@ -83,8 +83,8 @@ describe('Test eventi', () => {
 
         const url = '/api/v1/locali/' + localState.creaUtenti.utente.localeID + '/eventi'
         const res = await request(app).post(url).set("Authorization", 'Bearer ' + 123).send({
-            nome: mockData.users[0].nome,
-            descrizione: mockData.user[1].nome,
+            nome: mockData.state.users.nome,
+            descrizione: mockData.state.users.nome,
             dataInizio: "11/12/22"
         })
         expect(res.status).toBe(400)
@@ -95,8 +95,8 @@ describe('Test eventi', () => {
 
         const url = '/api/v1/locali/' + 1 + '/eventi'
         const res = await (await request(app).post(url).set("Authorization", ': Bearer ' + localState.token).send({
-            nome: mockData.user[0].nome,
-            descrizione: mockData.user[1].nome,
+            nome: mockData.state.users.nome,
+            descrizione: mockData.state.users.nome,
             dataInizio: "11/12/22"
         }))
         memorize.evento=await Evento.findById(res.eventoID)
@@ -108,7 +108,7 @@ describe('Test eventi', () => {
 
         const url = '/api/v1/locali/' + localState.creaUtenti.utente.localeID + '/eventi'
         const res = await (await request(app).post(url).set("Authorization", ': Bearer ' + localState.token).send({
-            descrizione: mockData.user[1].nome,
+            descrizione: mockData.state.users.nome,
             dataInizio: "11/12/22"
         }))
         memorize.evento=await Evento.findById(res.eventoID)
@@ -120,7 +120,7 @@ describe('Test eventi', () => {
 
         const url = '/api/v1/locali/' + localState.creaUtenti.utente.localeID + '/eventi'
         const res = await (await request(app).post(url).set("Authorization", ': Bearer ' + localState.token).send({
-            nome: mockData.user[0].nome,
+            nome: mockData.state.users.nome,
             dataInizio: "11/12/22"
         }))
         memorize.evento=await Evento.findById(res.eventoID)
@@ -132,8 +132,8 @@ describe('Test eventi', () => {
 
         const url = '/api/v1/locali/' + localState.creaUtenti.utente.localeID + '/eventi'
         const res = await (await request(app).post(url).set("Authorization", ': Bearer ' + localState.token).send({
-            descrizione: mockData.user[1].nome,
-            nome: mockData.user[0].nome
+            descrizione: mockData.state.users.nome,
+            nome: mockData.state.users.nome
         }))
         memorize.evento=await Evento.findById(res.eventoID)
         expect(res.status).toBe(400)
@@ -142,13 +142,13 @@ describe('Test eventi', () => {
 
     test('GET /:eventoID ok', async () => {
         const url = '/api/v1/eventi/' + localState.evento.eventoID
-        const res = await (await request(app).get(url))
+        const res = await request(app).get(url)
         expect(res.status).toBe(201)
     });
 
     test('GET /:eventoID evento inesistente', async () => {
         const url = '/api/v1/eventi/' + "1234567890abcdefghijklmno" 
-        const res = await (await request(app).get(url))
+        const res = await request(app).get(url)
         console.log(res.body)
         expect(res.status).toBe(404)
         expect(res.body).toEqual({ message: "Nessun evento trovato", success: false })
