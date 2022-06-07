@@ -82,7 +82,7 @@ exports.deleteRecensione = async (req, res) => {
         
         await Recensione.deleteOne({ _id: req.params.recensioneID })
 
-        res.status(200).json({ success: true, message: 'Recensione cancellate correttamente' })
+        res.status(200).json({ success: true, message: 'Recensione cancellata correttamente' })
 
     } catch (err) {
         res.status(500).json({ success: false, error: err })
