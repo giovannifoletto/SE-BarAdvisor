@@ -7,7 +7,7 @@ exports.getLocale = async (req, res) => {
         const locale = await Locale.findById(req.params.localeID)
         .populate('gestore', 'nome')
         .populate('eventi', 'nome dataInizio')
-        .populate('recensioni', 'utente commento votazione')
+        .populate('recensioni', 'utente locale commento votazione')
 
         if (! locale)
             return res.status(404).json({ success: false, message: 'Locale non trovato' })

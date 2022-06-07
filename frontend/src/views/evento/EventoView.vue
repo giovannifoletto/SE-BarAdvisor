@@ -173,8 +173,8 @@ export default {
         );
 
         if (!res.data.success) {
-          this.error.status = true;
-          this.error.messaggio = res.data?.error || res.data?.message;
+          this.error.status = true
+          this.error.messaggio = res.data?.error || res.data?.message
         } else {
           this.preview = null;
           this.$router.go();
@@ -184,9 +184,7 @@ export default {
       }
     },
     async postCommento() {
-      this.commento.utente = this.$store.state?.user.id;
-
-      console.log(this.commento);
+      this.commento.utente = this.$store.state?.user.id
 
       const opzioneRichiesta = {
         method: "POST",
@@ -206,13 +204,13 @@ export default {
         if (data.success) {
           this.$router.go();
         } else {
-          this.error.status = true;
+          this.error.status = true
           this.error.messaggio =
-            data.error || data.message || "Errore interno, riprovare.";
+            data.error || data.message || "Errore interno, riprovare."
         }
       } catch (error) {
         this.error.status = true;
-        this.error.messaggio = error || "Errore imprevisto, riprovare.";
+        this.error.messaggio = error || "Errore imprevisto, riprovare."
       }
     },
     async postPrenotazione(){
@@ -264,14 +262,14 @@ export default {
           );
           this.copertina = `data:${
             response.data.imm.file.contentType
-          };base64,${btoa(binary)}`;
-          this.copertinaCaricata = true;
+          };base64,${btoa(binary)}`
+          this.copertinaCaricata = true
         }
       }
     } catch (error) {
-      console.log(error);
-      this.error.status = true;
-      this.error.messaggio = error || "Errore del server, riprovare.";
+      this.error.status = true
+      this.error.messaggio = error || "Errore del server, riprovare."
+      this.$emit('error', this.error)
     }
   },
 };

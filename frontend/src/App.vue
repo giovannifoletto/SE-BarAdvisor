@@ -5,8 +5,9 @@
       <LeftDiv></LeftDiv>
       <div class="content">
         <Errors :error="error" />
+        <Message :messaggio="messaggio" />
 
-        <router-view @error="handleError"></router-view>
+        <router-view @error="handleError" @messaggio="handleMessage"></router-view>
       </div>
       <RightDiv></RightDiv>
     </div>
@@ -20,6 +21,7 @@ import Footer from "@/components/layout/Footer.vue";
 import LeftDiv from "@/components/layout/LeftDiv.vue";
 import RightDiv from "@/components/layout/RightDiv";
 import Errors from '@/components/Errors'
+import Message from '@/components/Message'
 
 export default {
   name: "AppVue",
@@ -28,7 +30,8 @@ export default {
     Footer,
     LeftDiv,
     RightDiv,
-    Errors
+    Errors,
+    Message
   },
   data() {
     this.$store.commit("recoverState");
@@ -37,12 +40,19 @@ export default {
         status: false,
         messaggio: "Errore di default.",
       },
+      messaggio: {
+        status: false,
+        messaggio: "Messaggio di default."
+      }
     };
   },
   methods: {
     async handleError(event) {
       this.error = event;
     },
+    async handleMessage(event) {
+      this.messaggio = event
+    }
   },
 };
 </script>
