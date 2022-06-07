@@ -152,8 +152,9 @@ describe('Test eventi', () => {
     test('GET /:eventoID ok', async () => {
         const url = '/api/v1/eventi/' + localState.evento.eventoID
         const res = await request(app).get(url)
+        console.log(res.body)
         expect(res.status).toBe(200)
-    });
+    }).only;
 
     test('GET /:eventoID evento inesistente', async () => {
         const url = '/api/v1/eventi/' + "1234567890abcdefghijklmn" 
