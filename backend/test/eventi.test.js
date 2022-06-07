@@ -7,6 +7,7 @@ const localState = {
     user: null, 
     token: null,
     creaUtenti: null,
+    evento: null
 }
 
 /**
@@ -73,6 +74,7 @@ describe('Test eventi', () => {
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${localState.token}`)
             .send(mockData.state.evento)
+        localState.evento=mockData.state.evento
         expect(res.status).toBe(201)
         expect(res.body).toEqual({ message: "Nuovo evento creato correttamente", success: true })
     });
@@ -82,72 +84,72 @@ describe('Test eventi', () => {
         const url = '/api/v1/locali/' + localState.creaUtenti.utente.localeID + '/eventi'
         const res = await request(app).post(url).set("Authorization", 'Bearer ' + 123).send({
             nome: mockData.users[0].nome,
-            descrizione: mockData.users[1].nome,
+            descrizione: mockData.user[1].nome,
             dataInizio: "11/12/22"
         })
-        expect(await Evento.findById(res.eventoID)).not.toBe(null)
         expect(res.status).toBe(400)
         expect(res.body).toEqual({ success: false, message: "Utente non loggato, impossibile procedere" })
     });
 
-    // test('POST /:localeID/eventi locale inesistente', async () => {
+    test('POST /:localeID/eventi locale inesistente', async () => {
 
-    //     const url = '/api/v1/locali/' + 1 + '/eventi'
-    //     const res = await (await request(app).post(url).set("Authorization", ': Bearer ' + memorize.token).send({
-    //         nome: mockData.users[0].nome,
-    //         descrizione: mockData.users[1].nome,
-    //         dataInizio: "11/12/22"
-    //     }))
-    //     memorize.evento=await Evento.findById(res.eventoID)
-    //     expect(res.status).toBe(400)
-    //     expect(res.body).toBe({message: "Locale inesistente", success: false})
-    // });
+        const url = '/api/v1/locali/' + 1 + '/eventi'
+        const res = await (await request(app).post(url).set("Authorization", ': Bearer ' + localState.token).send({
+            nome: mockData.user[0].nome,
+            descrizione: mockData.user[1].nome,
+            dataInizio: "11/12/22"
+        }))
+        memorize.evento=await Evento.findById(res.eventoID)
+        expect(res.status).toBe(400)
+        expect(res.body).toBe({message: "Locale inesistente", success: false})
+    });
 
-    // test('POST /:localeID/eventi no nome', async () => {
+    test('POST /:localeID/eventi no nome', async () => {
 
-    //     const url = '/api/v1/locali/' + localState.creaUtenti.utente.localeID + '/eventi'
-    //     const res = await (await request(app).post(url).set("Authorization", ': Bearer ' + memorize.token).send({
-    //         descrizione: mockData.users[1].nome,
-    //         dataInizio: "11/12/22"
-    //     }))
-    //     memorize.evento=await Evento.findById(res.eventoID)
-    //     expect(res.status).toBe(400)
-    //     expect(res.body).toBe({ success: false, message: 'Compilare tutti i campi' })
-    // });
+        const url = '/api/v1/locali/' + localState.creaUtenti.utente.localeID + '/eventi'
+        const res = await (await request(app).post(url).set("Authorization", ': Bearer ' + localState.token).send({
+            descrizione: mockData.user[1].nome,
+            dataInizio: "11/12/22"
+        }))
+        memorize.evento=await Evento.findById(res.eventoID)
+        expect(res.status).toBe(400)
+        expect(res.body).toBe({ success: false, message: 'Compilare tutti i campi' })
+    });
 
-    // test('POST /:localeID/eventi no descrizione', async () => {
+    test('POST /:localeID/eventi no descrizione', async () => {
 
-    //     const url = '/api/v1/locali/' + localState.creaUtenti.utente.localeID + '/eventi'
-    //     const res = await (await request(app).post(url).set("Authorization", ': Bearer ' + memorize.token).send({
-    //         nome: mockData.users[0].nome,
-    //         dataInizio: "11/12/22"
-    //     }))
-    //     memorize.evento=await Evento.findById(res.eventoID)
-    //     expect(res.status).toBe(200)
-    //     expect(res.body).toBe({message: "Nuovo evento creato correttamente", success: true})
-    // });
+        const url = '/api/v1/locali/' + localState.creaUtenti.utente.localeID + '/eventi'
+        const res = await (await request(app).post(url).set("Authorization", ': Bearer ' + localState.token).send({
+            nome: mockData.user[0].nome,
+            dataInizio: "11/12/22"
+        }))
+        memorize.evento=await Evento.findById(res.eventoID)
+        expect(res.status).toBe(200)
+        expect(res.body).toBe({message: "Nuovo evento creato correttamente", success: true})
+    });
 
-    // test('POST /:localeID/eventi no data inizio', async () => {
+    test('POST /:localeID/eventi no data inizio', async () => {
 
-    //     const url = '/api/v1/locali/' + localState.creaUtenti.utente.localeID + '/eventi'
-    //     const res = await (await request(app).post(url).set("Authorization", ': Bearer ' + memorize.token).send({
-    //         descrizione: mockData.users[1].nome,
-    //         nome: mockData.users[0].nome
-    //     }))
-    //     memorize.evento=await Evento.findById(res.eventoID)
-    //     expect(res.status).toBe(400)
-    //     expect(res.body).toBe({ success: false, message: 'Compilare tutti i campi' })
-    // });
+        const url = '/api/v1/locali/' + localState.creaUtenti.utente.localeID + '/eventi'
+        const res = await (await request(app).post(url).set("Authorization", ': Bearer ' + localState.token).send({
+            descrizione: mockData.user[1].nome,
+            nome: mockData.user[0].nome
+        }))
+        memorize.evento=await Evento.findById(res.eventoID)
+        expect(res.status).toBe(400)
+        expect(res.body).toBe({ success: false, message: 'Compilare tutti i campi' })
+    });
 
     test('GET /:eventoID ok', async () => {
-        const url = '/api/v1/eventi/' + memorize.evento.evento_ID
+        const url = '/api/v1/eventi/' + localState.evento.eventoID
         const res = await (await request(app).get(url))
         expect(res.status).toBe(201)
     });
 
     test('GET /:eventoID evento inesistente', async () => {
-        const url = '/api/v1/eventi/' + ObjectId(1)
+        const url = '/api/v1/eventi/' + "1" 
         const res = await (await request(app).get(url))
+        console.log(res.body)
         expect(res.status).toBe(404)
         expect(res.body).toEqual({ message: "Nessun evento trovato", success: false })
     })
