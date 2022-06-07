@@ -14,13 +14,11 @@ describe('Test auth', () => {
                 email: mockData.users[i].email,
                 password: mockData.users[i].password
             })
-            console.log(res.body)
             expect(res.status).toBe(200)}
         });
 
     test('GET /utenti', async () => {
         const res = await request(app).get('/api/v1/auth/utenti')
-        console.log(res.body)
         expect(res.status).toBe(200)
     })
 

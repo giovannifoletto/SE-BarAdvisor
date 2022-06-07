@@ -2,31 +2,8 @@
   <div>
     <Errors :error="error" />
 
-    <div
-      v-if="
-        $store.state.token && $store.state.user?.locale === evento?.locale._id
-      "
-    >
-      <form enctype="multipart/form-data" @submit.prevent="caricaImmagine">
-        <input
-          type="file"
-          @change="fileSelezionato"
-          id="1"
-          class="custom-file-input"
-        />
-        <button class="submit">Carica</button>
-      </form>
-      <button @click="annullaCaricamento">Annulla</button>
-    </div>
-
     <div class="event" v-if="eventoCaricato">
-      <img
-        class="image"
-        :src="copertina"
-        v-if="copertinaCaricata && !preview"
-      />
-      <img class="image" :src="preview" v-if="preview" />
-
+      <img class="image" :src="copertina" v-if="copertinaCaricata" />
       <div class="title">
         <h3>{{ evento.nome[0].toUpperCase() + evento.nome.slice(1, 1000) }}</h3>
       </div>
@@ -133,11 +110,9 @@ export default {
       evento: null,
       eventoScaduto: false,
       eventoCaricato: false,
-      copertinaCaricata: false,
       utentePrenotato: false,
-      immagine: null,
-      preview: null,
       copertina: null,
+      copertinaCaricata: false,
       commento: {
         utente: null,
         commento: "",
@@ -149,40 +124,6 @@ export default {
     };
   },
   methods: {
-    fileSelezionato(event) {
-      this.immagine = event.target.files[0];
-      this.preview = URL.createObjectURL(this.immagine);
-    },
-    annullaCaricamento() {
-      this.preview = null;
-      document.getElementById("1").value = "";
-    },
-    async caricaImmagine() {
-      if (!this.immagine) {
-        this.error.status = true;
-        this.error.messaggio = "Selezionare almeno 1 file";
-        return;
-      }
-      const fd = new FormData();
-      fd.append("immagine", this.immagine);
-
-      try {
-        const res = await axios.post(
-          `${config.baseURL}/eventi/${this.eventoID}/copertina`,
-          fd
-        );
-
-        if (!res.data.success) {
-          this.error.status = true;
-          this.error.messaggio = res.data?.error || res.data?.message;
-        } else {
-          this.preview = null;
-          this.$router.go();
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    },
     async postCommento() {
       this.commento.utente = this.$store.state?.user.id;
 
@@ -215,20 +156,20 @@ export default {
         this.error.messaggio = error || "Errore imprevisto, riprovare.";
       }
     },
-    async postPrenotazione(){
-      const { data, error } = await postPrenotazione(this.eventoID)
-      this.error = error
+    async postPrenotazione() {
+      const { data, error } = await postPrenotazione(this.eventoID);
+      this.error = error;
 
-      if(data.success){
-        this.utentePrenotato = true
+      if (data.success) {
+        this.utentePrenotato = true;
       }
     },
     async deletePrenotazione() {
-      const { data, error } = await deletePrenotazione(this.eventoID)
-      this.error = error
-      
-      if(data.success){
-        this.utentePrenotato = false
+      const { data, error } = await deletePrenotazione(this.eventoID);
+      this.error = error;
+
+      if (data.success) {
+        this.utentePrenotato = false;
       }
     },
   },
@@ -242,7 +183,7 @@ export default {
         this.evento = data.evento;
         this.eventoCaricato = true;
         if (Date.parse(this.evento.dataInizio) < Date.now())
-          this.eventoScaduto = true
+          this.eventoScaduto = true;
         this.evento.prenotazioni.forEach((usr) => {
           if (usr._id === this.$store.state?.user?.id)
             this.utentePrenotato = true;
@@ -284,12 +225,6 @@ export default {
   border-radius: 4px;
   justify-content: baseline;
 }
-
-.image {
-  width: 70px;
-  height: 70px;
-}
-
 .title {
   display: flex;
   flex-flow: column nowrap;
