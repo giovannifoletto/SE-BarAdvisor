@@ -86,7 +86,7 @@ exports.postPrenotazione = async (req, res) => {
         const utente = await Utente.findById(userData.id)
 
         if (!evento || !utente)
-            return res.status(500).json({ success: false, message: 'Evento o Utente insesistente' })
+            return res.status(500).json({ success: false, message: 'Evento inesistente' })
         
         // se l'evento a cui si sta provando a prenotare è scaduto, errore
         if (Date.parse(evento.dataInizio) < Date.now())
@@ -101,7 +101,7 @@ exports.postPrenotazione = async (req, res) => {
 
         // se non lo è, lo aggiungo alle prenotazioni dell'evento e aggiungo l'evento alle prenotazioni dell'utente
         if (prenotazioneEffettuata)
-            return res.status(400).json({ success: false, message: 'Impossibile prenotarsi: risulta già effettuata' })
+            return res.status(400).json({ success: false, message: 'Impossibile prenotarsi: prenotazione già effettuata' })
         else {
             evento.prenotazioni.push(userData.id)
             utente.prenotazioni.push(evento._id)
@@ -128,7 +128,7 @@ exports.deletePrenotazione = async (req, res) => {
         const utente = await Utente.findById(userData.id)
 
         if (!evento || !utente)
-            return res.status(500).json({ success: false, message: 'Evento o Utente insesistente' })
+            return res.status(500).json({ success: false, message: 'Evento insesistente' })
         
         // controllo se l'utente è prenotato all'evento
         let prenotazioneEffettuata = false

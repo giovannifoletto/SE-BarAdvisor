@@ -6,8 +6,9 @@
   "scripts": {
     "dev": "nodemon server.js",
     "start": "node server.js",
-    "test": "NODE_ENV=test; jest",
-    "test:watch": "NODE_ENV=test; jest --watch"
+    "test": "NODE_ENV=testing; jest",
+    "test:watch": "NODE_ENV=testing; jest --watch",
+    "test-giusti": "jest"
   },
   "repository": {
     "type": "git",
