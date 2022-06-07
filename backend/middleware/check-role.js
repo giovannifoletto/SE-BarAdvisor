@@ -4,10 +4,6 @@ const Recensione = require('../models/Recensione')
 // controllare se l'utente che sta facendo l'operazione è il proprietario del locale
 exports.checkPermessiProprietarioLocale = async (req, res, next) => {
     const userData = req.userData
-    const evento = req.params.eventoID
-
-    if(!evento)
-        return res.status(404).json({ success: false, message: 'Locale inesistente' })
 
     try {
         const localeOrganizzatore = await Locale.findById(userData.locale)
