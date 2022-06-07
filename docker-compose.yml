@@ -10,8 +10,8 @@ services:
       - backend/.env
   frontend:
     build: frontend/
-    # volumes:
-    #   - /home/giovannifoletto/Documents/UNI/SE-BarAdvisor/front-vue:/app
+    volumes:
+      - /home/giovannifoletto/Documents/UNI/SE-BarAdvisor/frontend:/app
     links:
       - backend
     ports:
