@@ -1,6 +1,6 @@
 <template>
   <div class="post" v-if="locale">
-    <!-- <Errors :error="error" /> -->
+
     <div class="title">
       <div class="head-title">
         <div class="title-account">

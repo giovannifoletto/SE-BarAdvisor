@@ -72,8 +72,10 @@ export default {
         const data = await res.json();
 
         if (data.success) {
-          this.messaggio.status = true;
-          this.messaggio.messaggio = data.message || "Messaggio inviato correttamente.";
+          this.messaggio.status = true
+          this.messaggio.messaggio = data.message || "Messaggio inviato correttamente."
+
+          this.$router.push({ name: 'paginaLocale' })
         } else {
           this.error.status = true;
           this.error.messaggio =
