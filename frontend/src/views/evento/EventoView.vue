@@ -1,31 +1,12 @@
 <template>
   <div>
-    <Errors :error="error" />
-
-    <div
-      v-if="
-        $store.state.token && $store.state.user?.locale === evento?.locale._id
-      "
-    >
-      <form enctype="multipart/form-data" @submit.prevent="caricaImmagine">
-        <input
-          type="file"
-          @change="fileSelezionato"
-          id="1"
-          class="custom-file-input"
-        />
-        <button class="submit">Carica</button>
-      </form>
-      <button @click="annullaCaricamento">Annulla</button>
-    </div>
 
     <div class="event" v-if="eventoCaricato">
       <img
         class="image"
         :src="copertina"
-        v-if="copertinaCaricata && !preview"
+        v-if="copertinaCaricata"
       />
-      <img class="image" :src="preview" v-if="preview" />
 
       <div class="title">
         <h3>{{ evento.nome[0].toUpperCase() + evento.nome.slice(1, 1000) }}</h3>
@@ -109,7 +90,6 @@
 <script>
 import Primary from "@/components/buttons/Primary.vue";
 import Secondary from "@/components/buttons/Secondary.vue";
-import Errors from "@/components/Errors.vue";
 import Message from "@/components/Message";
 import Commento from "@/components/Commento.vue";
 import axios from "axios";
@@ -124,7 +104,6 @@ export default {
   components: {
     Primary,
     Secondary,
-    Errors,
     Message,
     Commento,
   },
@@ -135,8 +114,6 @@ export default {
       eventoCaricato: false,
       copertinaCaricata: false,
       utentePrenotato: false,
-      immagine: null,
-      preview: null,
       copertina: null,
       commento: {
         utente: null,
@@ -149,44 +126,8 @@ export default {
     };
   },
   methods: {
-    fileSelezionato(event) {
-      this.immagine = event.target.files[0];
-      this.preview = URL.createObjectURL(this.immagine);
-    },
-    annullaCaricamento() {
-      this.preview = null;
-      document.getElementById("1").value = "";
-    },
-    async caricaImmagine() {
-      if (!this.immagine) {
-        this.error.status = true;
-        this.error.messaggio = "Selezionare almeno 1 file";
-        return;
-      }
-      const fd = new FormData();
-      fd.append("immagine", this.immagine);
-
-      try {
-        const res = await axios.post(
-          `${config.baseURL}/eventi/${this.eventoID}/copertina`,
-          fd
-        );
-
-        if (!res.data.success) {
-          this.error.status = true;
-          this.error.messaggio = res.data?.error || res.data?.message;
-        } else {
-          this.preview = null;
-          this.$router.go();
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    },
     async postCommento() {
-      this.commento.utente = this.$store.state?.user.id;
-
-      console.log(this.commento);
+      this.commento.utente = this.$store.state?.user.id
 
       const opzioneRichiesta = {
         method: "POST",
@@ -195,40 +136,45 @@ export default {
           Authorization: `Bearer ${this.$store.state.token}`,
         },
         body: JSON.stringify(this.commento),
-      };
+      }
+
       try {
         const res = await fetch(
           `${config.baseURL}/eventi/${this.eventoID}/commenti`,
           opzioneRichiesta
-        );
+        )
         const data = await res.json();
 
         if (data.success) {
-          this.$router.go();
+          this.$router.go()
         } else {
-          this.error.status = true;
-          this.error.messaggio =
-            data.error || data.message || "Errore interno, riprovare.";
+          this.error = {status: true, messaggio: data.error || data.message }
+          this.$emit('error', this.error)
         }
       } catch (error) {
-        this.error.status = true;
-        this.error.messaggio = error || "Errore imprevisto, riprovare.";
+        this.error = { status: true, messaggio: error }
+        this.$emit('error', this.error)
       }
     },
     async postPrenotazione(){
       const { data, error } = await postPrenotazione(this.eventoID)
       this.error = error
 
-      if(data.success){
+      if(data.success)
         this.utentePrenotato = true
+      else {
+        this.evento = { status: true, error: error }
+        this.$emit('error', this.error)
       }
     },
     async deletePrenotazione() {
       const { data, error } = await deletePrenotazione(this.eventoID)
-      this.error = error
       
-      if(data.success){
+      if(data.success)
         this.utentePrenotato = false
+      else {
+        this.evento = { status: true, error: error }
+        this.$emit('error', this.error)
       }
     },
   },
