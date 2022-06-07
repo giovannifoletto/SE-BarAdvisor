@@ -1,6 +1,5 @@
 const dotenv = require('dotenv')
 dotenv.config()
-const Locale = require('./controllers/controllerEvento')
 
 module.exports = {
     NODE_ENV: process.env.NODE_ENV || "development",
