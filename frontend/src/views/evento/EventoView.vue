@@ -68,8 +68,7 @@
             <Commento
               v-for="commento in evento.commenti"
               :key="commento._id"
-              :commento="commento.commento"
-              :idUtente="commento.utente"
+              :commento="commento"
             />
           </div>
           <div v-else>
@@ -126,6 +125,40 @@ export default {
     };
   },
   methods: {
+    fileSelezionato(event) {
+      this.immagine = event.target.files[0];
+      this.preview = URL.createObjectURL(this.immagine);
+    },
+    annullaCaricamento() {
+      this.preview = null;
+      document.getElementById("1").value = "";
+    },
+    async caricaImmagine() {
+      if (!this.immagine) {
+        this.error.status = true;
+        this.error.messaggio = "Selezionare almeno 1 file";
+        return;
+      }
+      const fd = new FormData();
+      fd.append("immagine", this.immagine);
+
+      try {
+        const res = await axios.post(
+          `${config.baseURL}/eventi/${this.eventoID}/copertina`,
+          fd
+        );
+
+        if (!res.data.success) {
+          this.error.status = true
+          this.error.messaggio = res.data?.error || res.data?.message
+        } else {
+          this.preview = null;
+          this.$router.go();
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
     async postCommento() {
       this.commento.utente = this.$store.state?.user.id
 
@@ -210,14 +243,14 @@ export default {
           );
           this.copertina = `data:${
             response.data.imm.file.contentType
-          };base64,${btoa(binary)}`;
-          this.copertinaCaricata = true;
+          };base64,${btoa(binary)}`
+          this.copertinaCaricata = true
         }
       }
     } catch (error) {
-      console.log(error);
-      this.error.status = true;
-      this.error.messaggio = error || "Errore del server, riprovare.";
+      this.error.status = true
+      this.error.messaggio = error || "Errore del server, riprovare."
+      this.$emit('error', this.error)
     }
   },
 };
