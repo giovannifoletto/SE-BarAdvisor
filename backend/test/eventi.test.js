@@ -159,6 +159,7 @@ describe('Test eventi', () => {
     test('GET /:eventoID ok', async () => {
         const url = '/api/v1/eventi/' + localState.evento.eventoID
         const res = await request(app).get(url)
+        console.log(res.body)
         expect(res.status).toBe(200)
     });
 
@@ -166,8 +167,9 @@ describe('Test eventi', () => {
         const url = '/api/v1/eventi/' + "1234567890abcdefghijklmn" 
         const res = await request(app).get(url)
         console.log(res.body)
-        expect(res.status).toBe(404)
         expect(res.body).toEqual({ message: "Nessun evento trovato", success: false })
+        expect(res.status).toBe(404)
+
     })
 
 
