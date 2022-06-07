@@ -50,7 +50,7 @@ exports.postEvento = async (req, res) => {
 
         await locale.save()
 
-        res.status(200).json({ success: true, message: 'Nuovo evento creato correttamente' })
+        res.status(201).json({ success: true, message: 'Nuovo evento creato correttamente' })
 
     } catch(err){
         res.status(500).json({ success: false, error: err.message })
