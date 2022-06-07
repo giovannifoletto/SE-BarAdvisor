@@ -152,10 +152,7 @@ export default {
 
         return false
       }
-    },
-    async caricaFoto(eventoID) {
-      console.log("Caricamento foto...");
-    },
+    }
   },
 }
 </script>
