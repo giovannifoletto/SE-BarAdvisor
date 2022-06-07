@@ -13,7 +13,7 @@ exports.getAllEventi = async (req, res) => {
         if (eventi.length >= 0)
             res.status(200).json({ success: true, eventi: eventi })
         else
-            res.status(200).json({ success: false, message: "Nessun evento disponibile" })
+            res.status(404).json({ success: false, message: "Nessun evento disponibile" })
     } 
     catch (err) {
         res.status(500).json({ success: false, error: err.message })
@@ -33,7 +33,7 @@ exports.postEvento = async (req, res) => {
         const locale = await Locale.findById(userData.locale)
 
         if (!locale)
-            return res.status(400).json({ success: false, message: 'Locale inesistente' })
+            return res.status(404).json({ success: false, message: 'Locale inesistente' })
         
         // creazione dell'evento
         const evento = new Evento({
@@ -50,7 +50,7 @@ exports.postEvento = async (req, res) => {
 
         await locale.save()
 
-        res.status(201).json({ success: true, message: 'Nuovo evento creato correttamente' })
+        res.status(200).json({ success: true, message: 'Nuovo evento creato correttamente' })
 
     } catch(err){
         res.status(500).json({ success: false, error: err.message })
@@ -68,7 +68,7 @@ exports.getEvento = async (req, res) => {
         if (!evento)
             return res.status(404).json({ success: false, message: 'Nessun evento trovato' })
         
-        res.status(201).json({ success: true, evento: evento })
+        res.status(200).json({ success: true, evento: evento })
         
     }
     catch (err) {

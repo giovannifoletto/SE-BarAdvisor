@@ -65,7 +65,7 @@ describe('Test eventi', () => {
     test('GET /', async () => {
         const url = '/api/v1/eventi/'
         const res = await request(app).get(url)
-        expect(res.status).toBe(200)
+        expect(res.status).toBe(404)
     });    
 
     test('POST /:localeID/eventi ok', async () => {
@@ -78,6 +78,12 @@ describe('Test eventi', () => {
         expect(res.status).toBe(201)
         expect(res.body).toEqual({ message: "Nuovo evento creato correttamente", success: true })
     });
+
+    test('GET /', async () => {
+        const url = '/api/v1/eventi/'
+        const res = await request(app).get(url)
+        expect(res.status).toBe(200)
+    });    
 
     test('POST /:localeID/eventi utente non loggato', async () => {
 
@@ -97,7 +103,7 @@ describe('Test eventi', () => {
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${localState.token}`)
             .send(mockData.state.evento)
-        expect(res.status).toBe(401)
+        expect(res.status).toBe(404)
         expect(res.body).toBe({message: "Locale inesistente", success: false})
     });
 
@@ -146,7 +152,7 @@ describe('Test eventi', () => {
     test('GET /:eventoID ok', async () => {
         const url = '/api/v1/eventi/' + localState.evento.eventoID
         const res = await request(app).get(url)
-        expect(res.status).toBe(201)
+        expect(res.status).toBe(200)
     });
 
     test('GET /:eventoID evento inesistente', async () => {
