@@ -28,7 +28,7 @@ jobs:
       - run: | 
           echo ${{ secrets.DB_URL_CLUSTER_TESTING }}
           npm ci
-          pm run test
+          npm run test
         env:
           NODE_ENV: testing
           DB_URL_CLUSTER_TESTING: ${{ secrets.DB_URL_CLUSTER_TESTING }}
