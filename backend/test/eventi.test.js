@@ -68,7 +68,7 @@ describe('Test eventi', () => {
         expect(res.status).toBe(200)
     });    
 
-    test('POST /:localeID/eventi', async () => {
+    test('POST /:localeID/eventi ok', async () => {
         const res = await request(app)
             .post(`/api/v1/locali/${localState.creaUtenti.utente.locale}/eventi`)
             .set('Content-Type', 'application/json')
@@ -81,57 +81,64 @@ describe('Test eventi', () => {
 
     test('POST /:localeID/eventi utente non loggato', async () => {
 
-        const url = '/api/v1/locali/' + localState.creaUtenti.utente.localeID + '/eventi'
-        const res = await request(app).post(url).set("Authorization", 'Bearer ' + 123).send({
-            nome: mockData.state.users.nome,
-            descrizione: mockData.state.users.nome,
-            dataInizio: "11/12/22"
-        })
+        const res = await request(app)            
+            .post(`/api/v1/locali/${localState.creaUtenti.utente.locale}/eventi`)
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${localState.token}`)
+            .send(mockData.state.evento)
         expect(res.status).toBe(401)
         expect(res.body).toEqual({ success: false, message: "Utente non loggato, impossibile procedere" })
     });
 
     test('POST /:localeID/eventi locale inesistente', async () => {
 
-        const url = '/api/v1/locali/' + 1 + '/eventi'
-        const res = await (await request(app).post(url).set("Authorization", ': Bearer ' + localState.token).send({
-            nome: mockData.state.users.nome,
-            descrizione: mockData.state.users.nome,
-            dataInizio: "11/12/22"
-        }))
-        expect(res.status).toBe(400)
+        const res = await request(app)
+            .post("/api/v1/locali/" + "1234567890abcdefghijklmn" + "/eventi")
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${localState.token}`)
+            .send(mockData.state.evento)
+        expect(res.status).toBe(401)
         expect(res.body).toBe({message: "Locale inesistente", success: false})
     });
 
     test('POST /:localeID/eventi no nome', async () => {
 
-        const url = '/api/v1/locali/' + localState.creaUtenti.utente.localeID + '/eventi'
-        const res = await (await request(app).post(url).set("Authorization", ': Bearer ' + localState.token).send({
-            descrizione: mockData.state.users.nome,
-            dataInizio: "11/12/22"
-        }))
+        const res = await request(app)            
+            .post(`/api/v1/locali/${localState.creaUtenti.utente.locale}/eventi`)
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${localState.token}`)
+            .send({                
+                descrizione: mockData.state.evento.descrizione,
+                dataInizio: mockData.state.evento.dataInizio
+            })
         expect(res.status).toBe(400)
         expect(res.body).toBe({ success: false, message: 'Compilare tutti i campi' })
     });
 
     test('POST /:localeID/eventi no descrizione', async () => {
 
-        const url = '/api/v1/locali/' + localState.creaUtenti.utente.localeID + '/eventi'
-        const res = await (await request(app).post(url).set("Authorization", ': Bearer ' + localState.token).send({
-            nome: mockData.state.users.nome,
-            dataInizio: "11/12/22"
-        }))
+        const res = await request(app)            
+            .post(`/api/v1/locali/${localState.creaUtenti.utente.locale}/eventi`)
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${localState.token}`)
+            .send({                
+                nome: mockData.state.evento.nome,
+                dataInizio: mockData.state.evento.dataInizio
+            })
         expect(res.status).toBe(200)
         expect(res.body).toBe({message: "Nuovo evento creato correttamente", success: true})
     });
 
     test('POST /:localeID/eventi no data inizio', async () => {
 
-        const url = '/api/v1/locali/' + localState.creaUtenti.utente.localeID + '/eventi'
-        const res = await (await request(app).post(url).set("Authorization", ': Bearer ' + localState.token).send({
-            descrizione: mockData.state.users.nome,
-            nome: mockData.state.users.nome
-        }))
+        const res = await request(app)            
+            .post(`/api/v1/locali/${localState.creaUtenti.utente.locale}/eventi`)
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${localState.token}`)
+            .send({                
+                descrizione: mockData.state.evento.descrizione,
+                nome: mockData.state.evento.nome
+            })
         expect(res.status).toBe(400)
         expect(res.body).toBe({ success: false, message: 'Compilare tutti i campi' })
     });

@@ -31,7 +31,7 @@ describe('Test auth', () => {
 
         test(('POST /new/cliente no password'), async () => {
                     const res = await request(app).post('/api/v1/auth/new/cliente').set('Content-Type', 'application/json').send({
-                    password: mockData.mockData.state.users.password,
+                    password: mockData.state.users.password,
                     email: mockData.state.users.email,
                 })
                 expect(res.status).toBe(400)

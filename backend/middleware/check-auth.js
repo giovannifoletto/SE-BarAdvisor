@@ -10,7 +10,7 @@ module.exports = (req, res, next) => {
         const bearerToken = req.headers['authorization']
 
         if (!bearerToken)
-            return res.status(400).json({ success: false, message: "Utente non loggato, impossibile procedere" })
+            return res.status(401).json({ success: false, message: "Utente non loggato, impossibile procedere" })
 
         // se esiste, si controlla e se è corretto, si spacchetta e si aggiunge un campo con i dati dell'utente nella response
         const token = bearerToken.split(" ")[1]
