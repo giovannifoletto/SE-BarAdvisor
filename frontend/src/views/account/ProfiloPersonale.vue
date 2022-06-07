@@ -48,18 +48,11 @@
       </div>
       <div v-if="prenotazioni.length != 0">
         <div class="comm-row">
-          <CardEvento
-            v-for="evento in prenotazioni"
-            :key="evento._id"
-            :evento="evento"
-          />
+          <CardEvento v-for="evento in prenotazioni" :key="evento._id" :evento="evento" />
         </div>
       </div>
       <div v-else>
-        <Message
-          :isSuccess="false"
-          :messaggio="{ status: true, messaggio: 'Nessun evento in programma.' }"
-        />
+        <Message :isSuccess="false" :messaggio="{ status: true, messaggio: 'Nessun evento in programma.' }" />
       </div>
     </div>
 
@@ -68,17 +61,10 @@
         <h3>Notifiche</h3>
       </div>
       <div class="comm-row" v-if="notifiche.length !== 0">
-        <CardNotifica
-          v-for="notifica in notifiche"
-          :key="notifica"
-          :testoCompleto="notifica"
-        />
+        <CardNotifica v-for="notifica in notifiche" :key="notifica" :testoCompleto="notifica" />
       </div>
       <div v-else>
-        <Message
-          :isSuccess="false"
-          :messaggio="{ status: true, messaggio: 'Nessuna notifica.' }"
-        />
+        <Message :isSuccess="false" :messaggio="{ status: true, messaggio: 'Nessuna notifica.' }" />
       </div>
     </div>
 
@@ -88,13 +74,13 @@
       </div>
       <div class="p-1">
         <div class="p-1 text-center">
-            <router-link :to="{name: 'fromCambiaPassword'}">
-                <Primary title="Cambia password" />
-            </router-link>
+          <router-link :to="{ name: 'fromCambiaPassword' }">
+            <Primary title="Cambia password" />
+          </router-link>
         </div>
 
         <div class="p-1 text-center">
-          <Primary title="Elimina Account" />
+          <Primary title="Elimina Account" @buttonClicked="cancellaAccount" />
         </div>
       </div>
     </div>
@@ -110,6 +96,7 @@ import CardNotifica from "@/components/CardNotifica";
 import Errors from "@/components/Errors.vue";
 
 import config from "@/config";
+import deleteAccount from '@/lib/deleteAccount'
 
 export default {
   components: {
@@ -132,6 +119,20 @@ export default {
         messaggio: "Messaggio di default.",
       },
     };
+  },
+  methods: {
+    async cancellaAccount() {
+      const { data, error } = await deleteAccount()
+
+      if (data.success) {
+            this.$router.push({ name: 'home' })
+            this.$store.commit('resetToken')
+        }
+        else {
+            this.error = error
+            this.$emit('error', this.error)
+        }
+    }
   },
   async mounted() {
     try {
@@ -161,6 +162,7 @@ export default {
   flex-flow: column nowrap;
   border-radius: 4px;
 }
+
 .title {
   display: flex;
   flex-flow: row nowrap;
@@ -168,6 +170,7 @@ export default {
   padding: 10px;
   border-bottom: 1px solid black;
 }
+
 .under {
   display: flex;
   flex-flow: row nowrap;
@@ -175,6 +178,7 @@ export default {
   justify-content: space-evenly;
   padding-top: 0.5rem;
 }
+
 .gallery {
   display: flex;
   flex-flow: column nowrap;
@@ -183,9 +187,11 @@ export default {
   justify-content: space-evenly;
   padding-top: 0.5rem;
 }
+
 .img-gallery {
   border: 1px black solid;
 }
+
 .comments {
   display: flex;
   flex-flow: column nowrap;
@@ -194,12 +200,14 @@ export default {
   justify-content: space-evenly;
   padding-top: 0.5rem;
 }
+
 .info-comments {
   display: flex;
   flex-flow: row;
   justify-content: center;
   justify-items: baseline;
 }
+
 .comm {
   display: flex;
   flex-flow: column;
@@ -207,9 +215,11 @@ export default {
   width: 100%;
   gap: 0.5rem;
 }
+
 .comm-row {
   display: relative;
 }
+
 .final-button {
   display: flex;
   flex-flow: column;

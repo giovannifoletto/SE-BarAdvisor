@@ -27,7 +27,7 @@
       </div>
     </div>
 
-    <div v-if="localeID === $store.state.user?.locale && $store.state.token">
+    <div v-if="isGestore">
       <router-link :to="{ name: 'formCreazioneEvento' }">
         <Primary title="Crea Evento" />
       </router-link>
@@ -103,6 +103,25 @@
           @messaggio="handleMessage" @error="handleError" />
       </div>
     </div>
+
+    <!-- BOTTONI CAMBIA PASSWORD E ELIMINA ACCOUNT -->
+
+    <div class="final-button mt-3 mb-1" v-if="isGestore">
+      <div class="info-comments px-4 mt-3 mb-2">
+        <h3>Sezione Personale</h3>
+      </div>
+      <div class="p-1">
+        <div class="p-1 text-center">
+          <router-link :to="{ name: 'fromCambiaPassword' }">
+            <Primary title="Cambia password" />
+          </router-link>
+        </div>
+
+        <div class="p-1 text-center">
+          <Primary title="Elimina Account" @buttonClicked="cancellaAccount" />
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -117,6 +136,7 @@ import Errors from "@/components/Errors";
 import Beer from "@/components/icons/Beer";
 
 import config from "@/config";
+import deleteAccount from '@/lib/deleteAccount'
 
 export default {
   name: "paginaLocale",
@@ -136,6 +156,7 @@ export default {
       locale: null,
       prossimiEventi: null,
       eventiPassati: null,
+      isGestore: false,
       recensione: {
         commento: "",
         votazione: "",
@@ -154,6 +175,18 @@ export default {
     },
     handleError(event) {
       this.$emit('error', event)
+    },
+    async cancellaAccount() {
+      const { data, error } = await deleteAccount()
+
+      if (data.success) {
+            this.$router.push({ name: 'home' })
+            this.$store.commit('resetToken')
+        }
+        else {
+            this.error = error
+            this.$emit('error', this.error)
+        }
     },
     async postRecensione() {
       if (!this.recensione.commento || !this.recensione.votazione) {
@@ -204,6 +237,8 @@ export default {
 
       if (data.success) {
         this.locale = data.locale;
+        if (this.$store.state.token && this.localeID === this.$store.state.user?.locale)
+          this.isGestore = true
         this.prossimiEventi = data.prossimiEventi;
         this.eventiPassati = data.eventiPassati;
       }
