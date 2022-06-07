@@ -23,13 +23,7 @@
         >
           <Secondary title="Visita il Locale gestore dell'evento" />
         </router-link>
-        <router-link
-          :to="{
-            name: 'formInviaNotifica',
-            params: { localeID: evento?.locale?._id, eventoID: eventoID },
-          }"
-          v-if="$store.state.user?.locale === evento?.locale?._id"
-        >
+        <router-link :to="{ name: 'formInviaNotifica', params: { localeID: evento?.locale?._id, eventoID: eventoID }, }" v-if="isGestore" >
           <Primary title="Invia una notifica a questo evento" />
         </router-link>
 
@@ -82,6 +76,14 @@
           </div>
         </div>
       </div>
+
+      <div class="final-button mt-3 mb-1" v-if="isGestore">
+      <div class="p-1">
+        <div class="p-1 text-center">
+          <Primary title="Elimina Evento" @buttonClicked="cancellaEvento" />
+        </div>
+      </div>
+    </div>
     </div>
   </div>
 </template>
@@ -114,6 +116,7 @@ export default {
       utentePrenotato: false,
       copertina: null,
       copertinaCaricata: false,
+      isGestore: false,
       commento: {
         utente: null,
         commento: "",
@@ -125,6 +128,29 @@ export default {
     };
   },
   methods: {
+    async cancellaEvento() {
+      const opzioneRichiesta = {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${this.$store.state.token}` }
+      }
+
+      try {
+        const res = await fetch(`${config.baseURL}/locali/${this.$store.state.user.locale}/eventi/${this.eventoID}`, opzioneRichiesta)
+        const data = await res.json()
+
+        if (data.success) {
+          this.$router.push({ name: 'paginaLocale', params: { localeID: this.$store.state.user.locale } })
+        }
+        else {
+          this.error = { status: true, messaggio: data?.messaggio || data?.error }
+          this.$emit('error', this.error)
+        }
+
+      } catch (error) {
+        this.error = { status: true, messaggio: error }
+        this.$emit('error', this.error)
+      }
+    },
     fileSelezionato(event) {
       this.immagine = event.target.files[0];
       this.preview = URL.createObjectURL(this.immagine);
@@ -225,11 +251,13 @@ export default {
         this.evento.prenotazioni.forEach((usr) => {
           if (usr._id === this.$store.state?.user?.id)
             this.utentePrenotato = true;
-        });
+        })
+        if (this.$store.state.user?.locale === this.evento?.locale?._id)
+          this.isGestore = true
       }
 
       // se l'evento ha la copertina, recuperala
-      if (this.evento.copertina) {
+      if (this.evento?.copertina) {
         // get immagine dell'evento
         const response = await axios.get(
           `${config.baseURL}/eventi/${this.eventoID}/copertina`
