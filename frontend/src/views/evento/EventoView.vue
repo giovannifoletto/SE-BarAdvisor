@@ -87,8 +87,7 @@
             <Commento
               v-for="commento in evento.commenti"
               :key="commento._id"
-              :commento="commento.commento"
-              :idUtente="commento.utente"
+              :commento="commento"
             />
           </div>
           <div v-else>

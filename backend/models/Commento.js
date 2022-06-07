@@ -7,6 +7,11 @@ const schemaCommento = new mongoose.Schema(
         ref: 'Utente',
         required: true
     },
+    evento: {
+        type: mongoose.Types.ObjectId,
+        ref: 'Evento',
+        required: true
+    },
     commento: {
         type: String,
         required: true
