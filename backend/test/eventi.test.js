@@ -2,6 +2,7 @@ const app = require('../server') // Link to your server
 const request = require('supertest')
 const mockData = require('./mockData')
 const Evento = require('../models/Evento')
+const mongoose = require('mongoose')
 
 const localState = {
     user: null, 
@@ -60,6 +61,10 @@ describe('Test eventi', () => {
         localState.user = utente.body.user
 
         expect(utente.status).toBe(200)
+    })
+
+    afterAll(async () => {
+        await mongoose.connection.db.dropDatabase()
     })
 
     test('GET /', async () => {
