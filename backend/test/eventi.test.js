@@ -66,6 +66,7 @@ describe('Test eventi', () => {
         const url = '/api/v1/eventi/'
         const res = await request(app).get(url)
         expect(res.status).toBe(404)
+        
     });    
 
     test('POST /:localeID/eventi ok', async () => {
