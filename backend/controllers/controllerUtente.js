@@ -295,7 +295,7 @@ exports.deleteAccount = async (req, res) => {
             const utente = await Utente.findById(userData.id)
 
             if (!utente)
-                return res.status(400).json({ success: false, message: 'Utente inesistente' })
+                return res.status(404).json({ success: false, message: 'Utente inesistente' })
 
             utente.prenotazioni.forEach(async ev => {
                 const evento = await Evento.findById(ev)
@@ -314,7 +314,7 @@ exports.deleteAccount = async (req, res) => {
             const locale = await Locale.findById(userData.locale)
 
             if (!locale)
-                return res.status(400).json({ success: false, message: 'Locale inesistente' })
+                return res.status(404).json({ success: false, message: 'Locale inesistente' })
 
             await Evento.deleteMany({ _id: { $in: locale.eventi } })
 
