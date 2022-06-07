@@ -1,7 +1,6 @@
 const Evento = require('../models/Evento')
 const Locale = require('../models/Locale')
 const Utente = require('../models/Utente')
-const Commento = require('../models/Commento')
 
 // recuperare tutti gli eventi
 exports.getAllEventi = async (req, res) => {
@@ -50,7 +49,7 @@ exports.postEvento = async (req, res) => {
 
         await locale.save()
 
-        res.status(201).json({ success: true, message: 'Nuovo evento creato correttamente' })
+        res.status(201).json({ success: true, message: 'Nuovo evento creato correttamente', eventoID: evento._id })
 
     } catch(err){
         res.status(500).json({ success: false, error: err.message })
@@ -63,7 +62,7 @@ exports.getEvento = async (req, res) => {
         const evento = await Evento.findById(req.params.eventoID)
         .populate('locale', 'nome')
         .populate('prenotazioni', 'email')
-        .populate('commenti', 'utente commento')
+        .populate('commenti', 'utente evento commento')
 
         if (!evento)
             return res.status(404).json({ success: false, message: 'Nessun evento trovato' })
@@ -86,7 +85,7 @@ exports.postPrenotazione = async (req, res) => {
         const utente = await Utente.findById(userData.id)
 
         if (!evento || !utente)
-            return res.status(500).json({ success: false, message: 'Evento o Utente insesistente' })
+            return res.status(400).json({ success: false, message: 'Evento o Utente insesistente' })
         
         // se l'evento a cui si sta provando a prenotare è scaduto, errore
         if (Date.parse(evento.dataInizio) < Date.now())
@@ -190,38 +189,6 @@ exports.invioNotifica = async (req, res) => {
         })
 
         res.status(200).json({ success: true, message: 'Notifica inviata correttamente' })
-
-    } catch (err) {
-        res.status(500).json({ success: false, error: err.message })
-    }
-}
-
-exports.postCommento = async (req, res) => {
-    const { commento } = req.body
-    const userData = req.userData
-
-    if (!commento)
-        return res.status(400).json({ success: false, message: 'Compilare tutti i campi' })
-    
-    try {
-        const nuovoCommento = new Commento({
-            utente: userData.id,
-            commento: commento
-        })
-        
-        await nuovoCommento.save()
-
-        const evento = await Evento.findById(req.params.eventoID)
-
-        if (!evento)
-            return res.status(400).json({ success: false, message: 'Evento inesistente' })
-
-        evento.commenti.push(nuovoCommento._id)
-
-        await evento.save()
-        
-
-        res.status(200).json({ success: true, message: 'Commento creato correttamente' })
 
     } catch (err) {
         res.status(500).json({ success: false, error: err.message })

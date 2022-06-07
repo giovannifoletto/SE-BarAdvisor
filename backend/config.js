@@ -1,6 +1,5 @@
 const dotenv = require('dotenv')
 dotenv.config()
-const Locale = require('./controllers/controllerEvento')
 
 module.exports = {
     NODE_ENV: process.env.NODE_ENV || "development",
@@ -9,7 +8,8 @@ module.exports = {
     FRONT_PORT: process.env.FRONT_PORT || 8080,
     HOST: process.env.HOST || "localhost",
 
-    DB_URL_LOCAL: process.env.DB_URL_LOCAL || 'mongodb://localhost:27017',
+    DB_URL_LOCAL: process.env.DB_URL_LOCAL || 'mongodb://localhost',
+    DB_URL_CLUSTER_TESTING: process.env.DB_URL_CLUSTER_TESTING,
     DB_URL_CLUSTER: process.env.DB_URL_CLUSTER,
 
     SECRET_KEY: process.env.SECRET_KEY || "lu3028kb855gnzddr7vjlo0xgpkj2s4f",

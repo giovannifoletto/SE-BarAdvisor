@@ -3,16 +3,9 @@ const request = require('supertest')
 const mongoose = require('mongoose')
 const casual = require('casual')
 const mockData = require('./mockData')
-const { getMaxListeners } = require('../server')
 mockData.main()
 
 describe('Test auth', () => {
-
-   afterAll( () => {
-
-         mongoose.connection.close(true)
-     })
-
     test('POST /new/cliente ok', async () => {
         for(let i=0; i<mockData.VAL_TEST; i++)
             {   
@@ -21,13 +14,11 @@ describe('Test auth', () => {
                 email: mockData.users[i].email,
                 password: mockData.users[i].password
             })
-            console.log(res.body)
             expect(res.status).toBe(200)}
         });
 
     test('GET /utenti', async () => {
         const res = await request(app).get('/api/v1/auth/utenti')
-        console.log(res.body)
         expect(res.status).toBe(200)
     })
 
@@ -38,7 +29,6 @@ describe('Test auth', () => {
                 nome: mockData.users[i].nome,
                 email: mockData.users[i].email,
             })
-            console.log(res.body)
             expect(res.status).toBe(400)
             expect(res.body).toEqual({message: "Compilare tutti i campi", success: false})
         }
@@ -51,7 +41,6 @@ describe('Test auth', () => {
                     password: mockData.users[i].password,
                     email: mockData.users[i].email,
                 })
-                console.log(res.body)
                 expect(res.status).toBe(400)
                 expect(res.body).toEqual({message: "Compilare tutti i campi", success: false})
             }
@@ -64,7 +53,6 @@ describe('Test auth', () => {
                 nome: mockData.users[i].nome,
                 password: mockData.users[i].password,
             })
-            console.log(res.body)
             expect(res.status).toBe(400)
             expect(res.body).toEqual({message: "Compilare tutti i campi", success: false})
         }
@@ -78,7 +66,6 @@ describe('Test auth', () => {
                 email: "pippo@getMaxListeners.com",
                 password: mockData.users[i].password
             })
-            console.log(res.body)
             expect(res.status).toBe(400)
             expect(res.body).toEqual({message: "Utente già esistente", success: false})
         }
