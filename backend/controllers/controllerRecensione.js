@@ -68,7 +68,7 @@ exports.deleteRecensione = async (req, res) => {
         const recensione = await Recensione.findById(req.params.recensioneID)
 
         if (!locale || !recensione)
-            return res.status(400).json({ success: false, message: 'Locale e/o recensione inesistenti' })
+            return res.status(404).json({ success: false, message: 'Locale e/o recensione inesistenti' })
         
         // aggiornamento del ranking del locale
         if (locale.recensioni.length === 1)

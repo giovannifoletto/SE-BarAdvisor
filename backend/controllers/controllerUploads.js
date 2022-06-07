@@ -8,7 +8,7 @@ exports.uploadImmagine = async (req, res) => {
         const evento = await Evento.findById(req.params.eventoID)
 
         if (!evento)
-            return res.status(400).json({ success: false, message: 'Evento inesistente' })
+            return res.status(404).json({ success: false, message: 'Evento inesistente' })
         
         // cancello l'immagine precedente
         await Immagine.deleteOne({ _id: evento.copertina })
@@ -41,7 +41,7 @@ exports.getImmagine = async (req, res) => {
         const evento = await Evento.findById(req.params.eventoID).populate('copertina', 'file')
 
         if (!evento)
-            return res.status(400).json({ success: false, message: 'Evento inesistente' })
+            return res.status(404).json({ success: false, message: 'Evento inesistente' })
         
         res.status(200).json({ success: true, imm: evento.copertina })
     } catch (err) {
