@@ -91,7 +91,7 @@ describe('Test eventi', () => {
         const res = await request(app)            
             .post(`/api/v1/locali/${localState.creaUtenti.utente.locale}/eventi`)
             .set('Content-Type', 'application/json')
-            .set('Authorization', `Bearer 1234567890abcdefghijklmn`)
+            .set('Authorization', `Bearer` + null)
             .send(mockData.state.evento)
         expect(res.status).toBe(401)
         expect(res.body).toEqual({ success: false, message: "Utente non loggato, impossibile procedere" })
@@ -104,8 +104,9 @@ describe('Test eventi', () => {
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${localState.token}`)
             .send(mockData.state.evento)
-        expect(res.status).toBe(404)
+        console.log(res.body)
         expect(res.body).toBe({message: "Locale inesistente", success: false})
+        expect(res.status).toBe(404)
     });
 
     test('POST /:localeID/eventi no nome', async () => {
@@ -119,7 +120,7 @@ describe('Test eventi', () => {
                 dataInizio: mockData.state.evento.dataInizio
             })
         expect(res.status).toBe(400)
-        expect(res.body).toBe({ success: false, message: 'Compilare tutti i campi' })
+        expect(res.body).toEqual({ success: false, message: 'Compilare tutti i campi' })
     });
 
     test('POST /:localeID/eventi no descrizione', async () => {
@@ -133,7 +134,7 @@ describe('Test eventi', () => {
                 dataInizio: mockData.state.evento.dataInizio
             })
         expect(res.status).toBe(201)
-        expect(res.body).toBe({message: "Nuovo evento creato correttamente", success: true})
+        expect(res.body).toEqual({message: "Nuovo evento creato correttamente", success: true})
     });
 
     test('POST /:localeID/eventi no data inizio', async () => {
@@ -147,7 +148,7 @@ describe('Test eventi', () => {
                 nome: mockData.state.evento.nome
             })
         expect(res.status).toBe(400)
-        expect(res.body).toBe({ success: false, message: 'Compilare tutti i campi' })
+        expect(res.body).toEqual({ success: false, message: 'Compilare tutti i campi' })
     });
 
     test('GET /:eventoID ok', async () => {

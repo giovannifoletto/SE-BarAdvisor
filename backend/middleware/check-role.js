@@ -11,7 +11,7 @@ exports.checkPermessiProprietarioLocale = async (req, res, next) => {
         if (! localeOrganizzatore)
             return res.status(404).json({ success: false, message: 'Locale inesistente' })
 
-         // controllo se il Locale espresso nella route sia quello del Gestore che sta facendo la richiesta
+        // controllo se il Locale espresso nella route sia quello del Gestore che sta facendo la richiesta
         if (req.params.localeID !== userData.locale)
         return res.status(403).json({ success: false, message: 'Permessi mancanti per accedere alla risorsa' })
 
