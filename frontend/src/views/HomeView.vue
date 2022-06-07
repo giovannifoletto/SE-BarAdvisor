@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Errors :error="error"/>
+    <Message :messaggio="messaggio"/>
 
     <PostEvento
       v-for="evento in eventi"
@@ -14,17 +14,20 @@
 <script>
 import PostEvento from "@/components/PostEvento";
 import Errors from '@/components/Errors';
+import Message from '@/components/Message';
+
 import config from "@/config";
 
 export default {
   name: "HomeView",
   components: {
-    PostEvento, Errors
+    PostEvento, Errors, Message
   },
   data(){
     return {
       eventi: [],
-      error: {}
+      error: {},
+      messaggio: {}
     }
   },
   async mounted() {
@@ -35,16 +38,15 @@ export default {
       if (data.success) {
         this.eventi = data.eventi;
         if(this.eventi.length == 0){
-          this.error.status = true
-          this.error.text = "Non sono presenti ancora eventi sul database."
+          this.messaggio = { status: true, messaggio: "Non ci sono ancora eventi in programma" }
         }
       } else {
         this.error.status = true;
-        this.error.text = data.message || "Errore imprevisto";
+        this.error.messaggio = data.message || "Errore imprevisto";
       }
     } catch (error) {
       this.error.status = true;
-      this.error.text = error || "Errore imprevisto";
+      this.error.messaggio = error || "Errore imprevisto";
     }
   },
 };
