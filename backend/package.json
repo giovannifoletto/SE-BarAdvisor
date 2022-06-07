@@ -8,7 +8,7 @@
     "start": "node server.js",
     "test": "export NODE_ENV=testing; jest",
     "test:watch": "export NODE_ENV=testing; jest --watch",
-    "test:ci": "jest --ci --reporters=default --watchAll=false"
+    "test:ci": "jest --ci --reporters=default --watchAll=false --forceExit"
   },
   "repository": {
     "type": "git",
