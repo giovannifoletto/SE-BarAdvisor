@@ -162,7 +162,6 @@ describe('Test eventi', () => {
     test('GET /:eventoID evento inesistente', async () => {
         const url = '/api/v1/eventi/' + "507f1f77bcf86cd799439011" 
         const res = await request(app).get(url)
-        console.log(res.body)
         expect(res.body).toEqual({ message: "Nessun evento trovato", success: false })
         expect(res.status).toBe(404)
 
