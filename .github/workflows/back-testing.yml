@@ -13,7 +13,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [12.x, 14.x, 16.x]
+        node-version: [16.x]
     
     defaults:
       run:
@@ -28,3 +28,6 @@ jobs:
       - run: npm ci
       - run: npm run build --if-present
       - run: npm run test
+        env:
+          NODE_ENV: testing
+          DB_URL_CLUSTER_TESTING: ${{  }}
