@@ -66,7 +66,7 @@ describe('Test eventi', () => {
         const url = '/api/v1/eventi/'
         const res = await request(app).get(url)
         expect(res.status).toBe(404)
-        
+
     });    
 
     test('POST /:localeID/eventi ok', async () => {
@@ -91,7 +91,7 @@ describe('Test eventi', () => {
         const res = await request(app)            
             .post(`/api/v1/locali/${localState.creaUtenti.utente.locale}/eventi`)
             .set('Content-Type', 'application/json')
-            .set('Authorization', `Bearer ${localState.token}`)
+            .set('Authorization', `Bearer 1234567890abcdefghijklmn`)
             .send(mockData.state.evento)
         expect(res.status).toBe(401)
         expect(res.body).toEqual({ success: false, message: "Utente non loggato, impossibile procedere" })
