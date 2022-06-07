@@ -147,7 +147,7 @@ describe('Test eventi', () => {
     });
 
     test('GET /:eventoID evento inesistente', async () => {
-        const url = '/api/v1/eventi/' + "1" 
+        const url = '/api/v1/eventi/' + "1234567890abcdefghijklmno" 
         const res = await (await request(app).get(url))
         console.log(res.body)
         expect(res.status).toBe(404)
