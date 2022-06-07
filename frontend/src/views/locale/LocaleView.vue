@@ -188,6 +188,7 @@ export default {
             this.$emit('error', this.error)
         }
     },
+
     async postRecensione() {
       if (!this.recensione.commento || !this.recensione.votazione) {
         this.error.status = true
@@ -237,8 +238,10 @@ export default {
 
       if (data.success) {
         this.locale = data.locale;
+
         if (this.$store.state.token && this.localeID === this.$store.state.user?.locale)
           this.isGestore = true
+
         this.prossimiEventi = data.prossimiEventi;
         this.eventiPassati = data.eventiPassati;
       }
