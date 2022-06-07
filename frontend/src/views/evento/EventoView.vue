@@ -1,31 +1,12 @@
 <template>
   <div>
-    <Errors :error="error" />
-
-    <div
-      v-if="
-        $store.state.token && $store.state.user?.locale === evento?.locale._id
-      "
-    >
-      <form enctype="multipart/form-data" @submit.prevent="caricaImmagine">
-        <input
-          type="file"
-          @change="fileSelezionato"
-          id="1"
-          class="custom-file-input"
-        />
-        <button class="submit">Carica</button>
-      </form>
-      <button @click="annullaCaricamento">Annulla</button>
-    </div>
 
     <div class="event" v-if="eventoCaricato">
       <img
         class="image"
         :src="copertina"
-        v-if="copertinaCaricata && !preview"
+        v-if="copertinaCaricata"
       />
-      <img class="image" :src="preview" v-if="preview" />
 
       <div class="title">
         <h3>{{ evento.nome[0].toUpperCase() + evento.nome.slice(1, 1000) }}</h3>
@@ -108,7 +89,6 @@
 <script>
 import Primary from "@/components/buttons/Primary.vue";
 import Secondary from "@/components/buttons/Secondary.vue";
-import Errors from "@/components/Errors.vue";
 import Message from "@/components/Message";
 import Commento from "@/components/Commento.vue";
 import axios from "axios";
@@ -123,7 +103,6 @@ export default {
   components: {
     Primary,
     Secondary,
-    Errors,
     Message,
     Commento,
   },
@@ -132,11 +111,9 @@ export default {
       evento: null,
       eventoScaduto: false,
       eventoCaricato: false,
-      copertinaCaricata: false,
       utentePrenotato: false,
-      immagine: null,
-      preview: null,
       copertina: null,
+      copertinaCaricata: false,
       commento: {
         utente: null,
         commento: "",
@@ -192,40 +169,45 @@ export default {
           Authorization: `Bearer ${this.$store.state.token}`,
         },
         body: JSON.stringify(this.commento),
-      };
+      }
+
       try {
         const res = await fetch(
           `${config.baseURL}/eventi/${this.eventoID}/commenti`,
           opzioneRichiesta
-        );
+        )
         const data = await res.json();
 
         if (data.success) {
-          this.$router.go();
+          this.$router.go()
         } else {
-          this.error.status = true
-          this.error.messaggio =
-            data.error || data.message || "Errore interno, riprovare."
+          this.error = {status: true, messaggio: data.error || data.message }
+          this.$emit('error', this.error)
         }
       } catch (error) {
-        this.error.status = true;
-        this.error.messaggio = error || "Errore imprevisto, riprovare."
+        this.error = { status: true, messaggio: error }
+        this.$emit('error', this.error)
       }
     },
-    async postPrenotazione(){
-      const { data, error } = await postPrenotazione(this.eventoID)
-      this.error = error
+    async postPrenotazione() {
+      const { data, error } = await postPrenotazione(this.eventoID);
+      this.error = error;
 
-      if(data.success){
+      if(data.success)
         this.utentePrenotato = true
+      else {
+        this.evento = { status: true, error: error }
+        this.$emit('error', this.error)
       }
     },
     async deletePrenotazione() {
       const { data, error } = await deletePrenotazione(this.eventoID)
-      this.error = error
       
-      if(data.success){
+      if(data.success)
         this.utentePrenotato = false
+      else {
+        this.evento = { status: true, error: error }
+        this.$emit('error', this.error)
       }
     },
   },
@@ -239,7 +221,7 @@ export default {
         this.evento = data.evento;
         this.eventoCaricato = true;
         if (Date.parse(this.evento.dataInizio) < Date.now())
-          this.eventoScaduto = true
+          this.eventoScaduto = true;
         this.evento.prenotazioni.forEach((usr) => {
           if (usr._id === this.$store.state?.user?.id)
             this.utentePrenotato = true;
@@ -281,12 +263,6 @@ export default {
   border-radius: 4px;
   justify-content: baseline;
 }
-
-.image {
-  width: 70px;
-  height: 70px;
-}
-
 .title {
   display: flex;
   flex-flow: column nowrap;
