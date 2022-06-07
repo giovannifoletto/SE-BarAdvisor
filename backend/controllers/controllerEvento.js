@@ -50,7 +50,7 @@ exports.postEvento = async (req, res) => {
 
         await locale.save()
 
-        res.status(201).json({ success: true, message: 'Nuovo evento creato correttamente', eventoID: evento._id })
+        res.status(201).json({ success: true, message: 'Nuovo evento creato correttamente' })
 
     } catch(err){
         res.status(500).json({ success: false, error: err.message })
@@ -86,7 +86,7 @@ exports.postPrenotazione = async (req, res) => {
         const utente = await Utente.findById(userData.id)
 
         if (!evento || !utente)
-            return res.status(400).json({ success: false, message: 'Evento o Utente insesistente' })
+            return res.status(500).json({ success: false, message: 'Evento o Utente insesistente' })
         
         // se l'evento a cui si sta provando a prenotare è scaduto, errore
         if (Date.parse(evento.dataInizio) < Date.now())
