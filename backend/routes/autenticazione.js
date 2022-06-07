@@ -24,6 +24,18 @@ const checkAuth = require('../middleware/check-auth')
  *                utenti:
  *                  type: array
  *                  description: array di tutti gli utenti presenti sul database.
+ *      500:
+ *        description: Ritorna un errore.
+ *        content: 
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                success: 
+ *                  type: boolean
+ *                error:
+ *                  type: string
+ *                          
  */
 router.get('/utenti', controllerUtenti.getAllUtenti)
 
