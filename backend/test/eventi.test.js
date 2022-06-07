@@ -75,8 +75,8 @@ describe('Test eventi', () => {
             .set('Authorization', `Bearer ${localState.token}`)
             .send(mockData.state.evento)
         localState.evento=mockData.state.evento
-        expect(res.status).toBe(201)
         expect(res.body).toEqual({ message: "Nuovo evento creato correttamente", success: true })
+        expect(res.status).toBe(201)
     });
 
     test('GET /', async () => {
@@ -131,7 +131,7 @@ describe('Test eventi', () => {
                 nome: mockData.state.evento.nome,
                 dataInizio: mockData.state.evento.dataInizio
             })
-        expect(res.status).toBe(200)
+        expect(res.status).toBe(201)
         expect(res.body).toBe({message: "Nuovo evento creato correttamente", success: true})
     });
 
