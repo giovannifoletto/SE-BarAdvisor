@@ -11,7 +11,7 @@ const checkAuth = require('../middleware/check-auth')
  * /auth/utenti:
  *  get:
  *    description: Ritorna tutti gli utenti per developmente oppure per la pagina di admin.
- *    response:
+ *    responses:
  *      200: 
  *        description: Ritorna tutti gli utenti.
  *        content:
@@ -20,20 +20,19 @@ const checkAuth = require('../middleware/check-auth')
  *              type: object
  *              properties:
  *                success:
- *                  type: booean
+ *                  type: boolean
  *                utenti:
  *                  type: array
  *                  description: array di tutti gli utenti presenti sul database.
  */
 router.get('/utenti', controllerUtenti.getAllUtenti)
 
-// ottenere il nome utente di un utente
 /**
  * @swagger
  * /:
  *  get:
  *    description: Ritorna il nome utente di un utente
- *    response:
+ *    responses:
  *      200: 
  *        description: Ritorna tutti gli utenti.
  *        content:
@@ -42,10 +41,11 @@ router.get('/utenti', controllerUtenti.getAllUtenti)
  *              type: object
  *              properties:
  *                success:
- *                  type: booean
+ *                  type: boolean
  *                utenti:
  *                  type: array
  *                  description: array di tutti gli utenti presenti sul database.
+ *      
  */
 router.get('/utenti/:utenteID', controllerUtenti.getNomeUtente)
 
