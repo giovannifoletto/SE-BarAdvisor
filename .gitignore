@@ -1,7 +1,9 @@
 node_modules
 .env
 testing_backend
+.vscode
 testing.rest
+uploads/*
 
 # Frontend automatic generated gitignore
 # Created by .ignore support plugin (hsz.mobi)
