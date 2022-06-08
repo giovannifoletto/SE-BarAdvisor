@@ -1,7 +1,6 @@
 const Evento = require('../models/Evento')
 const Locale = require('../models/Locale')
 const Utente = require('../models/Utente')
-const Immagine = require('../models/Immagine')
 
 // recuperare tutti gli eventi
 exports.getAllEventi = async (req, res) => {
@@ -56,6 +55,35 @@ exports.postEvento = async (req, res) => {
         res.status(500).json({ success: false, error: err.message })
     }
 }
+
+//modificare i dati di un evento
+exports.modificaEvento = async (req, res) => {
+    const {evento} = req.body
+
+    try{
+        oldEvento = await Evento.findById(req.params.eventoID)
+
+        if(!oldEvento)
+        return res.status(404).json({success: false, message: 'Evento non esistente'})
+
+        if(!evento.nome || !evento.dataInizio)
+            return res.status(400).json({success: false, message: "Compilare tutti i campi"})
+
+        oldEvento.nome = evento.nome
+        oldEvento.locale = evento.locale
+        oldEvento.descrizione = evento.descrizione
+        oldEvento.dataInizio = evento.dataInizio
+
+        await oldEvento.save()
+
+        res.status(200).json({success: true, message: "Dati aggiornati correttamente"})
+
+        }
+    catch{
+        res.status(500).json({ success: false, error: err.message })
+    }
+}
+
 
 // recuperare un evento specifico
 exports.getEvento = async (req, res) => {
@@ -194,12 +222,11 @@ exports.invioNotifica = async (req, res) => {
     } catch (err) {
         res.status(500).json({ success: false, error: err.message })
     }
-}
+    }
 
 // elimina un evento
 exports.deleteEvento = async (req, res) => {
     const userData = req.userData
-
     try {
         const locale = await Locale.findById(userData.locale)
 
