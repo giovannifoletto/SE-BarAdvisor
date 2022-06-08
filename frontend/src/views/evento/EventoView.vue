@@ -2,11 +2,7 @@
   <div>
 
     <div class="event" v-if="eventoCaricato">
-      <img
-        class="image"
-        :src="copertina"
-        v-if="copertinaCaricata"
-      />
+      <img class="image" :src="copertina" v-if="copertinaCaricata" />
 
       <div class="title">
         <h3>{{ evento.nome[0].toUpperCase() + evento.nome.slice(1, 1000) }}</h3>
@@ -15,29 +11,20 @@
       <div class="description text-center">
         <h5>{{ evento.descrizione }}</h5>
 
-        <router-link
-          :to="{
-            name: 'paginaLocale',
-            params: { localeID: evento?.locale?._id },
-          }"
-        >
+        <router-link :to="{
+          name: 'paginaLocale',
+          params: { localeID: evento?.locale?._id },
+        }">
           <Secondary title="Visita il Locale gestore dell'evento" />
         </router-link>
-        <router-link :to="{ name: 'formInviaNotifica', params: { localeID: evento?.locale?._id, eventoID: eventoID }, }" v-if="isGestore" >
+        <router-link :to="{ name: 'formInviaNotifica', params: { localeID: evento?.locale?._id, eventoID: eventoID }, }"
+          v-if="isGestore">
           <Primary title="Invia una notifica a questo evento" />
         </router-link>
 
         <div v-if="$store.state.token && !eventoScaduto" class="py-2">
-          <Primary
-            title="Prenota"
-            v-if="!utentePrenotato"
-            @buttonClicked="postPrenotazione"
-          />
-          <Secondary
-            title="Cancella prenotazione"
-            v-if="utentePrenotato"
-            @buttonClicked="deletePrenotazione"
-          />
+          <Primary title="Prenota" v-if="!utentePrenotato" @buttonClicked="postPrenotazione" />
+          <Secondary title="Cancella prenotazione" v-if="utentePrenotato" @buttonClicked="deletePrenotazione" />
         </div>
       </div>
 
@@ -47,43 +34,31 @@
 
           <div class="form-recensione" v-if="$store.state.token">
             <div class="input-group mb-3">
-              <input
-                type="text"
-                class="form-control"
-                required
-                v-model="commento.commento"
-              />
+              <input type="text" class="form-control" required v-model="commento.commento" />
               <div class="input-group-append">
                 <Primary title="Commenta" @buttonClicked="postCommento" />
               </div>
             </div>
           </div>
           <div class="comm-row" v-if="evento.commenti.length != 0">
-            <Commento
-              v-for="commento in evento.commenti"
-              :key="commento._id"
-              :commento="commento"
-            />
+            <Commento v-for="commento in evento.commenti" :key="commento._id" :commento="commento" />
           </div>
           <div v-else>
-            <Message
-              :isSuccess="false"
-              :messaggio="{
-                status: true,
-                messaggio: 'Ancora nessun commento.',
-              }"
-            />
+            <Message :isSuccess="false" :messaggio="{
+              status: true,
+              messaggio: 'Ancora nessun commento.',
+            }" />
           </div>
         </div>
       </div>
 
       <div class="final-button mt-3 mb-1" v-if="isGestore">
-      <div class="p-1">
-        <div class="p-1 text-center">
-          <Primary title="Elimina Evento" @buttonClicked="cancellaEvento" />
+        <div class="p-1">
+          <div class="p-1 text-center">
+            <Primary title="Elimina Evento" @buttonClicked="cancellaEvento" />
+          </div>
         </div>
       </div>
-    </div>
     </div>
   </div>
 </template>
@@ -207,7 +182,7 @@ export default {
         if (data.success) {
           this.$router.go()
         } else {
-          this.error = {status: true, messaggio: data.error || data.message }
+          this.error = { status: true, messaggio: data.error || data.message }
           this.$emit('error', this.error)
         }
       } catch (error) {
@@ -219,7 +194,7 @@ export default {
       const { data, error } = await postPrenotazione(this.eventoID);
       this.error = error;
 
-      if(data.success)
+      if (data.success)
         this.utentePrenotato = true
       else {
         this.evento = { status: true, error: error }
@@ -228,8 +203,8 @@ export default {
     },
     async deletePrenotazione() {
       const { data, error } = await deletePrenotazione(this.eventoID)
-      
-      if(data.success)
+
+      if (data.success)
         this.utentePrenotato = false
       else {
         this.evento = { status: true, error: error }
@@ -269,9 +244,8 @@ export default {
             (data, b) => (data += String.fromCharCode(b)),
             ""
           );
-          this.copertina = `data:${
-            response.data.imm.file.contentType
-          };base64,${btoa(binary)}`
+          this.copertina = `data:${response.data.imm.file.contentType
+            };base64,${btoa(binary)}`
           this.copertinaCaricata = true
         }
       }
@@ -291,6 +265,7 @@ export default {
   border-radius: 4px;
   justify-content: baseline;
 }
+
 .title {
   display: flex;
   flex-flow: column nowrap;

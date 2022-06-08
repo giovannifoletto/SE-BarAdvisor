@@ -26,12 +26,14 @@ exports.getAllUtenti = async (req, res) => {
 
 exports.getNomeUtente = async (req, res) => {
     try {
-        const utente = await Utente.findById(req.params.utenteID).populate('prenotazioni', 'nome dataInizo')
+        const utente = await Utente.findById(req.params.utenteID)
+        .populate('prenotazioni', 'nome dataInizo')
+        .populate('localiSeguiti', 'nome posizione')
 
         if (!utente)
             return res.status(400).json({ success: false, message: 'Utente inesistente' })
 
-        res.status(200).json({ success: true, nomeUtente: utente.nome, prenotazioni: utente.prenotazioni, notifiche: utente.notifiche })
+        res.status(200).json({ success: true, nomeUtente: utente.nome, prenotazioni: utente.prenotazioni, notifiche: utente.notifiche, localiSeguiti: utente.localiSeguiti })
     } catch (err) {
         res.status(500).json({ success: false, error: err.message })
     }

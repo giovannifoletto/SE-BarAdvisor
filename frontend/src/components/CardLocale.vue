@@ -5,19 +5,19 @@
     </div>
     <div class="right py-2">
       <div class="title-event">
-        <h5 class="pb-0 pt-0 px-2">{{ evento.nome[0].toUpperCase() + evento.nome.slice(1, 1000)  }}</h5>
-        <h6 v-if="evento.dataInizio < (new Date().now)" class="pb-0 pt-0 px-2">Data: {{ evento.dataInizio }}</h6>
+        <h5 class="pb-0 pt-0 px-2">{{ locale.nome[0].toUpperCase() + locale.nome.slice(1, 1000)  }}</h5>
+        <h6 class="pb-0 pt-0 px-2">{{ locale.posizione }}</h6>
       </div>
 
       <div class="column"  v-if="$store.state.token">
         <div class="unfollow">
           <div>
-            <router-link :to="{ name: 'paginaEvento', params: { eventoID: evento._id } }">
+            <router-link :to="{ name: 'paginaLocale', params: { localeID: locale._id } }">
               <Secondary title="Visualizza" />
             </router-link>
           </div>
           <div>
-            <Secondary title="Disiscriviti" />
+            <Secondary title="Non seguire più" />
           </div>
         </div>
       </div>

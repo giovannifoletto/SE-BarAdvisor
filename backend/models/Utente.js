@@ -34,6 +34,10 @@ const schemaUtente = new mongoose.Schema({
     notifiche: {
         type: [String]
     },
+    localiSeguiti: {
+        type: [mongoose.Types.ObjectId],
+        ref: 'Locale'
+    },
     tokenRecuperoPassword: String,
     scadenzaRecuperoPassword: String
     },
