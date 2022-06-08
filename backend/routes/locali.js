@@ -29,6 +29,12 @@ router.get('/:localeID/recensioni', controllerRecensioni.getAllRecensioni)
 // creazione di una recensione
 router.post('/:localeID/recensioni', checkAuth, controllerRecensioni.postRecensione)
 
+// seguire un locale
+router.post('/:localeID/segui', checkAuth, controllerLocali.followLocale)
+
+// non seguire più un locale
+router.delete('/:localeID/segui', checkAuth, controllerLocali.unfollowLocale)
+
 // cancella una recensione
 router.delete('/:localeID/recensioni/:recensioneID', checkAuth, checkRole.checkPermessiCreatoreRecensione, controllerRecensioni.deleteRecensione)
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="post">
+  <div class="post" v-if="utenteCaricato">
     <div class="title">
       <div>
         <h3>
@@ -11,37 +11,40 @@
     <Errors :error="error" />
 
     <!-- 
-	<div class="under">
-		<div class="img">
-			<img src={imgSrc} alt="Imagine profilo" />
-		</div>
-		<hr />
-		<div class="info px-1">
-			<h5>{bio}</h5>
-		</div>
-	</div>
-	<div class="gallery">
-		<div class="info mb-3">
-			<h3>Passport</h3>
-		</div>
-		<div class="img-gallery mb-3">
-			<div class="p-2">
-				{#each passport as p}
-					<Badge />
-				{/each}
-			</div>
-		</div>
-	</div>
+    <div class="under">
+      <div class="img">
+        <img src={imgSrc} alt="Imagine profilo" />
+      </div>
+      <hr />
+      <div class="info px-1">
+        <h5>{bio}</h5>
+      </div>
+    </div>
+    <div class="gallery">
+      <div class="info mb-3">
+        <h3>Passport</h3>
+      </div>
+      <div class="img-gallery mb-3">
+        <div class="p-2">
+          {#each passport as p}
+            <Badge />
+          {/each}
+        </div>
+      </div>
+    </div>  -->
+
     <div class="comments">
       <div class="info-comments px-4 mt-3 mb-2">
         <h3>Locali seguiti</h3>
       </div>
       <div>
         <div>
-          <CardLocale :locale="user.Array" />
+          <Message v-if="localiSeguiti.length == 0" :messaggio="{ status: true, messaggio: 'Non segui ancora nessun locale' }" />
+          <CardLocale v-for="locale in localiSeguiti" :key="locale._id" :locale="locale" />
         </div>
       </div>
-    </div>  -->
+    </div>
+
     <div class="comments">
       <div class="info-comments px-4 mt-3 mb-2">
         <h3>Eventi in programma</h3>
@@ -88,14 +91,14 @@
 </template>
 
 <script>
-import Primary from "@/components/buttons/Primary";
-import CardLocale from "@/components/CardLocale.vue";
-import CardEvento from "@/components/CardEvento.vue";
-import Message from "@/components/Message.vue";
-import CardNotifica from "@/components/CardNotifica";
-import Errors from "@/components/Errors.vue";
+import Primary from "@/components/buttons/Primary.vue"
+import CardLocale from "@/components/CardLocale.vue"
+import CardEvento from "@/components/CardEvento.vue"
+import Message from "@/components/Message.vue"
+import CardNotifica from "@/components/CardNotifica.vue"
+import Errors from "@/components/Errors.vue"
 
-import config from "@/config";
+import config from "@/config"
 import deleteAccount from '@/lib/deleteAccount'
 
 export default {
@@ -113,7 +116,9 @@ export default {
       nomeUtente: "",
       notifiche: [],
       prenotazioni: [],
+      localiSeguiti: [],
       formCambiaPassoword: false,
+      utenteCaricato: false,
       error: {
         status: false,
         messaggio: "Messaggio di default.",
@@ -139,18 +144,20 @@ export default {
       const res = await fetch(
         `${config.baseURL}/auth/utenti/${this.$store.state.user.id}`
       );
-      const data = await res.json();
+      const data = await res.json()
       if (data.success) {
-        this.notifiche = data.notifiche;
-        this.prenotazioni = data.prenotazioni;
-        this.nomeUtente = data.nomeUtente;
+        this.notifiche = data.notifiche
+        this.prenotazioni = data.prenotazioni
+        this.localiSeguiti = data.localiSeguiti
+        this.nomeUtente = data.nomeUtente
+        this.utenteCaricato = true
       } else {
-        this.error.status = true;
-        this.error.messaggio = data.error || data.message || "Errore del server, riprovare.";
+        this.error.status = true
+        this.error.messaggio = data.error || data.message || "Errore del server, riprovare."
       }
     } catch (error) {
-      this.error.status = true;
-      this.error.messaggio = error || "Errore del server 1, riprovare.";
+      this.error.status = true
+      this.error.messaggio = error || "Errore del server 1, riprovare."
     }
   },
 };

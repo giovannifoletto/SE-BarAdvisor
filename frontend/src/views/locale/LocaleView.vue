@@ -33,6 +33,15 @@
       </router-link>
     </div>
 
+    <div class="final-button mt-3 mb-1" v-if="$store.state.token && $store.state.user.ruolo === 'Cliente'">
+      <div class="p-1">
+        <div class="p-1 text-center">
+          <Primary title="Segui" @buttonClicked="followLocale" v-if="!isFollower" />
+          <Secondary title="Non seguire più" @buttonClicked="unfollowLocale" v-if="isFollower" />
+        </div>
+      </div>
+    </div>
+
     <div class="comments" v-if="prossimiEventi">
       <div class="info-comments px-4 mt-3 mb-2">
         <h3>Prossimi Eventi</h3>
@@ -137,6 +146,9 @@ import Beer from "@/components/icons/Beer";
 
 import config from "@/config";
 import deleteAccount from '@/lib/deleteAccount'
+import followLocale from '@/lib/followLocale'
+import unfollowLocale from '@/lib/unfollowLocale'
+import Secondary from "../../components/buttons/Secondary.vue";
 
 export default {
   name: "paginaLocale",
@@ -150,6 +162,7 @@ export default {
     Recensione,
     Errors,
     Beer,
+    Secondary
   },
   data() {
     return {
@@ -157,6 +170,7 @@ export default {
       prossimiEventi: null,
       eventiPassati: null,
       isGestore: false,
+      isFollower: false,
       recensione: {
         commento: "",
         votazione: "",
@@ -180,15 +194,14 @@ export default {
       const { data, error } = await deleteAccount()
 
       if (data.success) {
-            this.$router.push({ name: 'home' })
-            this.$store.commit('resetToken')
-        }
-        else {
-            this.error = error
-            this.$emit('error', this.error)
-        }
+        this.$router.push({ name: 'home' })
+        this.$store.commit('resetToken')
+      }
+      else {
+        this.error = error
+        this.$emit('error', this.error)
+      }
     },
-
     async postRecensione() {
       if (!this.recensione.commento || !this.recensione.votazione) {
         this.error.status = true
@@ -225,9 +238,29 @@ export default {
         } else this.$router.go()
       } catch (error) {
         this.error.status = true
-        this.error.messaggio = error || "Errore del server, riprovare."
+        this.error.messaggio = error
 
         this.handleError(this.error)
+      }
+    },
+    async followLocale() {
+      const { data, error } = await followLocale(this.localeID)
+      if (data.success) {
+        this.isFollower = true
+      }
+      else {
+        this.error = error
+        this.$emit('error', this.error)
+      }
+    },
+    async unfollowLocale() {
+      const { data, error } = await unfollowLocale(this.localeID)
+      if (data.success) {
+        this.isFollower = false
+      }
+      else {
+        this.error = error
+        this.$emit('error', this.error)
       }
     }
   },
@@ -237,10 +270,17 @@ export default {
       const data = await res.json();
 
       if (data.success) {
-        this.locale = data.locale;
+        this.locale = data.locale
 
         if (this.$store.state.token && this.localeID === this.$store.state.user?.locale)
           this.isGestore = true
+
+        if (this.$store.state.token && this.$store.state.user.ruolo === 'Cliente') {
+          this.locale.followers.forEach(usr => {
+            if (String(usr) === this.$store.state.user.id)
+              this.isFollower = true
+          })
+        }
 
         this.prossimiEventi = data.prossimiEventi;
         this.eventiPassati = data.eventiPassati;
