@@ -23,7 +23,6 @@
 
 <script>
 import config from '@/config'
-
 import Primary from '@/components/buttons/Primary'
 
 export default {
