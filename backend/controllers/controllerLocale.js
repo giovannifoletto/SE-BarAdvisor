@@ -79,8 +79,8 @@ exports.unfollowLocale = async (req, res) => {
         
         // console.log(utente.localiSeguiti.length, locale.followers.length)
 
-        utente.localiSeguiti = utente.localiSeguiti.filter(loc => loc !== locale._id )
-        locale.followers = locale.followers.filter(usr => usr !== utente._id)
+        utente.localiSeguiti = utente.localiSeguiti.filter(loc => { loc !== locale._id })
+        locale.followers = locale.followers.filter(usr => { usr !== utente._id })
 
         // console.log(utente.localiSeguiti.length, locale.followers.length)
         await locale.save()

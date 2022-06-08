@@ -39,6 +39,7 @@
       </div>
       <div>
         <div>
+          <Message v-if="localiSeguiti.length == 0" :messaggio="{ status: true, messaggio: 'Non segui ancora nessun locale' }" />
           <CardLocale v-for="locale in localiSeguiti" :key="locale._id" :locale="locale" />
         </div>
       </div>

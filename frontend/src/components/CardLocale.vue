@@ -17,7 +17,8 @@
             </router-link>
           </div>
           <div>
-            <Secondary title="Non seguire più" />
+            <Primary title="Segui" v-if="$store.state.token && !isFollower" @click="followLocale"/>
+            <Secondary title="Non seguire più" v-if="$store.state.token && isFollower" @click="unfollowLocale"/>
           </div>
         </div>
       </div>
@@ -28,10 +29,41 @@
 <script>
 import Account from "@/components/icons/Account.vue"
 import Secondary from '@/components/buttons/Secondary'
+import Primary from '@/components/buttons/Primary'
+
+import followLocale from '@/lib/followLocale'
+import unfollowLocale from '@/lib/unfollowLocale'
 
 export default {
-  components: { Account, Secondary },
+  components: { Account, Secondary, Primary },
   props: ["locale"],
+  data() {
+    return {
+      isFollower: true,
+    }
+  },
+  methods: {
+    async followLocale() {
+      const { data, error } = await followLocale(this.locale._id)
+      if (data.success) {
+        this.isFollower = true
+      }
+      else {
+        this.error = error
+        this.$emit('error', this.error)
+      }
+    },
+    async unfollowLocale() {
+      const { data, error } = await unfollowLocale(this.locale._id)
+      if (data.success) {
+        this.isFollower = false
+      }
+      else {
+        this.error = error
+        this.$emit('error', this.error)
+      }
+    }
+  }
 };
 </script>
 

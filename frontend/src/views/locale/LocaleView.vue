@@ -146,6 +146,8 @@ import Beer from "@/components/icons/Beer";
 
 import config from "@/config";
 import deleteAccount from '@/lib/deleteAccount'
+import followLocale from '@/lib/followLocale'
+import unfollowLocale from '@/lib/unfollowLocale'
 import Secondary from "../../components/buttons/Secondary.vue";
 
 export default {
@@ -242,57 +244,23 @@ export default {
       }
     },
     async followLocale() {
-      const opzioneRichiesta = {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${this.$store.state.token}` }
+      const { data, error } = await followLocale(this.localeID)
+      if (data.success) {
+        this.isFollower = true
       }
-
-      try {
-        const res = await fetch(`${config.baseURL}/locali/${this.localeID}/segui`, opzioneRichiesta)
-        const data = await res.json()
-
-        if (data.success) {
-          this.isFollower = true
-        }
-        else {
-          this.error.status = true;
-          this.error.messaggio = data?.error || data?.message
-
-          this.handleError(this.error)
-        }
-
-      } catch (error) {
-        this.error.status = true
-        this.error.messaggio = error
-
-        this.handleError(this.error)
+      else {
+        this.error = error
+        this.$emit('error', this.error)
       }
     },
     async unfollowLocale() {
-      const opzioneRichiesta = {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${this.$store.state.token}` }
+      const { data, error } = await unfollowLocale(this.localeID)
+      if (data.success) {
+        this.isFollower = false
       }
-
-      try {
-        const res = await fetch(`${config.baseURL}/locali/${this.localeID}/segui`, opzioneRichiesta)
-        const data = await res.json()
-
-        if (data.success) {
-          this.isFollower = false
-        }
-        else {
-          this.error.status = true;
-          this.error.messaggio = data?.error || data?.message
-
-          this.handleError(this.error)
-        }
-
-      } catch (error) {
-        this.error.status = true
-        this.error.messaggio = error
-
-        this.handleError(this.error)
+      else {
+        this.error = error
+        this.$emit('error', this.error)
       }
     }
   },
@@ -302,7 +270,7 @@ export default {
       const data = await res.json();
 
       if (data.success) {
-        this.locale = data.locale;
+        this.locale = data.locale
 
         if (this.$store.state.token && this.localeID === this.$store.state.user?.locale)
           this.isGestore = true
