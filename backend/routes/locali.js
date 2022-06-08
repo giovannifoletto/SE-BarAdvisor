@@ -17,11 +17,23 @@ router.post('/:localeID/eventi', checkAuth, checkRole.checkPermessiProprietarioL
 // informazioni relative ad un evento specifico
 router.get('/:localeID/eventi/:eventoID', controllerEventi.getEvento)
 
+// modifica le informazioni di un evento specifico
+router.put('/:localeID/eventi/:eventoID', checkAuth, checkRole.checkPermessiProprietarioLocale, controllerEventi.modificaEvento)
+
+// eliminare un evento
+router.delete('/:localeID/eventi/:eventoID', checkAuth, checkRole.checkPermessiProprietarioLocale, controllerEventi.deleteEvento)
+
 // restituisce tutte le recensioni di un locale
 router.get('/:localeID/recensioni', controllerRecensioni.getAllRecensioni)
 
 // creazione di una recensione
 router.post('/:localeID/recensioni', checkAuth, controllerRecensioni.postRecensione)
+
+// seguire un locale
+router.post('/:localeID/segui', checkAuth, controllerLocali.followLocale)
+
+// non seguire più un locale
+router.delete('/:localeID/segui', checkAuth, controllerLocali.unfollowLocale)
 
 // cancella una recensione
 router.delete('/:localeID/recensioni/:recensioneID', checkAuth, checkRole.checkPermessiCreatoreRecensione, controllerRecensioni.deleteRecensione)

@@ -11,7 +11,7 @@ RUN npm ci
 
 COPY /frontend .
 
-RUN npm run generate
+RUN npm run build
 
 FROM node:16
 
@@ -22,10 +22,6 @@ COPY /backend/package.json .
 COPY /backend/package-lock.json .
 
 RUN npm ci
-
-EXPOSE 80
-
-ENV PORT=80
 
 COPY /backend .
 

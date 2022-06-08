@@ -30,6 +30,10 @@ const schemaLocale = new mongoose.Schema({
     ranking: {
         type: Number,
         default: 0
+    },
+    followers: {
+        type: [mongoose.Types.ObjectId],
+        ref: 'Utente'
     }
     },
     {

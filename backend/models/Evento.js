@@ -23,6 +23,10 @@ const schemaEvento = new mongoose.Schema(
     commenti: {
         type: [mongoose.Types.ObjectId],
         ref: 'Commento'
+    },
+    copertina: {
+        type: mongoose.Types.ObjectId,
+        ref: 'Immagine'
     }
     },
     {

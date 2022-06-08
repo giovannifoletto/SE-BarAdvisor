@@ -4,6 +4,9 @@ const crypto = require('crypto')
 
 const Utente = require('../models/Utente')
 const Locale = require('../models/Locale')
+const Evento = require('../models/Evento')
+const Recensione = require('../models/Recensione')
+const Commento = require('../models/Commento')
 
 const invioEmail = require('./invioEmail')
 
@@ -11,8 +14,8 @@ exports.getAllUtenti = async (req, res) => {
     try {
         // query nel database per prendere tutti gli utenti (e popolare il campo 'locale' dalla tabella 'Locale') 
         const utenti = await Utente.find()
-        .populate('locale', 'nome')
-        .populate('prenotazioni', 'nome')
+            .populate('locale', 'nome')
+            .populate('prenotazioni', 'nome')
 
         res.status(200).json({ success: true, utenti: utenti })
 
@@ -24,11 +27,13 @@ exports.getAllUtenti = async (req, res) => {
 exports.getNomeUtente = async (req, res) => {
     try {
         const utente = await Utente.findById(req.params.utenteID)
+            .populate('prenotazioni', 'nome dataInizo')
+            .populate('localiSeguiti', 'nome posizione')
 
-        if (! utente)
+        if (!utente)
             return res.status(400).json({ success: false, message: 'Utente inesistente' })
-        
-        res.status(200).json({ success: true, nomeUtente: utente.nome })
+
+        res.status(200).json({ success: true, nomeUtente: utente.nome, prenotazioni: utente.prenotazioni, notifiche: utente.notifiche, localiSeguiti: utente.localiSeguiti })
     } catch (err) {
         res.status(500).json({ success: false, error: err.message })
     }
@@ -92,7 +97,7 @@ exports.registrazioneCliente = async (req, res) => {
         // se presente, ritornare un errore
         if (utentePresente)
             return res.status(400).json({ success: false, message: 'Utente già esistente' })
-        
+
         // altrimenti creazione con i dati della richiesta
         const utente = new Utente({
             nome: nome,
@@ -104,7 +109,7 @@ exports.registrazioneCliente = async (req, res) => {
         // salvataggio utente nel database
         const nuovoUtente = await utente.save()
 
-        res.status(200).json({ success: true, utente: nuovoUtente })
+        res.status(201).json({ success: true, utente: nuovoUtente })
 
     } catch (err) {
         res.status(500).json({ success: false, error: err.message })
@@ -117,7 +122,7 @@ exports.loginUtente = async (req, res) => {
     // controllo su campi mancanti
     if (!email || !password)
         return res.status(400).json({ success: false, message: "Compilare tutti i campi" })
-    
+
     try {
         // recupero utente dal database
         const utente = await Utente.findOne({ email: email })
@@ -125,28 +130,29 @@ exports.loginUtente = async (req, res) => {
         // se non esiste, ritorno un errore
         if (!utente)
             return res.status(400).json({ success: false, message: "Utente inesistente" })
-        
+
         // controllo la password
         const passwordCorretta = await utente.checkPassword(password)
 
         if (!passwordCorretta)
             return res.status(400).json({ success: false, message: "Password incorretta" })
-        
+
         // se tutto va bene, creo il token aggiungendo i vari campi utili
         const token = jwt.sign({
             id: utente._id,
+            nome: utente.nome,
             email: utente.email,
             ruolo: utente.ruolo,
             locale: utente.locale || ""
         },
-        config.SECRET_KEY,
-        {
-            // il token scade dopo 1 giorno
-            expiresIn: "1 day"
-        })
+            config.SECRET_KEY,
+            {
+                // il token scade dopo 1 giorno
+                expiresIn: "1 day"
+            })
 
         res.status(200).json({ success: true, token: token })
-        
+
     } catch (err) {
         res.status(500).json({ success: false, error: err.message })
     }
@@ -247,24 +253,24 @@ exports.resetToken = async (req, res) => {
 
 exports.changePassword = async (req, res) => {
     // recupero i campi dal body della richiesta
-    const {oldPassword, newPassword} = req.body
+    const { oldPassword, newPassword } = req.body
     const userData = req.userData
 
     // controllo la presenza dei dati
     if (!oldPassword || !newPassword)
-       return res.status(400).json({ success: false, message: 'Compilare tutti i campi' })
+        return res.status(400).json({ success: false, message: 'Compilare tutti i campi' })
 
-    try{
+    try {
         // prendo dal database l'utente loggato che sta facendo la richiesta
-        const user = await Utente.findById(userData.id) 
+        const user = await Utente.findById(userData.id)
 
         // se non esiste, errore
-        if(!user)
-            return res.status(400).json({success: false, message: "Utente non trovato"})
+        if (!user)
+            return res.status(400).json({ success: false, message: "Utente non trovato" })
 
         // controllo se la password attuale è corretta
         const correctPassword = await user.checkPassword(oldPassword)
-        
+
         if (!correctPassword)
             return res.status(401).json({ success: false, message: 'Password attuale errata' })
 
@@ -278,5 +284,56 @@ exports.changePassword = async (req, res) => {
     }
     catch (err) {
         res.status(500).json({ success: false, error: err })
+    }
+}
+
+exports.deleteAccount = async (req, res) => {
+    const userData = req.userData
+
+    try {
+        // cancellare utente Cliente
+        if (userData.locale === "") {
+
+            const utente = await Utente.findById(userData.id)
+
+            if (!utente)
+                return res.status(404).json({ success: false, message: 'Utente inesistente' })
+
+            utente.prenotazioni.forEach(async ev => {
+                const evento = await Evento.findById(ev)
+                if (evento?.prenotazioni) {
+                    evento.prenotazioni = evento.prenotazioni.filter(usr => String(usr) !== utente._id)
+                    await evento.save()
+                }
+            })
+
+            await Recensione.deleteMany({ utente: utente._id })
+            await Commento.deleteMany({ utente: utente._id })
+
+            await Utente.deleteOne({ _id: utente._id })
+
+            res.status(200).json({ success: true, message: 'Utente cancellato correttamente' })
+        }
+        else {
+            const locale = await Locale.findById(userData.locale)
+
+            if (!locale)
+                return res.status(404).json({ success: false, message: 'Locale inesistente' })
+
+            await Evento.deleteMany({ _id: { $in: locale.eventi } })
+
+            await Recensione.deleteMany({ utente: userData.id })
+            await Commento.deleteMany({ utente: userData.id })
+
+            await Locale.deleteOne({ _id: userData.locale })
+
+            await Utente.deleteOne({ _id: userData.id })
+
+            res.status(200).json({ success: true, message: 'Utente cancellato correttamente' })
+
+        }
+
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message })
     }
 }
