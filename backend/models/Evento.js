@@ -27,7 +27,8 @@ const schemaEvento = new mongoose.Schema(
     copertina: {
         type: mongoose.Types.ObjectId,
         ref: 'Immagine'
-    }
+    },
+    posti: Number
     },
     {
         versionKey: false
