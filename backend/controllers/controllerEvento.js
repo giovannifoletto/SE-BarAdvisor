@@ -1,6 +1,7 @@
 const Evento = require('../models/Evento')
 const Locale = require('../models/Locale')
 const Utente = require('../models/Utente')
+const Immagine = require('../models/Immagine')
 
 // recuperare tutti gli eventi
 exports.getAllEventi = async (req, res) => {
@@ -192,5 +193,30 @@ exports.invioNotifica = async (req, res) => {
 
     } catch (err) {
         res.status(500).json({ success: false, error: err.message })
+    }
+}
+
+// elimina un evento
+exports.deleteEvento = async (req, res) => {
+    const userData = req.userData
+
+    try {
+        const locale = await Locale.findById(userData.locale)
+
+        if (!locale)
+            return res.status(400).json({ success: false, message: 'Locale inesistente' })
+        
+        await Immagine.deleteOne({ _id: req.params.eventoID })
+
+        await Evento.deleteOne({ _id: req.params.eventoID })
+        
+        locale.eventi = locale.eventi.filter(ev => String(ev) !== req.params.eventoID)
+        
+        await locale.save()
+
+        res.status(200).json({ success: true, message: 'Evento cancellato correttamente' })
+
+    } catch (err) {
+        res.status(400).json({ success: false, error: err.message })
     }
 }
