@@ -30,6 +30,6 @@ router.put('/resetpassword/:resetToken', controllerUtenti.resetToken)
 router.put('/cambiopassword', checkAuth, controllerUtenti.changePassword)
 
 // cancellazione utente Cliente
-router.delete('/utenti/:utenteID', (req, res, next) => { console.log("pre auth"); next() }, checkAuth, (req, res, next) => { console.log("post auth"); next() }, controllerUtenti.deleteAccount)
+router.delete('/utenti/:utenteID', checkAuth, controllerUtenti.deleteAccount)
 
 module.exports = router

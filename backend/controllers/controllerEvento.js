@@ -1,6 +1,7 @@
 const Evento = require('../models/Evento')
 const Locale = require('../models/Locale')
 const Utente = require('../models/Utente')
+const Immagine = require('../models/Immagine')
 
 // recuperare tutti gli eventi
 exports.getAllEventi = async (req, res) => {
@@ -230,11 +231,13 @@ exports.deleteEvento = async (req, res) => {
     const userData = req.userData
     try {
         const locale = await Locale.findById(userData.locale)
+        const evento = await Evento.findById(req.params.eventoID)
 
-        if (!locale)
+        if (!locale || !evento)
             return res.status(400).json({ success: false, message: 'Locale inesistente' })
         
-        await Immagine.deleteOne({ _id: req.params.eventoID })
+        if (evento?.copertina)
+            await Immagine.deleteOne({ _id: req.params.eventoID })
 
         await Evento.deleteOne({ _id: req.params.eventoID })
         

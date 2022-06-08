@@ -1,7 +1,7 @@
 import store from '@/store'
 import config from '@/config'
 
-export default async function () {
+export default async function deleteAccount() {
     const opzioneRichiesta = {
         method: "DELETE",
         headers: { Authorization: `Bearer ${store.state.token}` }
