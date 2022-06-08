@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const eventoSchema = new mongoose.Schema(
+const schemaEvento = new mongoose.Schema(
     {
     nome: {
         type: String,
@@ -19,6 +19,14 @@ const eventoSchema = new mongoose.Schema(
     prenotazioni: {
         type: [mongoose.Types.ObjectId],
         ref: 'Utente'
+    },
+    commenti: {
+        type: [mongoose.Types.ObjectId],
+        ref: 'Commento'
+    },
+    copertina: {
+        type: mongoose.Types.ObjectId,
+        ref: 'Immagine'
     }
     },
     {
@@ -26,4 +34,4 @@ const eventoSchema = new mongoose.Schema(
     }
 )
 
-module.exports = mongoose.model('Evento', eventoSchema)
+module.exports = mongoose.model('Evento', schemaEvento)

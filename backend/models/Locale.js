@@ -22,6 +22,18 @@ const schemaLocale = new mongoose.Schema({
     eventi: {
         type: [mongoose.Types.ObjectId],
         ref: 'Evento'
+    },
+    recensioni: {
+        type: [mongoose.Types.ObjectId],
+        ref: 'Recensione'
+    },
+    ranking: {
+        type: Number,
+        default: 0
+    },
+    followers: {
+        type: [mongoose.Types.ObjectId],
+        ref: 'Utente'
     }
     },
     {

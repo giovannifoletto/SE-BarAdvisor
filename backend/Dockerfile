@@ -8,4 +8,4 @@ RUN npm ci
 EXPOSE 3000
 
 COPY . .
-CMD [ "npm", "run", "start"]
+CMD [ "npm", "run", "dev"]

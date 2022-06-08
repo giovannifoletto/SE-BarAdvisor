@@ -5,8 +5,8 @@ const config = require('../config')
 // può essere DB_URL_LOCAL (database in localhost) oppure DB_URL_CLUSTER (database su cloud Atlas)
 exports.connect = async () => {
     try {
-        if(NODE_ENV != 'production'){
-            await mongoose.connect(config.DB_URL_LOCAL)
+        if(config.NODE_ENV === 'testing'){
+            await mongoose.connect(config.DB_URL_CLUSTER_TESTING)
         } else {
             await mongoose.connect(config.DB_URL_CLUSTER)
         }

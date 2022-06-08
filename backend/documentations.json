@@ -1,0 +1,63 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "BarAdvisor",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/auth/utenti": {
+            "get": {
+                "description": "Ritorna tutti gli utenti per developmente oppure per la pagina di admin.",
+                "response": {
+                    "200": {
+                        "description": "Ritorna tutti gli utenti.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "booean"
+                                        },
+                                        "utenti": {
+                                            "type": "array",
+                                            "description": "array di tutti gli utenti presenti sul database."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/": {
+            "get": {
+                "description": "Ritorna il nome utente di un utente",
+                "response": {
+                    "200": {
+                        "description": "Ritorna tutti gli utenti.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "booean"
+                                        },
+                                        "utenti": {
+                                            "type": "array",
+                                            "description": "array di tutti gli utenti presenti sul database."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {},
+    "tags": []
+}
