@@ -10,7 +10,7 @@
           <th scope="col">Azione</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody v-if="locali.lenght > 0">
         <tr v-for="locale in locali" :key="locale._id">
           <th scope="row">{{ locale._id }}</th>
           <td>{{ locale.nome }}</td>
