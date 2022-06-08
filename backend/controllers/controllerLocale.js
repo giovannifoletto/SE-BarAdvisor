@@ -45,6 +45,7 @@ exports.getLocale = async (req, res) => {
 // Ritorna i locali non verificati
 exports.getLocaliDaConfermare = async (req, res) => {
     try {
+        console.log("qui")
         const locali = await Locale.find({ verificato: false })
 
         res.status(200).json({ success: true, locali })

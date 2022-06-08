@@ -10,12 +10,17 @@
           <th scope="col">Azione</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody v-if="locali.lenght > 0">
         <tr v-for="locale in locali" :key="locale._id">
           <th scope="row">{{ locale._id }}</th>
           <td>{{ locale.nome }}</td>
-          <td> <Primary title="Verifica" @buttonClicked="verificaLocale(locale._id)" /> </td>
+          <td>
+            <Primary title="Verifica" @buttonClicked="verificaLocale(locale._id)" />
+          </td>
         </tr>
+      </tbody>
+      <tbody v-else>
+        <Message :messaggio="{ status: true, messaggio: 'Nessun locale da verificare' }" />
       </tbody>
     </table>
   </main>
@@ -25,10 +30,11 @@
 import config from '@/config'
 
 import Primary from '@/components/buttons/Primary'
+import Message from '@/components/Message'
 
 export default {
   components: {
-    Primary
+    Primary, Message
   },
   data() {
     return {
@@ -38,22 +44,22 @@ export default {
   methods: {
     async verificaLocale(localeID) {
       const opzioniRichiesta = {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${this.$store.state.token}` },
-      body: JSON.stringify({ localeID })
-    }
+        method: 'POST',
+        headers: { Authorization: `Bearer ${this.$store.state.token}` },
+        body: JSON.stringify({ localeID })
+      }
 
-    try {
-      const res = await fetch(`${config.baseURL}/locali/${localeID}/verifica`, opzioniRichiesta)
-      const data = await res.json()
+      try {
+        const res = await fetch(`${config.baseURL}/locali/${localeID}/verifica`, opzioniRichiesta)
+        const data = await res.json()
 
-      if (data.success)
-        this.$router.go()
-      else
-        console.log(data.error)
-    } catch (error) {
-      console.log(error)
-    }
+        if (data.success)
+          this.$router.go()
+        else
+          console.log(data.error)
+      } catch (error) {
+        console.log(error)
+      }
     }
   },
   async mounted() {

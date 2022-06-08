@@ -9,7 +9,7 @@
           {{ nomeUtente }}
         </h5>
         <Ranking :ranking="recensione.votazione" />
-        <div v-if="$store.state.token && String(recensione.utente) === $store.state.user.id">
+        <div v-if="$store.state.token && (String(recensione.utente) === $store.state.user.id || $store.state.user.ruolo === 'Admin')">
           <Secondary title="elimina" @buttonClicked="cancellaRecensione" />
         </div>
       </div>
