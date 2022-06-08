@@ -24,7 +24,8 @@ casual.define('evento', () => {
     return {
         nome: casual.title,
         descrizione: casual.description,
-        dataInizio: casual.date((format = 'YYYY-MM-DD'))
+        dataInizio: casual.date((format = 'YYYY-MM-DD')),
+        posti: casual.integer(from = 0, to = 100) 
     }
 })
  /**

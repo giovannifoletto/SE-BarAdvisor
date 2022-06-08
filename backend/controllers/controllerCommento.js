@@ -27,7 +27,7 @@ exports.postCommento = async (req, res) => {
         await evento.save()
         
 
-        res.status(200).json({ success: true, message: 'Commento creato correttamente' })
+        res.status(201).json({ success: true, message: 'Commento creato correttamente' })
 
     } catch (err) {
         res.status(500).json({ success: false, error: err.message })

@@ -116,7 +116,7 @@ exports.postPrenotazione = async (req, res) => {
         // recupero gli oggetti dal database
         const evento = await Evento.findById(req.params.eventoID)
         const utente = await Utente.findById(userData.id)
-        const postiOccupati = evento.posti-evento.prenotazioni.length()
+        const postiOccupati = evento.posti-evento.prenotazioni.length
 
         if (!evento || !utente)
             return res.status(404).json({ success: false, message: 'Evento o Utente insesistente' })
