@@ -23,10 +23,6 @@ COPY /backend/package-lock.json .
 
 RUN npm ci
 
-EXPOSE 80
-
-ENV PORT=80
-
 COPY /backend .
 
 COPY --from=builder /front/dist/ ./static

@@ -20,7 +20,7 @@ exports.postCommento = async (req, res) => {
         const evento = await Evento.findById(req.params.eventoID)
 
         if (!evento)
-            return res.status(400).json({ success: false, message: 'Evento inesistente' })
+            return res.status(404).json({ success: false, message: 'Evento inesistente' })
 
         evento.commenti.push(nuovoCommento._id)
 
@@ -40,7 +40,7 @@ exports.deleteCommento = async (req, res) => {
         const evento = await Evento.findById(req.params.eventoID)
 
         if (!evento)
-            return res.status(400).json({ success: false, message: 'Evento inesistente' })
+            return res.status(404).json({ success: false, message: 'Evento inesistente' })
         
         // rimozione del commento dai commenti dell'evento e dal database
         evento.commenti = evento.commenti.filter(comm => String(comm) !== req.params.commentoID)

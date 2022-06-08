@@ -17,6 +17,9 @@ router.post('/:localeID/eventi', checkAuth, checkRole.checkPermessiProprietarioL
 // informazioni relative ad un evento specifico
 router.get('/:localeID/eventi/:eventoID', controllerEventi.getEvento)
 
+// modifica le informazioni di un evento specifico
+router.put('/:localeID/eventi/:eventoID', checkAuth, checkRole.checkPermessiProprietarioLocale, controllerEventi.modificaEvento)
+
 // eliminare un evento
 router.delete('/:localeID/eventi/:eventoID', checkAuth, checkRole.checkPermessiProprietarioLocale, controllerEventi.deleteEvento)
 

@@ -6,15 +6,15 @@ const Commento = require('../models/Commento')
 exports.checkPermessiProprietarioLocale = async (req, res, next) => {
     const userData = req.userData
 
-    // controllo se il Locale espresso nella route sia quello del Gestore che sta facendo la richiesta
-    if (req.params.localeID !== userData.locale)
-        return res.status(403).json({ success: false, message: 'Permessi mancanti per accedere alla risorsa' })
-
     try {
         const localeOrganizzatore = await Locale.findById(userData.locale)
 
         if (! localeOrganizzatore)
             return res.status(404).json({ success: false, message: 'Locale inesistente' })
+
+        // controllo se il Locale espresso nella route sia quello del Gestore che sta facendo la richiesta
+        if (req.params.localeID !== userData.locale)
+        return res.status(403).json({ success: false, message: 'Permessi mancanti per accedere alla risorsa' })
 
         // controllo incrociato dalla parte del locale con il suo campo Gestore Locale
         if (String(localeOrganizzatore.gestore) !== userData.id)

@@ -1,3 +1,3 @@
 export default {
-    baseURL: 'http://localhost:4000/api/v1'
+    baseURL: process.env.API_BASE_URL || 'http://localhost:4000/api/v1'
 }
