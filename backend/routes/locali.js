@@ -8,8 +8,14 @@ const controllerEventi = require('../controllers/controllerEvento')
 const controllerLocali = require('../controllers/controllerLocale')
 const controllerRecensioni = require('../controllers/controllerRecensione')
 
+// recuperare i locali da verificare (per admin)
+router.get('/', checkAuth, checkRole.checkPermessiAdmin, controllerLocali.getLocaliDaConfermare)
+
 // recuperare un locale 
 router.get('/:localeID', controllerLocali.getLocale)
+
+// verificare un locale (admin)
+router.post('/:localeID/verifica', checkAuth, checkRole.checkPermessiAdmin, controllerLocali.verificaLocale)
 
 // aggiungere un evento 
 router.post('/:localeID/eventi', checkAuth, checkRole.checkPermessiProprietarioLocale, controllerEventi.postEvento)

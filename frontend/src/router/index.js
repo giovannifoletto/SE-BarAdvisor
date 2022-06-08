@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 import auth from '@/middleware/authentication'
 import role from '@/middleware/role'
+import admin from '@/middleware/admin'
 
 import HomeView from '../views/HomeView.vue'
 
@@ -24,6 +25,9 @@ import CambiaPassword from '@/views/forms/CambiaPassword.vue'
 
 import Error403 from '@/views/pagineErrore/403.vue'
 import PageNotFound from '@/views/pagineErrore/PageNotFound'
+
+import AdminHomePage from '@/views/admin/AdminHomeView'
+import formVerificaLocali from '@/views/admin/VerificaLocali'
 
 const routes = [
   {
@@ -98,6 +102,18 @@ const routes = [
     name: 'profiloPersonale',
     component: ProfiloPersonale,
     beforeEnter: [auth]
+  },
+  {
+    path: '/admin',
+    name: 'homePageAdmin',
+    component: AdminHomePage,
+    beforeEnter: [auth, admin]
+  },
+  {
+    path: '/admin/verificalocali',
+    name: 'formVerificaLocale',
+    component: formVerificaLocali,
+    beforeEnter: [auth, admin]
   },
   {
     path: '/403', 

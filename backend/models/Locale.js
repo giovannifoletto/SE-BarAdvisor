@@ -34,6 +34,10 @@ const schemaLocale = new mongoose.Schema({
     followers: {
         type: [mongoose.Types.ObjectId],
         ref: 'Utente'
+    },
+    verificato: {
+        type: Boolean,
+        default: false
     }
     },
     {
