@@ -1,7 +1,6 @@
 const Evento = require('../models/Evento')
 const Locale = require('../models/Locale')
 const Utente = require('../models/Utente')
-const Immagine = require('../models/Immagine')
 
 // recuperare tutti gli eventi
 exports.getAllEventi = async (req, res) => {
@@ -57,6 +56,35 @@ exports.postEvento = async (req, res) => {
     }
 }
 
+//modificare i dati di un evento
+exports.modificaEvento = async (req, res) => {
+    const {evento} = req.body
+
+    try{
+        oldEvento = await Evento.findById(req.params.eventoID)
+
+        if(!oldEvento)
+        return res.status(404).json({success: false, message: 'Evento non esistente'})
+
+        if(!evento.nome || !evento.dataInizio)
+            return res.status(400).json({success: false, message: "Compilare tutti i campi"})
+
+        oldEvento.nome = evento.nome
+        oldEvento.locale = evento.locale
+        oldEvento.descrizione = evento.descrizione
+        oldEvento.dataInizio = evento.dataInizio
+
+        await oldEvento.save()
+
+        res.status(200).json({success: true, message: "Dati aggiornati correttamente"})
+
+        }
+    catch{
+        res.status(500).json({ success: false, error: err.message })
+    }
+}
+
+
 // recuperare un evento specifico
 exports.getEvento = async (req, res) => {
     try{
@@ -68,7 +96,7 @@ exports.getEvento = async (req, res) => {
         if (!evento)
             return res.status(404).json({ success: false, message: 'Nessun evento trovato' })
         
-        res.status(201).json({ success: true, evento: evento })
+        res.status(200).json({ success: true, evento: evento })
         
     }
     catch (err) {
@@ -102,7 +130,7 @@ exports.postPrenotazione = async (req, res) => {
 
         // se non lo è, lo aggiungo alle prenotazioni dell'evento e aggiungo l'evento alle prenotazioni dell'utente
         if (prenotazioneEffettuata)
-            return res.status(400).json({ success: false, message: 'Impossibile prenotarsi: risulta già effettuata' })
+            return res.status(400).json({ success: false, message: 'Impossibile prenotarsi: prenotazione già effettuata' })
         else {
             evento.prenotazioni.push(userData.id)
             utente.prenotazioni.push(evento._id)
@@ -195,12 +223,11 @@ exports.invioNotifica = async (req, res) => {
     } catch (err) {
         res.status(500).json({ success: false, error: err.message })
     }
-}
+    }
 
 // elimina un evento
 exports.deleteEvento = async (req, res) => {
     const userData = req.userData
-
     try {
         const locale = await Locale.findById(userData.locale)
 

@@ -107,7 +107,7 @@ exports.registrazioneCliente = async (req, res) => {
         // salvataggio utente nel database
         const nuovoUtente = await utente.save()
 
-        res.status(200).json({ success: true, utente: nuovoUtente })
+        res.status(201).json({ success: true, utente: nuovoUtente })
 
     } catch (err) {
         res.status(500).json({ success: false, error: err.message })
