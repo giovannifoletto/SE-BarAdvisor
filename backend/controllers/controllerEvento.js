@@ -76,9 +76,10 @@ exports.getEvento = async (req, res) => {
     }
 }
 
+// aggiungere/rimuovere una prenotazione di un Utente ad un evento specifico
 exports.postPrenotazione = async (req, res) => {
     // recupero dei dati di login
-    const userData = req.userData
+    const userData = res.userData
 
     try {
         // recupero gli oggetti dal database

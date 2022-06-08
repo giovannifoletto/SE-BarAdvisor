@@ -12,3 +12,8 @@ setup:
 build:
   docker:
     web: Dockerfile
+build:
+    docker:
+        web: Dockerfile
+release:
+    image: web
