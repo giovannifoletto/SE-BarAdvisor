@@ -130,7 +130,6 @@ describe('Testo Locali', () => {
         const res = await request(app)
             .delete(url)
             .set('Authorization', `Bearer ${localState.token}`)
-        console.log(res.body)
         expect(res.body).toEqual({ success: true, message: 'Recensione cancellata correttamente' })
         expect(res.status).toBe(200)
     })

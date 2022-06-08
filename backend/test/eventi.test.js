@@ -189,8 +189,8 @@ describe('Test eventi', () => {
             .post(`/api/v1/eventi/${eventoID}/prenotazioni`)
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${localState.token}`)
-            expect(res.body).toEqual({ success: true, message: 'Prenotazione effettuata correttamente' })
             expect(res.status).toBe(200)
+            expect(res.body).toEqual({ success: true, message: 'Prenotazione effettuata correttamente' })
     })
     test('Prenotazioni DELETE', async () => {
         const tempEvento = {
