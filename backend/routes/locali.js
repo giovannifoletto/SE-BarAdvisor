@@ -36,6 +36,51 @@ const controllerRecensioni = require('../controllers/controllerRecensione')
 router.get('/:localeID', controllerLocali.getLocale)
 
 /* @openapi
+* /locali/
+*  get:
+*    description: Permette di visualizzare tutti i locali che devono ancora essere verificati
+*    response:
+*      200: 
+*        description: Ritorna l'elenco dei locali da verificare
+*        content:
+*          application/json:
+*            schema:
+*              type: object
+*              properties:
+*                success:
+*                  type: boolean
+                 locali: 
+                   type: Array
+                   description: Array di locali che devono ancora essere verificati
+                 
+*/
+
+// recuperare i locali da verificare (per admin)
+router.get('/', checkAuth, checkRole.checkPermessiAdmin, controllerLocali.getLocaliDaConfermare)
+
+/* @openapi
+* /locali/
+*  post:
+*    description: Permette di effettuare la verifica di un locale
+*    response:
+*      200: 
+*        description: Ritorna un messaggio di conferma avvenuta verifica
+*        content:
+*          application/json:
+*            schema:
+*              type: object
+*              properties:
+*                success:
+*                  type: boolean
+                 message:
+                   type: String
+                 
+*/
+
+// verificare un locale (admin)
+router.post('/:localeID/verifica', checkAuth, checkRole.checkPermessiAdmin, controllerLocali.verificaLocale)
+
+/* @openapi
 * /locali/:localeID/eventi
 *  post:
 *    description: Permette al Gestore Locale di creare un evento
