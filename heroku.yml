@@ -14,6 +14,7 @@ build:
     web: Dockerfile
 build:
     docker:
-        web: Dockerfile
+      web: Dockerfile
+    worker: worker/Dockerfile
 release:
-    image: web
+    image: worker
