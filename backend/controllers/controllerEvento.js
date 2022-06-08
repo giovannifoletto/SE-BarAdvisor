@@ -68,7 +68,7 @@ exports.getEvento = async (req, res) => {
         if (!evento)
             return res.status(404).json({ success: false, message: 'Nessun evento trovato' })
         
-        res.status(201).json({ success: true, evento: evento })
+        res.status(200).json({ success: true, evento: evento })
         
     }
     catch (err) {
@@ -101,7 +101,7 @@ exports.postPrenotazione = async (req, res) => {
 
         // se non lo è, lo aggiungo alle prenotazioni dell'evento e aggiungo l'evento alle prenotazioni dell'utente
         if (prenotazioneEffettuata)
-            return res.status(400).json({ success: false, message: 'Impossibile prenotarsi: risulta già effettuata' })
+            return res.status(400).json({ success: false, message: 'Impossibile prenotarsi: prenotazione già effettuata' })
         else {
             evento.prenotazioni.push(userData.id)
             utente.prenotazioni.push(evento._id)
