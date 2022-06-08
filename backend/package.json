@@ -18,10 +18,11 @@
   "author": "Daniele Carraro,  Giovanni Foletto, Ostacchini Giuseppe",
   "license": "ISC",
   "devDependencies": {
+    "casual": "^1.6.2",
     "jest": "^28.1.0",
     "nodemon": "^2.0.16",
     "supertest": "^6.2.3",
-    "casual": "^1.6.2"
+    "swagger-jsdoc": "^6.2.1"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",

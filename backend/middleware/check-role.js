@@ -66,3 +66,11 @@ exports.checkPermessiCreatoreCommento = async(req, res,next) => {
         res.status(500).json({ success: false, error: err.message })
     }
 }
+
+// verificare se un utente è admin
+exports.checkPermessiAdmin = async (req, res, next) => {
+    if (req.userData.ruolo === 'Admin')
+        next()
+    else
+        return res.status(401).json({ success: false, message: 'Non autorizzato ad accedere a questa risorsa' })
+}

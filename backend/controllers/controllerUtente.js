@@ -27,8 +27,8 @@ exports.getAllUtenti = async (req, res) => {
 exports.getNomeUtente = async (req, res) => {
     try {
         const utente = await Utente.findById(req.params.utenteID)
-        .populate('prenotazioni', 'nome dataInizo')
-        .populate('localiSeguiti', 'nome posizione')
+            .populate('prenotazioni', 'nome dataInizo')
+            .populate('localiSeguiti', 'nome posizione')
 
         if (!utente)
             return res.status(400).json({ success: false, message: 'Utente inesistente' })
@@ -301,8 +301,10 @@ exports.deleteAccount = async (req, res) => {
 
             utente.prenotazioni.forEach(async ev => {
                 const evento = await Evento.findById(ev)
-                evento.prenotazioni = evento.prenotazioni.filter(usr => String(usr) !== utente._id)
-                await evento.save()
+                if (evento?.prenotazioni) {
+                    evento.prenotazioni = evento.prenotazioni.filter(usr => String(usr) !== utente._id)
+                    await evento.save()
+                }
             })
 
             await Recensione.deleteMany({ utente: utente._id })

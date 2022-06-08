@@ -25,12 +25,12 @@
 
       <!-- FORM CARICAMENTO IMMAGINE -->
 
-      <div class="custom-file">
-        <img class="image" :src="preview" v-if="preview" />
+      <div class="custom-file pt-4 text-center">
+        <img class="image text-center" :src="preview" v-if="preview" />
 
         <input type="file" class="custom-file-input" id="1" @change="fileSelezionato" hidden />
 
-        <label class="custom-file-label pl-2" for="1" v-if="!preview">Seleziona Immagine</label>
+        <label class="custom-file-label pl-2" for="1" v-if="!preview">Clicca per caricare l'immagine di copertina</label>
         <label class="custom-file-label pl-2" v-if="preview" @click="annullaSelezione">Rimuovi selezione
           immagine</label>
       </div>
@@ -162,6 +162,11 @@ export default {
 .myflex {
   display: flex;
   flex-flow: column nowrap;
+  align-items: center;
+}
+.custom-file {
+  display: flex;
+  flex-flow: column;
   align-items: center;
 }
 </style>

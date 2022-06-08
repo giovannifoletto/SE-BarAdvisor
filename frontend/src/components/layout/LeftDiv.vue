@@ -62,6 +62,18 @@
           </div>
         </router-link>
       </li>
+      <li>
+        <router-link v-if="$store.state.user?.ruolo === 'Admin'" :to="{ name: 'homePageAdmin' }">
+          <div class="flex">
+            <div class="icon">
+              <Login />
+            </div>
+            <div>
+              <h3>Vai a console Admin</h3>
+            </div>
+          </div>
+        </router-link>
+      </li>
     </ul>
   </div>
 </template>

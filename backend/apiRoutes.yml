@@ -1,0 +1,480 @@
+/auth/utenti:
+  get:
+    description: Ritorna tutti gli utenti per developmente oppure per la pagina di admin.
+    response:
+      200: 
+        description: Ritorna tutti gli utenti.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                utenti:
+                  type: array
+                  description: array di tutti gli utenti presenti sul database.
+      500:
+        description: Ritorna un errore.
+        content: 
+          application/json:
+            schema:
+              type: object
+              properties:
+                success: 
+                  type: boolean
+                error:
+                  type: string
+                          
+/auth/utenti/:utenteID:
+  get:
+    description: Ritorna il nome utente di un utente
+    response:
+      200: 
+        description: Ritorna tutti gli utenti.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                utenti:
+                  type: array
+                  description: array di tutti gli utenti presenti sul database.
+      
+/auth/new/gestorelocale:
+  post:
+    description: Crea un Gestore Locale
+    response:
+      201: 
+        description: Ritorna l'id del Locale e del suo Gestore Locale
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                locale:
+                  type: Locale
+                  description: Schema Locale
+               utente: 
+                 type: Utente
+/auth/new/cliente:
+  post:
+    description: Crea un Cliente
+    response:
+      201: 
+        description: Ritorna l'id dell'utente
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                utente: 
+                 type: Utente
+/auth/login:
+  post:
+    description: Permette di effettuare il login
+    response:
+      200: 
+        description: Ritorna l'id dell'utente
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+               token: 
+                 type: jwt
+/auth/passworddimenticata:
+  post:
+    description: Permette di recuperare la password
+    response:
+      200: 
+        description: Ritorna un messaggio di conferma dell'invio della mail di recupero
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+               messaggio: 
+                 type: String
+/auth/resetpassword/:resetToken:
+  put:
+    description: Permette di generare un token per modificare la password
+    response:
+      200: 
+        description: Ritorna un messaggio di conferma cambio password
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                message: 
+                  type: String
+/auth/cambiopassword:
+  put:
+    description: Permette di cambiare la password
+    response:
+      200: 
+        description: Ritorna un messaggio di conferma cambio password
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+               message: 
+                 type: String
+/auth/cambiopassword:
+  delete:
+    description: Permette di eliminare il proprio profilo utente
+    response:
+      200: 
+        description: Ritorna un messaggio di conferma cancellazione account
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+               message: 
+                  type: String
+/eventi/:
+  get:
+    description: Permette di visualizzare tutti gli eventi
+    response:
+      200: 
+        description: Ritorna tutti gli eventi
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                eventi: 
+                  type: array
+                  description: array di tutti gli eventi presenti sul database
+/eventi/:eventoID:
+  get:
+    description: Permette di visualizzare i dati un evento specifico
+    response:
+      200: 
+        description: Ritorna i dati di un evento specifico
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                eventi: 
+                  type: Evento
+/eventi/:eventoID/prenotazioni:
+  post:
+    description: Permette di prenotare un posto a un evento
+    response:
+      201: 
+        description: Ritorna un messaggio di conferma prenotazione
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                message: 
+                  type: String
+/eventi/:eventoID/prenotazioni:
+  delete:
+    description: Permette di annullare la prenotazione
+    response:
+      200: 
+        description: Ritorna un messaggio di conferma avvenuta cancellazione recensione
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                message: 
+                  type: String
+/eventi/:eventoID/commenti:
+  post:
+    description: Permette di creare un commento
+    response:
+      201: 
+        description: Ritorna un messaggio di conferma creazione commento
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                message: 
+                  type: String
+/eventi/:eventoID/commenti/:commentoID:
+  delete:
+    description: Permette all'utente che ha creato il commento o ad un admin di cancellare il commento
+    response:
+      200: 
+        description: Ritorna un messaggio di conferma cancellazione commento
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                message: 
+                  type: String
+/eventi/:eventoID/commenti/:commentoID:
+  post:
+    description: Permette al Gestore Locale di caricare un'immagine come locandina del locale
+    response:
+      200: 
+        description: Ritorna un messaggio di conferma caricamento immagine
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                message: 
+                  type: String
+/eventi/:eventoID/commenti/:commentoID:
+  get:
+    description: Permette di visualizzare la locandina di un locale
+    response:
+      200: 
+        description: Ritorna un messaggio di conferma cancellazione commento
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                imm: 
+                  type: array
+                  description: l'immagine viene convertita in un array buffer
+/locali/:localeID:
+ get:
+   description: Permette di visualizzare un locale specifico
+   response:
+     200: 
+       description: Ritorna le informazioni di un locale
+       content:
+         application/json:
+           schema:
+             type: object
+             properties:
+               success:
+                 type: boolean
+               locale: 
+                 type: Locale
+               eventiPassati:
+                 type: array
+                 description: array di eventi già avvenuti
+               eventiFuturi
+                 type: array
+                 description: array di eventi che devono ancora avvenire
+/locali/:
+ get:
+   description: Permette di visualizzare tutti i locali che devono ancora essere verificati
+   response:
+     200: 
+       description: Ritorna l'elenco dei locali da verificare
+       content:
+         application/json:
+           schema:
+             type: object
+             properties:
+               success:
+                 type: boolean
+               locali: 
+                 type: Array
+                 description: Array di locali che devono ancora essere verificati
+/locali/:
+ post:
+   description: Permette di effettuare la verifica di un locale
+   response:
+     200: 
+       description: Ritorna un messaggio di conferma avvenuta verifica
+       content:
+         application/json:
+           schema:
+             type: object
+             properties:
+               success:
+                 type: boolean
+               message:
+                 type: String
+/locali/:localeID/eventi:
+ post:
+   description: Permette al Gestore Locale di creare un evento
+   response:
+     201: 
+       description: Ritorna un messaggio di avvenuta creazione evento e l'id dell'evento
+       content:
+         application/json:
+           schema:
+             type: object
+             properties:
+               success:
+                 type: boolean
+               message: 
+                 type: String
+               eventoID:
+                 type: String
+/locali/:localeID/eventi/:eventoID/:
+ get:
+   description: Permette di visualizzare le informazioni di un evento specifico
+   response:
+     200: 
+       description: Ritorna i dati di un evento
+       content:
+         application/json:
+           schema:
+             type: object
+             properties:
+               success:
+                 type: boolean
+               evento: 
+                 type: Evento
+/locali/:localeID/eventi/:eventoID:
+ put:
+   description: Permette al Gestore Locale di modificare i dati di un evento specifio
+   response:
+     200: 
+       description: Ritorna un messaggio di conferma aggiornamento dati
+       content:
+         application/json:
+           schema:
+             type: object
+             properties:
+               success:
+                 type: boolean
+               message: 
+                 type: String
+/locali/:localeID/eventi/:eventoID:
+ delete:
+   description: Permette al Gestore Locale di cancellare un evento specifico
+   response:
+     200: 
+       description: Ritorna un messaggio di conferma cancellazione evento
+       content:
+         application/json:
+           schema:
+             type: object
+             properties:
+               success:
+                 type: boolean
+               message: 
+                 type: String
+/locali/:localeID/recensioni:
+ get:
+   description: Permette di visualizzare tutte le recensioni di un locale
+   response:
+     200: 
+       description: Ritorna l'elenco di tutte le recensioni del locale
+       content:
+         application/json:
+           schema:
+             type: object
+             properties:
+               success:
+                 type: boolean
+               recensioni: 
+                 type: array
+                 description: Array di tutte le recensioni di un locale
+/:localeID/recensioni:
+ post:
+   description: Permette a un utente di creare un commento
+   response:
+     201: 
+       description: Ritorna un messaggio di conferma creazione commento
+       content:
+         application/json:
+           schema:
+             type: object
+             properties:
+               success:
+                 type: boolean
+               message: 
+                 type: String
+/:localeID/segui:
+ delete:
+   description: Permette a un utente di seguire un locale
+   response:
+     200: 
+       description: Ritorna un messaggio di conferma che si è iniziato a seguire il locale
+       content:
+         application/json:
+           schema:
+             type: object
+             properties:
+               success:
+                 type: boolean
+               message: 
+                 type: String
+/:localeID/segui:
+ delete:
+   description: Permette a un utente di smettere di seguire un locale
+   response:
+     200: 
+       description: Ritorna un messaggio di conferma che ha smesso di seguire il locale
+       content:
+         application/json:
+           schema:
+             type: object
+             properties:
+               success:
+                 type: boolean
+               message: 
+                 type: String
+/locali/:localeID/recensioni/:recensioneID:
+ delete:
+   description: Permette a un Admin o all'utente che la ha scritta di cancellare una recensione
+   response:
+     200: 
+       description: Ritorna un messaggio di conferma cancellazione recensione
+       content:
+         application/json:
+           schema:
+             type: object
+             properties:
+               success:
+                 type: boolean
+               message: 
+                 type: String
+/:localeID/eventi/:eventoID/notifiche:
+ post:
+   description: Permette al Gestore Locale di mandare una notifica a tutti gli iscritti a un evento
+   response:
+     200: 
+       description: Ritorna un messaggio di conferma invio segnalazione
+       content:
+         application/json:
+           schema:
+             type: object
+             properties:
+               success:
+                 type: boolean
+               message: 
+                 type: String

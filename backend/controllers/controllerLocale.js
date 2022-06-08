@@ -42,6 +42,36 @@ exports.getLocale = async (req, res) => {
     }
 }
 
+// Ritorna i locali non verificati
+exports.getLocaliDaConfermare = async (req, res) => {
+    try {
+        console.log("qui")
+        const locali = await Locale.find({ verificato: false })
+
+        res.status(200).json({ success: true, locali })
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message })
+    }
+}
+
+// Verifica di un locale
+exports.verificaLocale = async (req, res) => {
+    try {
+        const locale = await Locale.findById(req.params.localeID)
+
+        if (!locale)
+            return res.status(500).json({ success: false, message: 'Locale inesistente' })
+        
+        locale.verificato = true
+        await locale.save()
+
+        res.status(200).json({ success: true, message: 'Locale verificato correttamente' })
+
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message })
+    }
+}
+
 // Seguire un locale
 exports.followLocale = async (req, res) => {
     const userData = req.userData

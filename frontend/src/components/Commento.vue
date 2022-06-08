@@ -8,7 +8,7 @@
         <h5 class="pb-0">
           {{ nomeUtente }}
         </h5>
-        <div v-if="$store.state.token && String(commento.utente) === $store.state.user.id">
+        <div v-if="$store.state.token && (String(commento.utente) === $store.state.user.id || $store.state.user.ruolo === 'Admin')">
           <Secondary title="elimina" @buttonClicked="cancellaCommento" />
         </div>
       </div>

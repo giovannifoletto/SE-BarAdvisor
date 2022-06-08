@@ -1,6 +1,7 @@
 const Evento = require('../models/Evento')
 const Locale = require('../models/Locale')
 const Utente = require('../models/Utente')
+const Immagine = require('../models/Immagine')
 
 // recuperare tutti gli eventi
 exports.getAllEventi = async (req, res) => {
@@ -22,10 +23,10 @@ exports.getAllEventi = async (req, res) => {
 // creare un nuovo evento
 exports.postEvento = async (req, res) => {
     // recupero dati dalla richiesta e dal token
-    const { nome, descrizione, dataInizio } = req.body
+    const { nome, descrizione, dataInizio, posti } = req.body
     const userData = req.userData
 
-    if (!nome || !dataInizio)
+    if (!nome || !dataInizio || !posti)
         return res.status(400).json({ success: false, message: 'Compilare tutti i campi' })
 
     try{
@@ -36,6 +37,7 @@ exports.postEvento = async (req, res) => {
         
         // creazione dell'evento
         const evento = new Evento({
+            posti: posti,
             nome: nome,
             locale: userData.locale,
             descrizione: descrizione,
@@ -66,9 +68,10 @@ exports.modificaEvento = async (req, res) => {
         if(!oldEvento)
         return res.status(404).json({success: false, message: 'Evento non esistente'})
 
-        if(!evento.nome || !evento.dataInizio)
+        if(!evento.nome || !evento.dataInizio || !evento.posti)
             return res.status(400).json({success: false, message: "Compilare tutti i campi"})
 
+        oldEvento.posti = evento.posti
         oldEvento.nome = evento.nome
         oldEvento.locale = evento.locale
         oldEvento.descrizione = evento.descrizione
@@ -113,6 +116,7 @@ exports.postPrenotazione = async (req, res) => {
         // recupero gli oggetti dal database
         const evento = await Evento.findById(req.params.eventoID)
         const utente = await Utente.findById(userData.id)
+        const postiOccupati = evento.posti-evento.prenotazioni.length
 
         if (!evento || !utente)
             return res.status(404).json({ success: false, message: 'Evento o Utente insesistente' })
@@ -120,6 +124,9 @@ exports.postPrenotazione = async (req, res) => {
         // se l'evento a cui si sta provando a prenotare è scaduto, errore
         if (Date.parse(evento.dataInizio) < Date.now())
             return res.status(410).json({ success: false, message: 'Impossibile prenotarsi a questo evento (scaduto)' })
+
+        if (postiOccupati<=0)
+            return res.status(403).json({ success: false, message: "Impossibile prenotarsi a questo evento: posti esauriti"})
         
         // controllo se l'utente è già prenotato all'evento
         let prenotazioneEffettuata = false
@@ -230,11 +237,13 @@ exports.deleteEvento = async (req, res) => {
     const userData = req.userData
     try {
         const locale = await Locale.findById(userData.locale)
+        const evento = await Evento.findById(req.params.eventoID)
 
-        if (!locale)
+        if (!locale || !evento)
             return res.status(400).json({ success: false, message: 'Locale inesistente' })
         
-        await Immagine.deleteOne({ _id: req.params.eventoID })
+        if (evento?.copertina)
+            await Immagine.deleteOne({ _id: req.params.eventoID })
 
         await Evento.deleteOne({ _id: req.params.eventoID })
         

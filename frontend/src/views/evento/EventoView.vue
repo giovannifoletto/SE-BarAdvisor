@@ -1,30 +1,47 @@
 <template>
   <div>
-
     <div class="event" v-if="eventoCaricato">
-      <img class="image" :src="copertina" v-if="copertinaCaricata" />
-
       <div class="title">
         <h3>{{ evento.nome[0].toUpperCase() + evento.nome.slice(1, 1000) }}</h3>
+        <div v-if="$store.state.token && !eventoScaduto" class="py-2">
+          <Primary
+            title="Prenota"
+            v-if="!utentePrenotato"
+            @buttonClicked="postPrenotazione"
+          />
+          <Secondary
+            title="Cancella prenotazione"
+            v-if="utentePrenotato"
+            @buttonClicked="deletePrenotazione"
+          />
+        </div>
       </div>
 
       <div class="description text-center">
-        <h5>{{ evento.descrizione }}</h5>
+        <div>
+          <img class="image" :src="copertina" v-if="copertinaCaricata" />
+        </div>
 
-        <router-link :to="{
-          name: 'paginaLocale',
-          params: { localeID: evento?.locale?._id },
-        }">
-          <Secondary title="Visita il Locale gestore dell'evento" />
-        </router-link>
-        <router-link :to="{ name: 'formInviaNotifica', params: { localeID: evento?.locale?._id, eventoID: eventoID }, }"
-          v-if="isGestore">
-          <Primary title="Invia una notifica a questo evento" />
-        </router-link>
+        <div class="p-4">
+          <h5>{{ evento.descrizione }}</h5>
 
-        <div v-if="$store.state.token && !eventoScaduto" class="py-2">
-          <Primary title="Prenota" v-if="!utentePrenotato" @buttonClicked="postPrenotazione" />
-          <Secondary title="Cancella prenotazione" v-if="utentePrenotato" @buttonClicked="deletePrenotazione" />
+          <router-link
+            :to="{
+              name: 'paginaLocale',
+              params: { localeID: evento?.locale?._id },
+            }"
+          >
+            <Secondary title="Visita il Locale gestore dell'evento" />
+          </router-link>
+          <router-link
+            :to="{
+              name: 'formInviaNotifica',
+              params: { localeID: evento?.locale?._id, eventoID: eventoID },
+            }"
+            v-if="isGestore"
+          >
+            <Primary title="Invia una notifica a questo evento" />
+          </router-link>
         </div>
       </div>
 
@@ -34,20 +51,32 @@
 
           <div class="form-recensione" v-if="$store.state.token">
             <div class="input-group mb-3">
-              <input type="text" class="form-control" required v-model="commento.commento" />
+              <input
+                type="text"
+                class="form-control"
+                required
+                v-model="commento.commento"
+              />
               <div class="input-group-append">
                 <Primary title="Commenta" @buttonClicked="postCommento" />
               </div>
             </div>
           </div>
           <div class="comm-row" v-if="evento.commenti.length != 0">
-            <Commento v-for="commento in evento.commenti" :key="commento._id" :commento="commento" />
+            <Commento
+              v-for="commento in evento.commenti"
+              :key="commento._id"
+              :commento="commento"
+            />
           </div>
           <div v-else>
-            <Message :isSuccess="false" :messaggio="{
-              status: true,
-              messaggio: 'Ancora nessun commento.',
-            }" />
+            <Message
+              :isSuccess="false"
+              :messaggio="{
+                status: true,
+                messaggio: 'Ancora nessun commento.',
+              }"
+            />
           </div>
         </div>
       </div>
@@ -105,63 +134,36 @@ export default {
   methods: {
     async cancellaEvento() {
       const opzioneRichiesta = {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${this.$store.state.token}` }
-      }
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${this.$store.state.token}` },
+      };
 
       try {
-        const res = await fetch(`${config.baseURL}/locali/${this.$store.state.user.locale}/eventi/${this.eventoID}`, opzioneRichiesta)
-        const data = await res.json()
+        const res = await fetch(
+          `${config.baseURL}/locali/${this.$store.state.user.locale}/eventi/${this.eventoID}`,
+          opzioneRichiesta
+        );
+        const data = await res.json();
 
         if (data.success) {
-          this.$router.push({ name: 'paginaLocale', params: { localeID: this.$store.state.user.locale } })
-        }
-        else {
-          this.error = { status: true, messaggio: data?.messaggio || data?.error }
-          this.$emit('error', this.error)
-        }
-
-      } catch (error) {
-        this.error = { status: true, messaggio: error }
-        this.$emit('error', this.error)
-      }
-    },
-    fileSelezionato(event) {
-      this.immagine = event.target.files[0];
-      this.preview = URL.createObjectURL(this.immagine);
-    },
-    annullaCaricamento() {
-      this.preview = null;
-      document.getElementById("1").value = "";
-    },
-    async caricaImmagine() {
-      if (!this.immagine) {
-        this.error.status = true;
-        this.error.messaggio = "Selezionare almeno 1 file";
-        return;
-      }
-      const fd = new FormData();
-      fd.append("immagine", this.immagine);
-
-      try {
-        const res = await axios.post(
-          `${config.baseURL}/eventi/${this.eventoID}/copertina`,
-          fd
-        );
-
-        if (!res.data.success) {
-          this.error.status = true
-          this.error.messaggio = res.data?.error || res.data?.message
+          this.$router.push({
+            name: "paginaLocale",
+            params: { localeID: this.$store.state.user.locale },
+          });
         } else {
-          this.preview = null;
-          this.$router.go();
+          this.error = {
+            status: true,
+            messaggio: data?.messaggio || data?.error,
+          };
+          this.$emit("error", this.error);
         }
       } catch (error) {
-        console.log(error);
+        this.error = { status: true, messaggio: error };
+        this.$emit("error", this.error);
       }
     },
     async postCommento() {
-      this.commento.utente = this.$store.state?.user.id
+      this.commento.utente = this.$store.state?.user.id;
 
       const opzioneRichiesta = {
         method: "POST",
@@ -170,45 +172,43 @@ export default {
           Authorization: `Bearer ${this.$store.state.token}`,
         },
         body: JSON.stringify(this.commento),
-      }
+      };
 
       try {
         const res = await fetch(
           `${config.baseURL}/eventi/${this.eventoID}/commenti`,
           opzioneRichiesta
-        )
+        );
         const data = await res.json();
 
         if (data.success) {
-          this.$router.go()
+          this.$router.go();
         } else {
-          this.error = { status: true, messaggio: data.error || data.message }
-          this.$emit('error', this.error)
+          this.error = { status: true, messaggio: data.error || data.message };
+          this.$emit("error", this.error);
         }
       } catch (error) {
-        this.error = { status: true, messaggio: error }
-        this.$emit('error', this.error)
+        this.error = { status: true, messaggio: error };
+        this.$emit("error", this.error);
       }
     },
     async postPrenotazione() {
       const { data, error } = await postPrenotazione(this.eventoID);
       this.error = error;
 
-      if (data.success)
-        this.utentePrenotato = true
+      if (data.success) this.utentePrenotato = true;
       else {
-        this.evento = { status: true, error: error }
-        this.$emit('error', this.error)
+        this.evento = { status: true, error: error };
+        this.$emit("error", this.error);
       }
     },
     async deletePrenotazione() {
-      const { data, error } = await deletePrenotazione(this.eventoID)
+      const { data, error } = await deletePrenotazione(this.eventoID);
 
-      if (data.success)
-        this.utentePrenotato = false
+      if (data.success) this.utentePrenotato = false;
       else {
-        this.evento = { status: true, error: error }
-        this.$emit('error', this.error)
+        this.evento = { status: true, error: error };
+        this.$emit("error", this.error);
       }
     },
   },
@@ -226,9 +226,9 @@ export default {
         this.evento.prenotazioni.forEach((usr) => {
           if (usr._id === this.$store.state?.user?.id)
             this.utentePrenotato = true;
-        })
+        });
         if (this.$store.state.user?.locale === this.evento?.locale?._id)
-          this.isGestore = true
+          this.isGestore = true;
       }
 
       // se l'evento ha la copertina, recuperala
@@ -244,15 +244,16 @@ export default {
             (data, b) => (data += String.fromCharCode(b)),
             ""
           );
-          this.copertina = `data:${response.data.imm.file.contentType
-            };base64,${btoa(binary)}`
-          this.copertinaCaricata = true
+          this.copertina = `data:${
+            response.data.imm.file.contentType
+          };base64,${btoa(binary)}`;
+          this.copertinaCaricata = true;
         }
       }
     } catch (error) {
-      this.error.status = true
-      this.error.messaggio = error || "Errore del server, riprovare."
-      this.$emit('error', this.error)
+      this.error.status = true;
+      this.error.messaggio = error || "Errore del server, riprovare.";
+      this.$emit("error", this.error);
     }
   },
 };
@@ -268,18 +269,23 @@ export default {
 
 .title {
   display: flex;
-  flex-flow: column nowrap;
+  flex-flow: row nowrap;
   justify-content: space-between;
-  justify-items: baseline;
+  align-items: baseline;
   padding: 10px;
   border-bottom: 1px solid black;
 }
 
 .description {
-  display: flex;
-  flex-flow: column;
-  align-content: center;
+  display: grid;
+  grid-template-columns: 50% 50%;
   padding-top: 0.5rem;
+}
+.image{
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  padding: 2px;
 }
 
 .comments {
@@ -300,32 +306,5 @@ export default {
 
 .comm-row {
   display: relative;
-}
-
-.custom-file-input::-webkit-file-upload-button {
-  visibility: hidden;
-}
-
-.custom-file-input::before {
-  content: "Select some files";
-  display: inline-block;
-  background: linear-gradient(top, #f9f9f9, #e3e3e3);
-  border: 1px solid #999;
-  border-radius: 3px;
-  padding: 5px 8px;
-  outline: none;
-  white-space: nowrap;
-  cursor: pointer;
-  text-shadow: 1px 1px #fff;
-  font-weight: 700;
-  font-size: 10pt;
-}
-
-.custom-file-input:hover::before {
-  border-color: black;
-}
-
-.custom-file-input:active::before {
-  background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
 }
 </style>

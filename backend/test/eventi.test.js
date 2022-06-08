@@ -126,7 +126,8 @@ describe('Test eventi', () => {
             .set('Authorization', `Bearer ${localState.token}`)
             .send({
                 nome: mockData.state.evento.nome,
-                dataInizio: mockData.state.evento.dataInizio
+                dataInizio: mockData.state.evento.dataInizio,
+                posti:  mockData.state.evento.posti
             })
         expect(res.body.message).toEqual('Nuovo evento creato correttamente')
         expect(res.body.success).toBeTruthy()
@@ -171,7 +172,8 @@ describe('Test eventi', () => {
         const tempEvento = {
             nome: mockData.state.evento.nome,
             descrizione: mockData.state.evento.descrizione,
-            dataInizio: new Date(Date.now()+100000000)
+            dataInizio: new Date(Date.now()+100000000),
+            posti: mockData.state.evento.posti
         }
 
         const nuovoEvento = await request(app)
@@ -189,14 +191,15 @@ describe('Test eventi', () => {
             .post(`/api/v1/eventi/${eventoID}/prenotazioni`)
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${localState.token}`)
-            expect(res.status).toBe(200)
             expect(res.body).toEqual({ success: true, message: 'Prenotazione effettuata correttamente' })
+            expect(res.status).toBe(200)
     })
     test('Prenotazioni DELETE', async () => {
         const tempEvento = {
             nome: mockData.state.evento.nome,
             descrizione: mockData.state.evento.descrizione,
-            dataInizio: new Date(Date.now()+100000000)
+            dataInizio: new Date(Date.now()+100000000),
+            posti: mockData.state.evento.posti
         }
 
         const nuovoEvento = await request(app)

@@ -1,4 +1,3 @@
-const { header } = require('express/lib/request')
 const jwt = require('jsonwebtoken')
 const config = require('../config')
 
