@@ -8,8 +8,8 @@
 
 <script>
 export default {
-  name: 'Header'
-}
+  name: "Header",
+};
 </script>
 
 <style scoped>
@@ -20,9 +20,10 @@ nav {
   display: flex;
   flex-flow: row nowrap;
   padding-top: 5px;
-  border-bottom: 1px solid black;
+  /* border-bottom: 1px solid black; */
   font-size: var(--headline1-size);
   font-weight: var(--headline1-weight);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 .navbar {
   display: flex;
