@@ -228,7 +228,7 @@ router.delete('/:localeID/segui', checkAuth, controllerLocali.unfollowLocale)
 router.delete('/:localeID/recensioni/:recensioneID', checkAuth, checkRole.checkPermessiCreatoreRecensione, controllerRecensioni.deleteRecensione)
 
 /* @openapi
-* /eventi/:eventoID/commenti/:commentoID
+* /:localeID/eventi/:eventoID/notifiche
 *  post:
 *    description: Permette al Gestore Locale di mandare una notifica a tutti gli iscritti a un evento
 *    response:
