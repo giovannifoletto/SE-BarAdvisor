@@ -68,7 +68,7 @@ exports.deleteRecensione = async (req, res) => {
         const recensione = await Recensione.findById(req.params.recensioneID)
 
         if (!locale || !recensione)
-            return res.status(400).json({ success: false, message: 'Locale inesistente' })
+            return res.status(404).json({ success: false, message: 'Locale e/o recensione inesistenti' })
         
         // aggiornamento del ranking del locale
         if (locale.recensioni.length === 1)
@@ -82,7 +82,7 @@ exports.deleteRecensione = async (req, res) => {
         
         await Recensione.deleteOne({ _id: req.params.recensioneID })
 
-        res.status(200).json({ success: true, message: 'Recensione cancellate correttamente' })
+        res.status(200).json({ success: true, message: 'Recensione cancellata correttamente' })
 
     } catch (err) {
         res.status(500).json({ success: false, error: err })

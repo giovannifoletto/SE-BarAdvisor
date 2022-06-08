@@ -1,7 +1,7 @@
 const Evento = require('../models/Evento')
 const Locale = require('../models/Locale')
 const Utente = require('../models/Utente')
-const Commento = require('../models/Commento')
+const Immagine = require('../models/Immagine')
 
 // recuperare tutti gli eventi
 exports.getAllEventi = async (req, res) => {
@@ -63,7 +63,7 @@ exports.getEvento = async (req, res) => {
         const evento = await Evento.findById(req.params.eventoID)
         .populate('locale', 'nome')
         .populate('prenotazioni', 'email')
-        .populate('commenti', 'utente commento')
+        .populate('commenti', 'utente evento commento')
 
         if (!evento)
             return res.status(404).json({ success: false, message: 'Nessun evento trovato' })
@@ -86,11 +86,11 @@ exports.postPrenotazione = async (req, res) => {
         const utente = await Utente.findById(userData.id)
 
         if (!evento || !utente)
-            return res.status(500).json({ success: false, message: 'Evento inesistente' })
+            return res.status(404).json({ success: false, message: 'Evento o Utente insesistente' })
         
         // se l'evento a cui si sta provando a prenotare è scaduto, errore
         if (Date.parse(evento.dataInizio) < Date.now())
-            return res.status(400).json({ success: false, message: 'Impossibile prenotarsi a questo evento (scaduto)' })
+            return res.status(410).json({ success: false, message: 'Impossibile prenotarsi a questo evento (scaduto)' })
         
         // controllo se l'utente è già prenotato all'evento
         let prenotazioneEffettuata = false
@@ -128,7 +128,7 @@ exports.deletePrenotazione = async (req, res) => {
         const utente = await Utente.findById(userData.id)
 
         if (!evento || !utente)
-            return res.status(500).json({ success: false, message: 'Evento insesistente' })
+            return res.status(404).json({ success: false, message: 'Evento o Utente insesistente' })
         
         // controllo se l'utente è prenotato all'evento
         let prenotazioneEffettuata = false
@@ -170,7 +170,7 @@ exports.invioNotifica = async (req, res) => {
         const locale = await Locale.findById(userData.locale)
 
         if (!evento || !locale)
-            return res.status(400).json({ success: false, message: 'Evento e/o locale non trovati' })
+            return res.status(404).json({ success: false, message: 'Evento e/o locale non trovati' })
         
         // aggiunta dei dettagli dell'evento e del locale
         const messaggioCompleto = 
@@ -196,34 +196,27 @@ exports.invioNotifica = async (req, res) => {
     }
 }
 
-exports.postCommento = async (req, res) => {
-    const { commento } = req.body
+// elimina un evento
+exports.deleteEvento = async (req, res) => {
     const userData = req.userData
 
-    if (!commento)
-        return res.status(400).json({ success: false, message: 'Compilare tutti i campi' })
-    
     try {
-        const nuovoCommento = new Commento({
-            utente: userData.id,
-            commento: commento
-        })
+        const locale = await Locale.findById(userData.locale)
+
+        if (!locale)
+            return res.status(400).json({ success: false, message: 'Locale inesistente' })
         
-        await nuovoCommento.save()
+        await Immagine.deleteOne({ _id: req.params.eventoID })
 
-        const evento = await Evento.findById(req.params.eventoID)
-
-        if (!evento)
-            return res.status(400).json({ success: false, message: 'Evento inesistente' })
-
-        evento.commenti.push(nuovoCommento._id)
-
-        await evento.save()
+        await Evento.deleteOne({ _id: req.params.eventoID })
         
+        locale.eventi = locale.eventi.filter(ev => String(ev) !== req.params.eventoID)
+        
+        await locale.save()
 
-        res.status(200).json({ success: true, message: 'Commento creato correttamente' })
+        res.status(200).json({ success: true, message: 'Evento cancellato correttamente' })
 
     } catch (err) {
-        res.status(500).json({ success: false, error: err.message })
+        res.status(400).json({ success: false, error: err.message })
     }
 }

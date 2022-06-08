@@ -1,31 +1,12 @@
 <template>
   <div>
-    <Errors :error="error" />
-
-    <div
-      v-if="
-        $store.state.token && $store.state.user?.locale === evento?.locale._id
-      "
-    >
-      <form enctype="multipart/form-data" @submit.prevent="caricaImmagine">
-        <input
-          type="file"
-          @change="fileSelezionato"
-          id="1"
-          class="custom-file-input"
-        />
-        <button class="submit">Carica</button>
-      </form>
-      <button @click="annullaCaricamento">Annulla</button>
-    </div>
 
     <div class="event" v-if="eventoCaricato">
       <img
         class="image"
         :src="copertina"
-        v-if="copertinaCaricata && !preview"
+        v-if="copertinaCaricata"
       />
-      <img class="image" :src="preview" v-if="preview" />
 
       <div class="title">
         <h3>{{ evento.nome[0].toUpperCase() + evento.nome.slice(1, 1000) }}</h3>
@@ -42,13 +23,7 @@
         >
           <Secondary title="Visita il Locale gestore dell'evento" />
         </router-link>
-        <router-link
-          :to="{
-            name: 'formInviaNotifica',
-            params: { localeID: evento?.locale?._id, eventoID: eventoID },
-          }"
-          v-if="$store.state.user?.locale === evento?.locale?._id"
-        >
+        <router-link :to="{ name: 'formInviaNotifica', params: { localeID: evento?.locale?._id, eventoID: eventoID }, }" v-if="isGestore" >
           <Primary title="Invia una notifica a questo evento" />
         </router-link>
 
@@ -87,8 +62,7 @@
             <Commento
               v-for="commento in evento.commenti"
               :key="commento._id"
-              :commento="commento.commento"
-              :idUtente="commento.utente"
+              :commento="commento"
             />
           </div>
           <div v-else>
@@ -102,6 +76,14 @@
           </div>
         </div>
       </div>
+
+      <div class="final-button mt-3 mb-1" v-if="isGestore">
+      <div class="p-1">
+        <div class="p-1 text-center">
+          <Primary title="Elimina Evento" @buttonClicked="cancellaEvento" />
+        </div>
+      </div>
+    </div>
     </div>
   </div>
 </template>
@@ -109,7 +91,6 @@
 <script>
 import Primary from "@/components/buttons/Primary.vue";
 import Secondary from "@/components/buttons/Secondary.vue";
-import Errors from "@/components/Errors.vue";
 import Message from "@/components/Message";
 import Commento from "@/components/Commento.vue";
 import axios from "axios";
@@ -124,7 +105,6 @@ export default {
   components: {
     Primary,
     Secondary,
-    Errors,
     Message,
     Commento,
   },
@@ -133,11 +113,10 @@ export default {
       evento: null,
       eventoScaduto: false,
       eventoCaricato: false,
-      copertinaCaricata: false,
       utentePrenotato: false,
-      immagine: null,
-      preview: null,
       copertina: null,
+      copertinaCaricata: false,
+      isGestore: false,
       commento: {
         utente: null,
         commento: "",
@@ -149,6 +128,29 @@ export default {
     };
   },
   methods: {
+    async cancellaEvento() {
+      const opzioneRichiesta = {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${this.$store.state.token}` }
+      }
+
+      try {
+        const res = await fetch(`${config.baseURL}/locali/${this.$store.state.user.locale}/eventi/${this.eventoID}`, opzioneRichiesta)
+        const data = await res.json()
+
+        if (data.success) {
+          this.$router.push({ name: 'paginaLocale', params: { localeID: this.$store.state.user.locale } })
+        }
+        else {
+          this.error = { status: true, messaggio: data?.messaggio || data?.error }
+          this.$emit('error', this.error)
+        }
+
+      } catch (error) {
+        this.error = { status: true, messaggio: error }
+        this.$emit('error', this.error)
+      }
+    },
     fileSelezionato(event) {
       this.immagine = event.target.files[0];
       this.preview = URL.createObjectURL(this.immagine);
@@ -173,8 +175,8 @@ export default {
         );
 
         if (!res.data.success) {
-          this.error.status = true;
-          this.error.messaggio = res.data?.error || res.data?.message;
+          this.error.status = true
+          this.error.messaggio = res.data?.error || res.data?.message
         } else {
           this.preview = null;
           this.$router.go();
@@ -184,9 +186,7 @@ export default {
       }
     },
     async postCommento() {
-      this.commento.utente = this.$store.state?.user.id;
-
-      console.log(this.commento);
+      this.commento.utente = this.$store.state?.user.id
 
       const opzioneRichiesta = {
         method: "POST",
@@ -195,40 +195,45 @@ export default {
           Authorization: `Bearer ${this.$store.state.token}`,
         },
         body: JSON.stringify(this.commento),
-      };
+      }
+
       try {
         const res = await fetch(
           `${config.baseURL}/eventi/${this.eventoID}/commenti`,
           opzioneRichiesta
-        );
+        )
         const data = await res.json();
 
         if (data.success) {
-          this.$router.go();
+          this.$router.go()
         } else {
-          this.error.status = true;
-          this.error.messaggio =
-            data.error || data.message || "Errore interno, riprovare.";
+          this.error = {status: true, messaggio: data.error || data.message }
+          this.$emit('error', this.error)
         }
       } catch (error) {
-        this.error.status = true;
-        this.error.messaggio = error || "Errore imprevisto, riprovare.";
+        this.error = { status: true, messaggio: error }
+        this.$emit('error', this.error)
       }
     },
-    async postPrenotazione(){
-      const { data, error } = await postPrenotazione(this.eventoID)
-      this.error = error
+    async postPrenotazione() {
+      const { data, error } = await postPrenotazione(this.eventoID);
+      this.error = error;
 
-      if(data.success){
+      if(data.success)
         this.utentePrenotato = true
+      else {
+        this.evento = { status: true, error: error }
+        this.$emit('error', this.error)
       }
     },
     async deletePrenotazione() {
       const { data, error } = await deletePrenotazione(this.eventoID)
-      this.error = error
       
-      if(data.success){
+      if(data.success)
         this.utentePrenotato = false
+      else {
+        this.evento = { status: true, error: error }
+        this.$emit('error', this.error)
       }
     },
   },
@@ -242,15 +247,17 @@ export default {
         this.evento = data.evento;
         this.eventoCaricato = true;
         if (Date.parse(this.evento.dataInizio) < Date.now())
-          this.eventoScaduto = true
+          this.eventoScaduto = true;
         this.evento.prenotazioni.forEach((usr) => {
           if (usr._id === this.$store.state?.user?.id)
             this.utentePrenotato = true;
-        });
+        })
+        if (this.$store.state.user?.locale === this.evento?.locale?._id)
+          this.isGestore = true
       }
 
       // se l'evento ha la copertina, recuperala
-      if (this.evento.copertina) {
+      if (this.evento?.copertina) {
         // get immagine dell'evento
         const response = await axios.get(
           `${config.baseURL}/eventi/${this.eventoID}/copertina`
@@ -264,14 +271,14 @@ export default {
           );
           this.copertina = `data:${
             response.data.imm.file.contentType
-          };base64,${btoa(binary)}`;
-          this.copertinaCaricata = true;
+          };base64,${btoa(binary)}`
+          this.copertinaCaricata = true
         }
       }
     } catch (error) {
-      console.log(error);
-      this.error.status = true;
-      this.error.messaggio = error || "Errore del server, riprovare.";
+      this.error.status = true
+      this.error.messaggio = error || "Errore del server, riprovare."
+      this.$emit('error', this.error)
     }
   },
 };
@@ -284,12 +291,6 @@ export default {
   border-radius: 4px;
   justify-content: baseline;
 }
-
-.image {
-  width: 70px;
-  height: 70px;
-}
-
 .title {
   display: flex;
   flex-flow: column nowrap;

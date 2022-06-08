@@ -12,7 +12,7 @@ describe('Test auth', () => {
                 email: mockData.state.users.email,
                 password: mockData.state.users.password
             })
-            expect(res.status).toBe(201)
+            expect(res.status).toBe(200)}
         });
 
     test('GET /utenti', async () => {

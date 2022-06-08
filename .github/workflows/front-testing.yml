@@ -1,4 +1,4 @@
-name: Unit Testing Fronend
+name: Unit Testing Frontend
 
 on:
   push:
