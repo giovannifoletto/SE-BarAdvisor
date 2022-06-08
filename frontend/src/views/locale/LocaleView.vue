@@ -1,25 +1,56 @@
 <template>
   <div class="post" v-if="locale">
-
     <div class="title">
       <div class="head-title">
-        <div class="title-account">
-          <Account />
+        <div class="title-left">
+          <div class="title-account">
+            <Account />
+          </div>
+          <div>
+            <h3>
+              {{ locale.nome[0].toUpperCase() + locale.nome.slice(1, 1000) }}
+            </h3>
+            <h6 class="position">{{ locale.posizione }}</h6>
+          </div>
         </div>
-        <h3>
-          {{ locale.nome[0].toUpperCase() + locale.nome.slice(1, 1000) }}
-        </h3>
+
+        <div class="buttons-group">
+          <button class="beer-button">
+            {{ locale.followers.length }}
+          </button>
+          <div
+            class="final-button"
+            v-if="$store.state.token && $store.state.user.ruolo === 'Cliente'"
+          >
+            <div class="p-1">
+              <div class="p-1 text-center">
+                <Primary
+                  title="Segui"
+                  @buttonClicked="followLocale"
+                  v-if="!isFollower"
+                />
+                <Secondary
+                  title="Non seguire più"
+                  @buttonClicked="unfollowLocale"
+                  v-if="isFollower"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="bio">
         <div class="bio-title">
           <h4>Descrizione Locale</h4>
-          <button class="beer-button">
-            {{ Math.round(locale.ranking * 10) / 10 }} / 5
-            <div class="">
-              <Beer :active="true" />
-            </div>
-          </button>
+          <div class="buttons-group">
+            <button class="beer-button m-0 p-0">
+              {{ Math.round(locale.ranking * 10) / 10 }} / 5
+              <div class="">
+                <Beer :active="true" />
+              </div>
+            </button>
+          </div>
         </div>
         <div>
           <h5>{{ locale.descrizione }}</h5>
@@ -27,19 +58,10 @@
       </div>
     </div>
 
-    <div v-if="isGestore">
+    <div v-if="isGestore" class="text-center pt-2">
       <router-link :to="{ name: 'formCreazioneEvento' }">
         <Primary title="Crea Evento" />
       </router-link>
-    </div>
-
-    <div class="final-button mt-3 mb-1" v-if="$store.state.token && $store.state.user.ruolo === 'Cliente'">
-      <div class="p-1">
-        <div class="p-1 text-center">
-          <Primary title="Segui" @buttonClicked="followLocale" v-if="!isFollower" />
-          <Secondary title="Non seguire più" @buttonClicked="unfollowLocale" v-if="isFollower" />
-        </div>
-      </div>
     </div>
 
     <div class="comments" v-if="prossimiEventi">
@@ -48,14 +70,22 @@
       </div>
       <div v-if="prossimiEventi.length != 0">
         <div class="comm-row">
-          <CardEvento v-for="evento in prossimiEventi" :key="evento._id" :evento="evento" @error="handleError" />
+          <CardEvento
+            v-for="evento in prossimiEventi"
+            :key="evento._id"
+            :evento="evento"
+            @error="handleError"
+          />
         </div>
       </div>
       <div v-else>
-        <Message :isSuccess="false" :messaggio="{
-          status: true,
-          messaggio: 'Nessun evento in programma.',
-        }" />
+        <Message
+          :isSuccess="false"
+          :messaggio="{
+            status: true,
+            messaggio: 'Nessun evento in programma.',
+          }"
+        />
       </div>
     </div>
 
@@ -65,14 +95,22 @@
       </div>
       <div v-if="eventiPassati.length != 0">
         <div class="comm-row">
-          <CardEvento v-for="evento in eventiPassati" :key="evento._id" :evento="evento" @error="handleError" />
+          <CardEvento
+            v-for="evento in eventiPassati"
+            :key="evento._id"
+            :evento="evento"
+            @error="handleError"
+          />
         </div>
       </div>
       <div v-else>
-        <Message :isSuccess="false" :messaggio="{
-          status: true,
-          messaggio: 'Nessun evento in programma.',
-        }" />
+        <Message
+          :isSuccess="false"
+          :messaggio="{
+            status: true,
+            messaggio: 'Nessun evento in programma.',
+          }"
+        />
       </div>
     </div>
 
@@ -85,16 +123,25 @@
 
       <div class="form-recensione" v-if="$store.state.token">
         <div class="input-group mb-3">
-          <input type="text" class="form-control" placeholder="Inserisci nuovo commento" required
-            v-model="recensione.commento" />
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Inserisci nuovo commento"
+            required
+            v-model="recensione.commento"
+          />
           <div class="input-group-append">
-            <select class="
+            <select
+              class="
                 custom-select
                 border-top border-bottom
                 py-1
                 rounded
                 text-center
-              " v-model="recensione.votazione" required>
+              "
+              v-model="recensione.votazione"
+              required
+            >
               <option value="" disabled selected>Vota</option>
               <option :value="index" v-for="index in 5" :key="index">
                 {{ index }}
@@ -108,8 +155,13 @@
       <!-- ELENCO RECENSIONI -->
 
       <div class="comm-row">
-        <Recensione v-for="recensione in locale.recensioni" :key="recensione._id" :recensione="recensione"
-          @messaggio="handleMessage" @error="handleError" />
+        <Recensione
+          v-for="recensione in locale.recensioni"
+          :key="recensione._id"
+          :recensione="recensione"
+          @messaggio="handleMessage"
+          @error="handleError"
+        />
       </div>
     </div>
 
@@ -145,9 +197,9 @@ import Errors from "@/components/Errors";
 import Beer from "@/components/icons/Beer";
 
 import config from "@/config";
-import deleteAccount from '@/lib/deleteAccount'
-import followLocale from '@/lib/followLocale'
-import unfollowLocale from '@/lib/unfollowLocale'
+import deleteAccount from "@/lib/deleteAccount";
+import followLocale from "@/lib/followLocale";
+import unfollowLocale from "@/lib/unfollowLocale";
 import Secondary from "../../components/buttons/Secondary.vue";
 
 export default {
@@ -162,7 +214,7 @@ export default {
     Recensione,
     Errors,
     Beer,
-    Secondary
+    Secondary,
   },
   data() {
     return {
@@ -180,34 +232,33 @@ export default {
       error: {
         status: false,
         messaggio: "",
-      }
+      },
     };
   },
   methods: {
     handleMessage(event) {
-      this.$emit('messaggio', event)
+      this.$emit("messaggio", event);
     },
     handleError(event) {
-      this.$emit('error', event)
+      this.$emit("error", event);
     },
     async cancellaAccount() {
-      const { data, error } = await deleteAccount()
+      const { data, error } = await deleteAccount();
 
       if (data.success) {
-        this.$router.push({ name: 'home' })
-        this.$store.commit('resetToken')
-      }
-      else {
-        this.error = error
-        this.$emit('error', this.error)
+        this.$router.push({ name: "home" });
+        this.$store.commit("resetToken");
+      } else {
+        this.error = error;
+        this.$emit("error", this.error);
       }
     },
     async postRecensione() {
       if (!this.recensione.commento || !this.recensione.votazione) {
-        this.error.status = true
-        this.error.messaggio = "Compilare tutti i campi."
+        this.error.status = true;
+        this.error.messaggio = "Compilare tutti i campi.";
 
-        this.handleError(this.error)
+        this.handleError(this.error);
         return;
       }
 
@@ -232,37 +283,35 @@ export default {
 
         if (!data.success) {
           this.error.status = true;
-          this.error.messaggio = data?.error || data?.message
+          this.error.messaggio = data?.error || data?.message;
 
-          this.handleError(this.error)
-        } else this.$router.go()
+          this.handleError(this.error);
+        } else this.$router.go();
       } catch (error) {
-        this.error.status = true
-        this.error.messaggio = error
+        this.error.status = true;
+        this.error.messaggio = error;
 
-        this.handleError(this.error)
+        this.handleError(this.error);
       }
     },
     async followLocale() {
-      const { data, error } = await followLocale(this.localeID)
+      const { data, error } = await followLocale(this.localeID);
       if (data.success) {
-        this.isFollower = true
-      }
-      else {
-        this.error = error
-        this.$emit('error', this.error)
+        this.isFollower = true;
+      } else {
+        this.error = error;
+        this.$emit("error", this.error);
       }
     },
     async unfollowLocale() {
-      const { data, error } = await unfollowLocale(this.localeID)
+      const { data, error } = await unfollowLocale(this.localeID);
       if (data.success) {
-        this.isFollower = false
+        this.isFollower = false;
+      } else {
+        this.error = error;
+        this.$emit("error", this.error);
       }
-      else {
-        this.error = error
-        this.$emit('error', this.error)
-      }
-    }
+    },
   },
   async mounted() {
     try {
@@ -270,28 +319,33 @@ export default {
       const data = await res.json();
 
       if (data.success) {
-        this.locale = data.locale
+        this.locale = data.locale;
 
-        if (this.$store.state.token && this.localeID === this.$store.state.user?.locale)
-          this.isGestore = true
+        if (
+          this.$store.state.token &&
+          this.localeID === this.$store.state.user?.locale
+        )
+          this.isGestore = true;
 
-        if (this.$store.state.token && this.$store.state.user.ruolo === 'Cliente') {
-          this.locale.followers.forEach(usr => {
+        if (
+          this.$store.state.token &&
+          this.$store.state.user.ruolo === "Cliente"
+        ) {
+          this.locale.followers.forEach((usr) => {
             if (String(usr) === this.$store.state.user.id)
-              this.isFollower = true
-          })
+              this.isFollower = true;
+          });
         }
 
         this.prossimiEventi = data.prossimiEventi;
         this.eventiPassati = data.eventiPassati;
       }
     } catch (error) {
-      this.error.status = true
-      this.error.messaggio = error || "Errore del server, riprovare."
+      this.error.status = true;
+      this.error.messaggio = error || "Errore del server, riprovare.";
 
-      this.handleError(this.error)
+      this.handleError(this.error);
     }
-
   },
 };
 </script>
@@ -301,6 +355,21 @@ export default {
   display: flex;
   flex-flow: column nowrap;
   border-radius: 4px;
+}
+
+.buttons-group {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: baseline;
+}
+
+.title-left {
+  display: flex;
+  flex-flow: row;
+}
+
+.position {
+  margin-top: -10px;
 }
 
 .title {
@@ -315,18 +384,6 @@ export default {
   padding-right: 1rem;
 }
 
-.title-locale-name {
-  display: flex;
-  flex-flow: row;
-  justify-content: space-between;
-}
-
-.title-locale-row {
-  display: flex;
-  flex-flow: row;
-  justify-content: space-between;
-}
-
 .bio-title {
   display: flex;
   flex-flow: row;
@@ -337,12 +394,9 @@ export default {
 .head-title {
   display: flex;
   flex-flow: row;
+  justify-content: space-between;
+  justify-items: baseline;
   gap: 10px;
-}
-
-.first-title {
-  display: flex;
-  flex-flow: row;
 }
 
 .comments {
@@ -410,6 +464,7 @@ export default {
   align-items: baseline;
   column-gap: 3px;
   margin: 0;
+  height: fit-content;
 }
 
 .beer-button:hover {
