@@ -28,7 +28,6 @@
 
 <script>
 import config from '@/config'
-
 import Primary from '@/components/buttons/Primary'
 import Message from '@/components/Message'
 
