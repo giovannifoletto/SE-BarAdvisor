@@ -37,7 +37,6 @@ jobs:
           branch: main
         env:
           NODE_ENV: production
-          SECRET_KEY: ${{ secrets.MY_SECRET_KEY }}
           PORT: 80
           DB_URL_CLUSTER: ${{ secrets.DB_URL_CLUSTER }},
           SECRET_KEY: ${{ secrets.SECRET_KEY }},

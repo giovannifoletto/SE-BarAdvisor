@@ -1,1 +1,63 @@
-{"swagger":"2.0","info":{"title":"BarAdvisor","version":"1.0.0","description":"Applicazione che prmette di recuperare informazioni riguardo a Locali ed Eventi","termsOfService":"http://swagger.io/terms","license":{"name":"Apache 2.0","url":"https://www.apache.org/licenses/LICENSE-2.0.html"}},"paths":{"/auth/utenti":{"get":{"description":"Ritorna tutti gli utenti per developmente oppure per la pagina di admin.","responses":{"200":{"description":"Ritorna tutti gli utenti.","content":{"application/json":{"schema":{"type":"object","properties":{"success":{"type":"boolean"},"utenti":{"type":"array","description":"array di tutti gli utenti presenti sul database."}}}}}}}}},"/":{"get":{"description":"Ritorna il nome utente di un utente","responses":{"200":{"description":"Ritorna tutti gli utenti.","content":{"application/json":{"schema":{"type":"object","properties":{"success":{"type":"boolean"},"utenti":{"type":"array","description":"array di tutti gli utenti presenti sul database."}}}}}}}}}},"definitions":{},"responses":{},"parameters":{},"securityDefinitions":{},"tags":[]}
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "BarAdvisor",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/auth/utenti": {
+            "get": {
+                "description": "Ritorna tutti gli utenti per developmente oppure per la pagina di admin.",
+                "response": {
+                    "200": {
+                        "description": "Ritorna tutti gli utenti.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "booean"
+                                        },
+                                        "utenti": {
+                                            "type": "array",
+                                            "description": "array di tutti gli utenti presenti sul database."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/": {
+            "get": {
+                "description": "Ritorna il nome utente di un utente",
+                "response": {
+                    "200": {
+                        "description": "Ritorna tutti gli utenti.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "booean"
+                                        },
+                                        "utenti": {
+                                            "type": "array",
+                                            "description": "array di tutti gli utenti presenti sul database."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {},
+    "tags": []
+}

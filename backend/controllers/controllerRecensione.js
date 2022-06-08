@@ -7,7 +7,7 @@ exports.getAllRecensioni = async (req, res) => {
         const locale = await Locale.findById(req.params.localeID)
 
         if (! locale)
-            return res.status(400).json({ success: false, message: 'Locale non valido' })
+            return res.status(404).json({ success: false, message: 'Locale non valido' })
         
         const recensioni = await Recensione.find()
         .where('localeId').equals(req.params.localeID)
@@ -32,7 +32,7 @@ exports.postRecensione = async (req, res) => {
         const locale = await Locale.findById(req.params.localeID)
 
         if (! locale)
-            return res.status(400).json({ success: false, message: 'Locale invalido' })
+            return res.status(404).json({ success: false, message: 'Locale invalido' })
         
         // creazione nuova recensione
         const recensione = new Recensione({
@@ -54,7 +54,7 @@ exports.postRecensione = async (req, res) => {
         locale.recensioni.push(recensione._id)
         await locale.save()
 
-        res.status(200).json({ success: true, message: 'Recensione creata correttamente' })
+        res.status(201).json({ success: true, message: 'Recensione creata correttamente' })
 
     } catch (err) {
         res.status(500).json({ success: false, error: err.message })
@@ -68,7 +68,7 @@ exports.deleteRecensione = async (req, res) => {
         const recensione = await Recensione.findById(req.params.recensioneID)
 
         if (!locale || !recensione)
-            return res.status(400).json({ success: false, message: 'Locale e/o recensione inesistenti' })
+            return res.status(404).json({ success: false, message: 'Locale e/o recensione inesistenti' })
         
         // aggiornamento del ranking del locale
         if (locale.recensioni.length === 1)
@@ -82,7 +82,7 @@ exports.deleteRecensione = async (req, res) => {
         
         await Recensione.deleteOne({ _id: req.params.recensioneID })
 
-        res.status(200).json({ success: true, message: 'Recensione cancellate correttamente' })
+        res.status(200).json({ success: true, message: 'Recensione cancellata correttamente' })
 
     } catch (err) {
         res.status(500).json({ success: false, error: err })
