@@ -63,13 +63,13 @@ describe('Test eventi', () => {
         expect(utente.status).toBe(200)
     })
 
-    // Non dovrebbero esistere eventi sul database.
-    // test.skip('GET /', async () => {
-    //     const url = '/api/v1/eventi/'
-    //     const res = await request(app).get(url)
-    //     expect(res.status).toBe(404 || 200)
-
-    // });
+    test('GET /', async () => {
+        const url = '/api/v1/eventi/'
+        const res = await request(app).get(url)
+        expect(res.status).toBe(200)
+        expect(res.body.success).toBeTruthy()
+        expect(res.body.eventi).toBeDefined()
+    });
 
     test('POST /:localeID/eventi ok', async () => {
         const res = await request(app)
@@ -101,7 +101,24 @@ describe('Test eventi', () => {
     });
 
     // untestable 
-    // test('POST /:localeID/eventi locale inesistente')
+    // Tempo perso cercando di risolvere questo testcase: 30 minuti
+    // non si può risolvere perché non si può avere un evento senza un locale
+    // interviene prima il middleware del controller
+    // test('POST /:localeID/eventi locale inesistente', async () => {
+    //     const tempEvento = {
+    //         nome: mockData.state.evento.nome,
+    //         descrizione: mockData.state.evento.descrizione,
+    //         dataInizio: new Date(Date.now() + 100000000),
+    //         posti: mockData.state.evento.posti
+    //     }
+    //     const res = await request(app)
+    //         .post(`/api/v1/locali/507f1f77bcf86cd799439011/eventi`)
+    //         .set('Content-Type', 'application/json')
+    //         .set('Authorization', `Bearer ${localState.token}`)
+    //         .send(tempEvento)
+    //         expect(res.body).toEqual({ success: false, message: "Locale inesistente" })
+    //     expect(res.status).toBe(404)
+    // })
 
     test('POST /:localeID/eventi no nome', async () => {
 
@@ -127,7 +144,7 @@ describe('Test eventi', () => {
             .send({
                 nome: mockData.state.evento.nome,
                 dataInizio: mockData.state.evento.dataInizio,
-                posti:  mockData.state.evento.posti
+                posti: mockData.state.evento.posti
             })
         expect(res.body.message).toEqual('Nuovo evento creato correttamente')
         expect(res.body.success).toBeTruthy()
@@ -155,7 +172,7 @@ describe('Test eventi', () => {
         expect(allEvents.status).toBe(200)
 
         const evento = await request(app)
-        .get(`/api/v1/eventi/${allEvents.body.eventi[0]._id}`)
+            .get(`/api/v1/eventi/${allEvents.body.eventi[0]._id}`)
 
         expect(evento.status).toBe(200)
     });
@@ -172,7 +189,7 @@ describe('Test eventi', () => {
         const tempEvento = {
             nome: mockData.state.evento.nome,
             descrizione: mockData.state.evento.descrizione,
-            dataInizio: new Date(Date.now()+100000000),
+            dataInizio: new Date(Date.now() + 100000000),
             posti: mockData.state.evento.posti
         }
 
@@ -191,14 +208,14 @@ describe('Test eventi', () => {
             .post(`/api/v1/eventi/${eventoID}/prenotazioni`)
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${localState.token}`)
-            expect(res.body).toEqual({ success: true, message: 'Prenotazione effettuata correttamente' })
-            expect(res.status).toBe(200)
+        expect(res.body).toEqual({ success: true, message: 'Prenotazione effettuata correttamente' })
+        expect(res.status).toBe(200)
     })
     test('Prenotazioni DELETE', async () => {
         const tempEvento = {
             nome: mockData.state.evento.nome,
             descrizione: mockData.state.evento.descrizione,
-            dataInizio: new Date(Date.now()+100000000),
+            dataInizio: new Date(Date.now() + 100000000),
             posti: mockData.state.evento.posti
         }
 
@@ -224,6 +241,5 @@ describe('Test eventi', () => {
             .set('Authorization', `Bearer ${localState.token}`)
 
     })
-    test('Invia Notifica', () => { })
-    test('Post Commenti', () => { })
+    test.todo('Invia Notifica')
 })

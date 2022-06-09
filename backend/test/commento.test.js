@@ -55,4 +55,41 @@ describe('Test comments', () => {
             expect(res.body).toEqual({ success: true, message: 'Commento creato correttamente' })
             expect(res.status).toBe(201)
     });
+<<<<<<< Updated upstream
+=======
+    test('POST commento senza campi', async () => {
+        url = `/api/v1/eventi/${localState.evento}/commenti`
+        const res = await request(app)
+            .post(url)
+            .set('Authorization', `Bearer ${localState.token}`)
+            expect(res.body).toEqual({ success: false, message: 'Compilare tutti i campi' })
+            expect(res.status).toBe(400)
+    });    
+    test('POST commento a evento inesistente', async () => {
+        url = `/api/v1/eventi/507f1f77bcf86cd799439011/commenti`
+        const res = await request(app)
+            .post(url)
+            .set('Authorization', `Bearer ${localState.token}`)
+            .send({
+                commento: mockData.state.gestoreLocale.nomeLocale,
+            })
+            expect(res.body).toEqual({ success: false, message: 'Evento inesistente' })
+            expect(res.status).toBe(404)
+    });
+    test('DELETE commento errore', async () => {
+        const returnAllEventi = await request(app)
+            .get(`/api/v1/eventi/${localState.evento}`)
+            .set('Authorization', `Bearer ${localState.token}`)
+    
+        expect(returnAllEventi.status).toBe(200)
+        const commentoID = returnAllEventi.body.evento.commenti[0]._id
+
+        const deleteCommento = await request(app)
+            .delete(`/api/v1/eventi/${localState.evento}/commenti/${commentoID}`)
+            .set('Authorization', `Bearer ${localState.token}`)
+
+        expect(deleteCommento.status).toBe(200)
+        expect(deleteCommento.body).toEqual({success: true, message: "Commento cancellato correttamente"})
+    });
+>>>>>>> Stashed changes
 })

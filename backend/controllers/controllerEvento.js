@@ -125,9 +125,7 @@ exports.postPrenotazione = async (req, res) => {
         if (Date.parse(evento.dataInizio) < Date.now())
             return res.status(410).json({ success: false, message: 'Impossibile prenotarsi a questo evento (scaduto)' })
 
-        if (postiOccupati<=0)
-            return res.status(403).json({ success: false, message: "Impossibile prenotarsi a questo evento: posti esauriti"})
-        
+        console.log(evento.prenotazioni)    
         // controllo se l'utente è già prenotato all'evento
         let prenotazioneEffettuata = false
         evento.prenotazioni.forEach((usr) => {
