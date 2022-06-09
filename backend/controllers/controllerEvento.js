@@ -23,10 +23,10 @@ exports.getAllEventi = async (req, res) => {
 // creare un nuovo evento
 exports.postEvento = async (req, res) => {
     // recupero dati dalla richiesta e dal token
-    const { nome, descrizione, dataInizio, posti } = req.body
+    const { nome, descrizione, dataInizio } = req.body
     const userData = req.userData
 
-    if (!nome || !dataInizio || !posti)
+    if (!nome || !dataInizio)
         return res.status(400).json({ success: false, message: 'Compilare tutti i campi' })
 
     try{
@@ -37,7 +37,6 @@ exports.postEvento = async (req, res) => {
         
         // creazione dell'evento
         const evento = new Evento({
-            posti: posti,
             nome: nome,
             locale: userData.locale,
             descrizione: descrizione,
@@ -68,10 +67,9 @@ exports.modificaEvento = async (req, res) => {
         if(!oldEvento)
         return res.status(404).json({success: false, message: 'Evento non esistente'})
 
-        if(!evento.nome || !evento.dataInizio || !evento.posti)
+        if(!evento.nome || !evento.dataInizio)
             return res.status(400).json({success: false, message: "Compilare tutti i campi"})
 
-        oldEvento.posti = evento.posti
         oldEvento.nome = evento.nome
         oldEvento.locale = evento.locale
         oldEvento.descrizione = evento.descrizione
@@ -116,7 +114,6 @@ exports.postPrenotazione = async (req, res) => {
         // recupero gli oggetti dal database
         const evento = await Evento.findById(req.params.eventoID)
         const utente = await Utente.findById(userData.id)
-        const postiOccupati = evento.posti-evento.prenotazioni.length
 
         if (!evento || !utente)
             return res.status(404).json({ success: false, message: 'Evento o Utente insesistente' })
@@ -125,7 +122,6 @@ exports.postPrenotazione = async (req, res) => {
         if (Date.parse(evento.dataInizio) < Date.now())
             return res.status(410).json({ success: false, message: 'Impossibile prenotarsi a questo evento (scaduto)' })
 
-        console.log(evento.prenotazioni)    
         // controllo se l'utente è già prenotato all'evento
         let prenotazioneEffettuata = false
         evento.prenotazioni.forEach((usr) => {
@@ -173,7 +169,7 @@ exports.deletePrenotazione = async (req, res) => {
 
         // se lo è, lo tolgo dalle prenotazioni dell'evento e tolgo l'evento dalle prenotazioni dell'utente
         if (prenotazioneEffettuata) {
-            evento.prenotazioni = evento.prenotazioni.filter(usr => String(usr) !== userData.id)
+            evento.prenotazioni = evento.prenotazioni.filter(evnt => String(evnt) !== userData.id)
             utente.prenotazioni = utente.prenotazioni.filter(usr => String(usr) !== String(evento._id))
             
             await evento.save()
