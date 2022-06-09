@@ -55,4 +55,34 @@ describe('Test comments', () => {
             expect(res.body).toEqual({ success: true, message: 'Commento creato correttamente' })
             expect(res.status).toBe(201)
     });
+    test('POST commento senza campi', async () => {
+        url = `/api/v1/eventi/${localState.evento}/commenti`
+        const res = await request(app)
+            .post(url)
+            .set('Authorization', `Bearer ${localState.token}`)
+            expect(res.body).toEqual({ success: false, message: 'Compilare tutti i campi' })
+            expect(res.status).toBe(400)
+    });    
+    test('POST commento a evento inesistente', async () => {
+        url = `/api/v1/eventi/507f1f77bcf86cd799439011/commenti`
+        const res = await request(app)
+            .post(url)
+            .set('Authorization', `Bearer ${localState.token}`)
+            .send({
+                commento: mockData.state.gestoreLocale.nomeLocale,
+            })
+            expect(res.body).toEqual({ success: false, message: 'Compilare tutti i campi' })
+            expect(res.status).toBe(400)
+    });
+    test('DELETE commento evento inesistente', async () => {
+        url = `/api/v1/eventi/507f1f77bcf86cd799439011/commenti/507f1f77bcf86cd799439011`
+        const res = await request(app)
+            .delete(url)
+            .set('Authorization', `Bearer ${localState.token}`)
+            .send({
+                commento: mockData.state.gestoreLocale.nomeLocale,
+            })
+            expect(res.body).toEqual({ success: false, message: 'Compilare tutti i campi' })
+            expect(res.status).toBe(400)
+    });
 })
